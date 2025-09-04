@@ -14,7 +14,169 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string
+          id: string
+          target_level: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by: string
+          id?: string
+          target_level?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          target_level?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string | null
+          id: string
+          level: string | null
+          matric_number: string | null
+          phone_number: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          level?: string | null
+          matric_number?: string | null
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          level?: string | null
+          matric_number?: string | null
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      results: {
+        Row: {
+          course_code: string
+          course_title: string
+          created_at: string | null
+          credit_unit: number
+          grade: string
+          id: string
+          level: string
+          point: number
+          semester: string
+          session: string
+          student_id: string
+        }
+        Insert: {
+          course_code: string
+          course_title: string
+          created_at?: string | null
+          credit_unit: number
+          grade: string
+          id?: string
+          level: string
+          point: number
+          semester: string
+          session: string
+          student_id: string
+        }
+        Update: {
+          course_code?: string
+          course_title?: string
+          created_at?: string | null
+          credit_unit?: number
+          grade?: string
+          id?: string
+          level?: string
+          point?: number
+          semester?: string
+          session?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          carryovers: number | null
+          cgp: number | null
+          created_at: string | null
+          fee_status: string | null
+          id: string
+          level: string
+          matric_number: string
+          profile_id: string
+          total_gp: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          carryovers?: number | null
+          cgp?: number | null
+          created_at?: string | null
+          fee_status?: string | null
+          id?: string
+          level: string
+          matric_number: string
+          profile_id: string
+          total_gp?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          carryovers?: number | null
+          cgp?: number | null
+          created_at?: string | null
+          fee_status?: string | null
+          id?: string
+          level?: string
+          matric_number?: string
+          profile_id?: string
+          total_gp?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +185,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "student" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +312,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["student", "admin"],
+    },
   },
 } as const
