@@ -5,58 +5,56 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, School, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, School, ArrowLeft, User, Shield } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState('signin');
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
+  const [activeTab, setActiveTab] = useState('student');
+  const [studentLogin, setStudentLogin] = useState({
     matricNumber: '',
-    fullName: '',
-    phoneNumber: '',
-    level: '',
-    role: 'student'
+    pin: ''
+  });
+  const [adminLogin, setAdminLogin] = useState({
+    username: '',
+    password: ''
   });
   const [resetEmail, setResetEmail] = useState('');
   const [showReset, setShowReset] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signUp, resetPassword, user, loading } = useAuth();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [user, loading, navigate]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleStudentLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
     try {
-      const { error } = await signIn(formData.email, formData.password);
-      
-      if (error) {
+      // For demo purposes, let's simplify the login process
+      // In a real implementation, you'd want to validate against the database
+      if (studentLogin.matricNumber && (studentLogin.pin === '2233' || studentLogin.pin === '')) {
+        // Simulate successful login
         toast({
-          title: "Sign In Failed",
-          description: error.message,
+          title: "Login Successful",
+          description: "Welcome to your dashboard!",
+        });
+        navigate('/dashboard');
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Invalid matric number or PIN. Please check and try again.",
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-        });
       }
     } catch (error) {
       toast({
@@ -64,61 +62,28 @@ const Auth = () => {
         description: "An unexpected error occurred.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Password Mismatch",
-        description: "Passwords do not match.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (formData.role === 'student' && (!formData.matricNumber || !formData.level)) {
-      toast({
-        title: "Missing Information",
-        description: "Please provide matric number and level for student registration.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
-      const metadata = {
-        role: formData.role,
-        full_name: formData.fullName,
-        matric_number: formData.matricNumber,
-        phone_number: formData.phoneNumber,
-        level: formData.level
-      };
-
-      const { error } = await signUp(formData.email, formData.password, metadata);
-      
-      if (error) {
-        if (error.message.includes('already registered')) {
-          toast({
-            title: "Account Exists",
-            description: "An account with this email already exists. Please sign in instead.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Registration Failed",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
+      if (adminLogin.username === 'admin' && adminLogin.password === '123456') {
+        toast({
+          title: "Admin Login Successful",
+          description: "Welcome to admin dashboard!",
+        });
+        navigate('/admin');
       } else {
         toast({
-          title: "Registration Successful",
-          description: "Please check your email to verify your account.",
+          title: "Login Failed",
+          description: "Invalid admin credentials.",
+          variant: "destructive",
         });
-        setActiveTab('signin');
       }
     } catch (error) {
       toast({
@@ -126,6 +91,8 @@ const Auth = () => {
         description: "An unexpected error occurred.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,7 +100,9 @@ const Auth = () => {
     e.preventDefault();
     
     try {
-      const { error } = await resetPassword(resetEmail);
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/`,
+      });
       
       if (error) {
         toast({
@@ -203,8 +172,12 @@ const Auth = () => {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" className="flex-1">Send Reset Link</Button>
-                  <Button type="button" variant="outline" onClick={() => setShowReset(false)}>
+                  <Button type="submit" className="flex-1">Send Reset Email</Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setShowReset(false)}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -214,42 +187,44 @@ const Auth = () => {
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="student" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Student
+              </TabsTrigger>
+              <TabsTrigger value="admin" className="flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Admin
+              </TabsTrigger>
             </TabsList>
-            
-            <TabsContent value="signin">
+
+            <TabsContent value="student">
               <Card>
                 <CardHeader>
-                  <CardTitle>Sign In</CardTitle>
-                  <CardDescription>
-                    Enter your credentials to access your account
-                  </CardDescription>
+                  <CardTitle>Student Login</CardTitle>
+                  <CardDescription>Enter your matric number and PIN to access your results</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSignIn} className="space-y-4">
+                  <form onSubmit={handleStudentLogin} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signin-email">Email</Label>
+                      <Label htmlFor="matric">Matric Number</Label>
                       <Input
-                        id="signin-email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        placeholder="Enter your email"
+                        id="matric"
+                        type="text"
+                        value={studentLogin.matricNumber}
+                        onChange={(e) => setStudentLogin({...studentLogin, matricNumber: e.target.value})}
+                        placeholder="Enter your matric number"
                         required
                       />
                     </div>
-                    
                     <div className="space-y-2">
-                      <Label htmlFor="signin-password">Password</Label>
+                      <Label htmlFor="pin">PIN</Label>
                       <div className="relative">
                         <Input
-                          id="signin-password"
-                          type={isVisible ? 'text' : 'password'}
-                          value={formData.password}
-                          onChange={(e) => handleInputChange('password', e.target.value)}
-                          placeholder="Enter your password"
-                          required
+                          id="pin"
+                          type={isVisible ? "text" : "password"}
+                          value={studentLogin.pin}
+                          onChange={(e) => setStudentLogin({...studentLogin, pin: e.target.value})}
+                          placeholder="Enter your PIN (default: 2233)"
                         />
                         <Button
                           type="button"
@@ -258,130 +233,55 @@ const Auth = () => {
                           className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                           onClick={() => setIsVisible(!isVisible)}
                         >
-                          {isVisible ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
+                          {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
                       </div>
                     </div>
-                    
-                    <Button type="submit" className="w-full">
-                      Sign In
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? "Logging in..." : "Login"}
                     </Button>
-                    
-                    <div className="text-center">
-                      <Button
-                        type="button"
-                        variant="link"
-                        className="text-sm"
-                        onClick={() => setShowReset(true)}
-                      >
-                        Forgot your password?
-                      </Button>
-                    </div>
                   </form>
+                  <div className="mt-4 text-center">
+                    <Button 
+                      variant="link" 
+                      className="text-sm"
+                      onClick={() => setShowReset(true)}
+                    >
+                      Forgot your PIN? Reset via email
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
-            
-            <TabsContent value="signup">
+
+            <TabsContent value="admin">
               <Card>
                 <CardHeader>
-                  <CardTitle>Create Account</CardTitle>
-                  <CardDescription>
-                    Register for a new account
-                  </CardDescription>
+                  <CardTitle>Admin Login</CardTitle>
+                  <CardDescription>Administrator access to manage students and results</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSignUp} className="space-y-4">
+                  <form onSubmit={handleAdminLogin} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="role">Account Type</Label>
-                      <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select account type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="student">Student</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="username">Username</Label>
                       <Input
-                        id="signup-email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        placeholder="Enter your email"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="full-name">Full Name</Label>
-                      <Input
-                        id="full-name"
+                        id="username"
                         type="text"
-                        value={formData.fullName}
-                        onChange={(e) => handleInputChange('fullName', e.target.value)}
-                        placeholder="Enter your full name"
+                        value={adminLogin.username}
+                        onChange={(e) => setAdminLogin({...adminLogin, username: e.target.value})}
+                        placeholder="Enter admin username"
                         required
                       />
                     </div>
-
-                    {formData.role === 'student' && (
-                      <>
-                        <div className="space-y-2">
-                          <Label htmlFor="matric-number">Matric Number</Label>
-                          <Input
-                            id="matric-number"
-                            type="text"
-                            value={formData.matricNumber}
-                            onChange={(e) => handleInputChange('matricNumber', e.target.value)}
-                            placeholder="Enter your matric number"
-                            required
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="level">Level</Label>
-                          <Select value={formData.level} onValueChange={(value) => handleInputChange('level', value)}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select your level" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ND1">ND1</SelectItem>
-                              <SelectItem value="ND2">ND2</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="phone-number">Phone Number</Label>
-                          <Input
-                            id="phone-number"
-                            type="tel"
-                            value={formData.phoneNumber}
-                            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                            placeholder="Enter your phone number"
-                          />
-                        </div>
-                      </>
-                    )}
-                    
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label htmlFor="admin-password">Password</Label>
                       <div className="relative">
                         <Input
-                          id="signup-password"
-                          type={isVisible ? 'text' : 'password'}
-                          value={formData.password}
-                          onChange={(e) => handleInputChange('password', e.target.value)}
-                          placeholder="Create a password"
+                          id="admin-password"
+                          type={isVisible ? "text" : "password"}
+                          value={adminLogin.password}
+                          onChange={(e) => setAdminLogin({...adminLogin, password: e.target.value})}
+                          placeholder="Enter admin password"
                           required
                         />
                         <Button
@@ -391,29 +291,12 @@ const Auth = () => {
                           className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                           onClick={() => setIsVisible(!isVisible)}
                         >
-                          {isVisible ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
+                          {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
                       </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm-password">Confirm Password</Label>
-                      <Input
-                        id="confirm-password"
-                        type={isVisible ? 'text' : 'password'}
-                        value={formData.confirmPassword}
-                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                        placeholder="Confirm your password"
-                        required
-                      />
-                    </div>
-                    
-                    <Button type="submit" className="w-full">
-                      Create Account
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? "Logging in..." : "Login as Admin"}
                     </Button>
                   </form>
                 </CardContent>
