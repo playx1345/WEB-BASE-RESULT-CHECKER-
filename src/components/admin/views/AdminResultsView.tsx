@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Search, Upload, FileText, Download } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { UploadResultsModal } from '@/components/admin/modals/UploadResultsModal';
 
 interface Result {
   id: string;
@@ -33,6 +34,7 @@ export function AdminResultsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sessionFilter, setSessionFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   useEffect(() => {
     fetchResults();
@@ -132,7 +134,7 @@ export function AdminResultsView() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setIsUploadModalOpen(true)}>
             <Upload className="h-4 w-4 mr-2" />
             Bulk Upload
           </Button>
@@ -247,6 +249,12 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
+
+      <UploadResultsModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onSuccess={fetchResults}
+      />
     </div>
   );
 }
