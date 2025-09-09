@@ -1,12 +1,43 @@
 import { useAuth } from '@/hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Dashboard } from '@/components/Dashboard';
+import { AdminDashboard } from '@/components/AdminDashboard';
 
 const Index = () => {
   const { user, loading } = useAuth();
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(true);
 
-  if (loading) {
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!user) {
+        setRoleLoading(false);
+        return;
+      }
+
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+
+        setUserRole(profile?.role || 'student');
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        setUserRole('student'); // Default to student
+      } finally {
+        setRoleLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
+
+  if (loading || roleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -44,10 +75,16 @@ const Index = () => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1">
-          <Dashboard />
-        </main>
+        {userRole === 'admin' ? (
+          <AdminDashboard />
+        ) : (
+          <>
+            <AppSidebar />
+            <main className="flex-1">
+              <Dashboard />
+            </main>
+          </>
+        )}
       </div>
     </SidebarProvider>
   );
