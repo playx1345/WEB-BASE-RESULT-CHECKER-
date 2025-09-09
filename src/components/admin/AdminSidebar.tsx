@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, FileText, Megaphone, BarChart3, LogOut } from 'lucide-react';
+import { Home, Users, GraduationCap, FileText, Megaphone, BarChart3, LogOut, UserCog } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,7 @@ const adminMenuItems = [
   { id: 'students', label: 'Students', icon: Users },
   { id: 'results', label: 'Results', icon: GraduationCap },
   { id: 'announcements', label: 'Announcements', icon: Megaphone },
+  { id: 'usermanagement', label: 'User Management', icon: UserCog },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
 ];
 
