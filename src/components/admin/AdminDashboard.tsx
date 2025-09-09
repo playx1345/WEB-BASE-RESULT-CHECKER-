@@ -5,6 +5,7 @@ import { AdminStudentsView } from './views/AdminStudentsView';
 import { AdminResultsView } from './views/AdminResultsView';
 import { AdminAnnouncementsView } from './views/AdminAnnouncementsView';
 import { AdminAnalyticsView } from './views/AdminAnalyticsView';
+import { AdminUserManagementView } from './views/AdminUserManagementView';
 
 export function AdminDashboard() {
   const [activeView, setActiveView] = useState('dashboard');
@@ -17,6 +18,8 @@ export function AdminDashboard() {
         return <AdminResultsView />;
       case 'announcements':
         return <AdminAnnouncementsView />;
+      case 'usermanagement':
+        return <AdminUserManagementView />;
       case 'analytics':
         return <AdminAnalyticsView />;
       default:
