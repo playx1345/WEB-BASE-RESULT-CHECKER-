@@ -5,7 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, FileText } from 'lucide-react';
+import { AlertTriangle, FileText, Search, Download, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 interface Result {
   id: string;
@@ -24,6 +27,9 @@ export function ResultsView() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [feeStatus, setFeeStatus] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sessionFilter, setSessionFilter] = useState('all');
+  const [semesterFilter, setSemesterFilter] = useState('all');
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -137,7 +143,16 @@ export function ResultsView() {
     );
   }
 
-  const groupedResults = results.reduce((acc, result) => {
+  const filteredResults = results.filter(result => {
+    const matchesSearch = result.course_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         result.course_title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSession = sessionFilter === 'all' || result.session === sessionFilter;
+    const matchesSemester = semesterFilter === 'all' || result.semester === semesterFilter;
+    
+    return matchesSearch && matchesSession && matchesSemester;
+  });
+
+  const groupedResults = filteredResults.reduce((acc, result) => {
     const key = `${result.session} - ${result.semester}`;
     if (!acc[key]) {
       acc[key] = [];
@@ -146,6 +161,29 @@ export function ResultsView() {
     return acc;
   }, {} as Record<string, Result[]>);
 
+  const exportResults = () => {
+    const csv = [
+      ['Session', 'Semester', 'Course Code', 'Course Title', 'Credit Units', 'Grade', 'Grade Points'],
+      ...filteredResults.map(result => [
+        result.session,
+        result.semester,
+        result.course_code,
+        result.course_title,
+        result.credit_unit,
+        result.grade,
+        result.point
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'academic_results.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="space-y-2">
@@ -153,6 +191,46 @@ export function ResultsView() {
         <p className="text-muted-foreground">
           View your semester results and academic performance.
         </p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by course code or title..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        
+        <Select value={sessionFilter} onValueChange={setSessionFilter}>
+          <SelectTrigger className="w-full sm:w-40">
+            <SelectValue placeholder="Session" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Sessions</SelectItem>
+            {Array.from(new Set(results.map(r => r.session))).map(session => (
+              <SelectItem key={session} value={session}>{session}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+          <SelectTrigger className="w-full sm:w-36">
+            <SelectValue placeholder="Semester" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Semesters</SelectItem>
+            <SelectItem value="first">First Semester</SelectItem>
+            <SelectItem value="second">Second Semester</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
+          <Download className="h-4 w-4 mr-2" />
+          Export CSV
+        </Button>
       </div>
 
       {Object.keys(groupedResults).length === 0 ? (
