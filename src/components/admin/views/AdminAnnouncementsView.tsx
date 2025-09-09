@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Megaphone, Edit, Trash2, Calendar } from 'lucide-react';
@@ -27,7 +26,6 @@ export function AdminAnnouncementsView() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -36,7 +34,11 @@ export function AdminAnnouncementsView() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const fetchAnnouncements = useCallback(async () => {
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  const fetchAnnouncements = async () => {
     try {
       const { data, error } = await supabase
         .from('announcements')
@@ -58,11 +60,7 @@ export function AdminAnnouncementsView() {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
-
-  useEffect(() => {
-    fetchAnnouncements();
-  }, [fetchAnnouncements]);
+  };
 
   const createAnnouncement = async () => {
     if (!formData.title || !formData.content || !user) return;
@@ -91,76 +89,12 @@ export function AdminAnnouncementsView() {
         description: "Announcement created successfully",
       });
 
-      resetForm();
+      setFormData({ title: '', content: '', target_level: 'all' });
+      setIsDialogOpen(false);
       fetchAnnouncements();
     } catch (error) {
       console.error('Error creating announcement:', error);
     }
-  };
-
-  const updateAnnouncement = async () => {
-    if (!formData.title || !formData.content || !editingAnnouncement) return;
-
-    try {
-      const { error } = await supabase
-        .from('announcements')
-        .update({
-          title: formData.title,
-          content: formData.content,
-          target_level: formData.target_level === 'all' ? 'all' : formData.target_level,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', editingAnnouncement.id);
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to update announcement",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Success",
-        description: "Announcement updated successfully",
-      });
-
-      resetForm();
-      fetchAnnouncements();
-    } catch (error) {
-      console.error('Error updating announcement:', error);
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({ title: '', content: '', target_level: 'all' });
-    setEditingAnnouncement(null);
-    setIsDialogOpen(false);
-  };
-
-  const handleSubmit = () => {
-    if (editingAnnouncement) {
-      updateAnnouncement();
-    } else {
-      createAnnouncement();
-    }
-  };
-
-  const openEditModal = (announcement: Announcement) => {
-    setEditingAnnouncement(announcement);
-    setFormData({
-      title: announcement.title,
-      content: announcement.content,
-      target_level: announcement.target_level || 'all'
-    });
-    setIsDialogOpen(true);
-  };
-
-  const openCreateModal = () => {
-    setEditingAnnouncement(null);
-    setFormData({ title: '', content: '', target_level: 'all' });
-    setIsDialogOpen(true);
   };
 
   const deleteAnnouncement = async (id: string) => {
@@ -217,21 +151,16 @@ export function AdminAnnouncementsView() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateModal}>
+            <Button>
               <Plus className="h-4 w-4 mr-2" />
               New Announcement
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>
-                {editingAnnouncement ? 'Edit Announcement' : 'Create New Announcement'}
-              </DialogTitle>
+              <DialogTitle>Create New Announcement</DialogTitle>
               <DialogDescription>
-                {editingAnnouncement 
-                  ? 'Update the announcement details below.'
-                  : 'Create an announcement to notify students about important updates.'
-                }
+                Create an announcement to notify students about important updates.
               </DialogDescription>
             </DialogHeader>
             
@@ -276,11 +205,11 @@ export function AdminAnnouncementsView() {
             </div>
             
             <DialogFooter>
-              <Button variant="outline" onClick={resetForm}>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleSubmit}>
-                {editingAnnouncement ? 'Update Announcement' : 'Create Announcement'}
+              <Button onClick={createAnnouncement}>
+                Create Announcement
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -296,7 +225,7 @@ export function AdminAnnouncementsView() {
               <p className="text-muted-foreground text-center mb-4">
                 Create your first announcement to notify students about important updates.
               </p>
-              <Button onClick={openCreateModal}>
+              <Button onClick={() => setIsDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create Announcement
               </Button>
@@ -320,42 +249,17 @@ export function AdminAnnouncementsView() {
                     </div>
                   </div>
                   <div className="flex gap-2">
+                    <Button variant="outline" size="sm">
+                      <Edit className="h-3 w-3" />
+                    </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => openEditModal(announcement)}
+                      onClick={() => deleteAnnouncement(announcement.id)}
+                      className="text-destructive hover:text-destructive"
                     >
-                      <Edit className="h-3 w-3" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the 
-                            announcement "{announcement.title}".
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => deleteAnnouncement(announcement.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
                   </div>
                 </div>
               </CardHeader>
