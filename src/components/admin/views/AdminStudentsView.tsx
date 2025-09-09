@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Search, Edit, DollarSign, User, Phone, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { AddStudentModal } from './AddStudentModal';
 
 interface Student {
   id: string;
@@ -33,6 +34,7 @@ export function AdminStudentsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -123,7 +125,7 @@ export function AdminStudentsView() {
             Manage student records, fees, and academic information.
           </p>
         </div>
-        <Button>
+        <Button onClick={() => setIsAddModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Add Student
         </Button>
@@ -270,6 +272,12 @@ export function AdminStudentsView() {
           )}
         </CardContent>
       </Card>
+
+      <AddStudentModal
+        open={isAddModalOpen}
+        onOpenChange={setIsAddModalOpen}
+        onSuccess={fetchStudents}
+      />
     </div>
   );
 }
