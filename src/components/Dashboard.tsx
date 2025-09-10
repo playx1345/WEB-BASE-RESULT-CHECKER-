@@ -5,6 +5,7 @@ import { DashboardView } from './views/DashboardView';
 import { ResultsView } from './views/ResultsView';
 import { AnnouncementsView } from './views/AnnouncementsView';
 import { ProfileView } from './views/ProfileView';
+import { NotificationSettings } from './notifications/NotificationSettings';
 import { useProfile } from '@/hooks/useProfile';
 
 export function Dashboard() {
@@ -35,6 +36,12 @@ export function Dashboard() {
         return <AnnouncementsView />;
       case 'profile':
         return <ProfileView />;
+      case 'notification-settings':
+        return (
+          <div className="p-6">
+            <NotificationSettings />
+          </div>
+        );
       default:
         return <DashboardView />;
     }

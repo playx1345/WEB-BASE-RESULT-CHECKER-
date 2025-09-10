@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Home, FileText, Bell, User, LogOut, GraduationCap } from 'lucide-react';
+import { Home, FileText, Bell, User, LogOut, GraduationCap, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +22,7 @@ const menuItems = [
   { title: 'Results', icon: FileText, id: 'results' },
   { title: 'Announcements', icon: Bell, id: 'announcements' },
   { title: 'Profile', icon: User, id: 'profile' },
+  { title: 'Notification Settings', icon: Settings, id: 'notification-settings' },
 ];
 
 interface AppSidebarProps {
@@ -43,13 +45,16 @@ export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSideba
         <div className="flex items-center gap-2 p-4">
           <GraduationCap className="h-6 w-6 text-sidebar-primary" />
           {!collapsed && (
-            <div>
+            <div className="flex-1">
               <h1 className="text-lg font-semibold text-sidebar-foreground">Student Portal</h1>
               <p className="text-xs text-sidebar-foreground/60">Academic System</p>
             </div>
           )}
+          <div className="flex items-center gap-2 ml-auto">
+            <NotificationBell />
+            <SidebarTrigger />
+          </div>
         </div>
-        <SidebarTrigger className="ml-auto mr-2 mb-2" />
       </SidebarHeader>
 
       <SidebarContent>

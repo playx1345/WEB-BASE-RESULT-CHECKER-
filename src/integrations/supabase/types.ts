@@ -44,6 +44,78 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          id: string
+          recipient_id: string
+          title: string
+          message: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          is_read: boolean
+          related_id: string | null
+          metadata: Json | null
+          created_at: string | null
+          read_at: string | null
+        }
+        Insert: {
+          id?: string
+          recipient_id: string
+          title: string
+          message: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          is_read?: boolean
+          related_id?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+          read_at?: string | null
+        }
+        Update: {
+          id?: string
+          recipient_id?: string
+          title?: string
+          message?: string
+          notification_type?: Database["public"]["Enums"]["notification_type"]
+          is_read?: boolean
+          related_id?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+          read_at?: string | null
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          in_app_enabled: boolean
+          email_enabled: boolean
+          sms_enabled: boolean
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          in_app_enabled?: boolean
+          email_enabled?: boolean
+          sms_enabled?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          notification_type?: Database["public"]["Enums"]["notification_type"]
+          in_app_enabled?: boolean
+          email_enabled?: boolean
+          sms_enabled?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -182,10 +254,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_unread_notification_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      mark_all_notifications_read: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      mark_notification_read: {
+        Args: {
+          notification_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       user_role: "student" | "admin"
+      notification_type: "grade_posted" | "grade_updated" | "announcement" | "system"
+      delivery_method: "in_app" | "email" | "sms"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -314,6 +401,8 @@ export const Constants = {
   public: {
     Enums: {
       user_role: ["student", "admin"],
+      notification_type: ["grade_posted", "grade_updated", "announcement", "system"],
+      delivery_method: ["in_app", "email", "sms"],
     },
   },
 } as const
