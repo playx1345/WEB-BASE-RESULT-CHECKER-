@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, FileText, Megaphone, BarChart3, LogOut } from 'lucide-react';
+import { Home, Users, GraduationCap, FileText, Megaphone, BarChart3, LogOut, UserCheck, Calendar, MessageSquare } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +21,8 @@ interface AdminSidebarProps {
 const adminMenuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'students', label: 'Students', icon: Users },
+  { id: 'profile-management', label: 'Profile Management', icon: UserCheck },
+  { id: 'attendance-remarks', label: 'Attendance & Remarks', icon: Calendar },
   { id: 'results', label: 'Results', icon: GraduationCap },
   { id: 'announcements', label: 'Announcements', icon: Megaphone },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
