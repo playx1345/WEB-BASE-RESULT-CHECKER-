@@ -44,6 +44,60 @@ export type Database = {
         }
         Relationships: []
       }
+      grade_appeals: {
+        Row: {
+          admin_response: string | null
+          created_at: string | null
+          details: string | null
+          id: string
+          reason: string
+          result_id: string
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["appeal_status"]
+          student_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_response?: string | null
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          reason: string
+          result_id: string
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["appeal_status"]
+          student_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_response?: string | null
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          reason?: string
+          result_id?: string
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["appeal_status"]
+          student_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grade_appeals_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: false
+            referencedRelation: "results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grade_appeals_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -185,6 +239,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      appeal_status: "pending" | "under_review" | "approved" | "rejected"
       user_role: "student" | "admin"
     }
     CompositeTypes: {
@@ -313,6 +368,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      appeal_status: ["pending", "under_review", "approved", "rejected"],
       user_role: ["student", "admin"],
     },
   },

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, GraduationCap, AlertTriangle, TrendingUp, DollarSign, BookOpen } from 'lucide-react';
+import { Users, GraduationCap, AlertTriangle, TrendingUp, DollarSign, BookOpen, MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardStats {
@@ -12,6 +12,7 @@ interface DashboardStats {
   averageCGP: number;
   recentResults: number;
   carryovers: number;
+  pendingAppeals: number;
 }
 
 export function AdminDashboardView() {
@@ -64,6 +65,12 @@ export function AdminDashboardView() {
 
         const totalCarryovers = carryoverData?.reduce((sum, student) => sum + (student.carryovers || 0), 0) || 0;
 
+        // Fetch pending appeals
+        const { count: pendingAppeals } = await supabase
+          .from('grade_appeals')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending');
+
         setStats({
           totalStudents: totalStudents || 0,
           totalResults: totalResults || 0,
@@ -71,6 +78,7 @@ export function AdminDashboardView() {
           averageCGP: Number(averageCGP.toFixed(2)),
           recentResults: recentResults || 0,
           carryovers: totalCarryovers,
+          pendingAppeals: pendingAppeals || 0,
         });
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
@@ -90,7 +98,7 @@ export function AdminDashboardView() {
           <Skeleton className="h-4 w-96" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(7)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <Skeleton className="h-4 w-32" />
@@ -191,6 +199,19 @@ export function AdminDashboardView() {
             <div className="text-2xl font-bold text-foreground">{stats?.carryovers}</div>
             <p className="text-xs text-muted-foreground">
               Across all students
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-foreground">Pending Appeals</CardTitle>
+            <MessageSquare className="h-4 w-4 text-orange-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{stats?.pendingAppeals}</div>
+            <p className="text-xs text-muted-foreground">
+              Grade appeals awaiting review
             </p>
           </CardContent>
         </Card>

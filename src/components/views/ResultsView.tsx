@@ -5,10 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, FileText, Search, Download, Filter } from 'lucide-react';
+import { AlertTriangle, FileText, Search, Download, Filter, MessageSquare } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 interface Result {
   id: string;
@@ -22,6 +26,16 @@ interface Result {
   level: string;
 }
 
+interface GradeAppeal {
+  id: string;
+  result_id: string;
+  reason: string;
+  details: string | null;
+  status: 'pending' | 'under_review' | 'approved' | 'rejected';
+  admin_response: string | null;
+  created_at: string;
+}
+
 export function ResultsView() {
   const { user } = useAuth();
   const [results, setResults] = useState<Result[]>([]);
@@ -30,13 +44,20 @@ export function ResultsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sessionFilter, setSessionFilter] = useState('all');
   const [semesterFilter, setSemesterFilter] = useState('all');
+  const [appeals, setAppeals] = useState<GradeAppeal[]>([]);
+  const [appealDialog, setAppealDialog] = useState(false);
+  const [selectedResult, setSelectedResult] = useState<Result | null>(null);
+  const [appealReason, setAppealReason] = useState('');
+  const [appealDetails, setAppealDetails] = useState('');
+  const [submittingAppeal, setSubmittingAppeal] = useState(false);
+  const [studentId, setStudentId] = useState<string>('');
 
   useEffect(() => {
     const fetchResults = async () => {
       if (!user) return;
 
       try {
-        // First check fee status
+        // First check fee status and get student ID
         const { data: profileData } = await supabase
           .from('profiles')
           .select('id')
@@ -46,23 +67,35 @@ export function ResultsView() {
         if (profileData) {
           const { data: studentData } = await supabase
             .from('students')
-            .select('fee_status')
+            .select('id, fee_status')
             .eq('profile_id', profileData.id)
             .single();
 
           if (studentData) {
             setFeeStatus(studentData.fee_status);
+            setStudentId(studentData.id);
 
             if (studentData.fee_status === 'paid') {
               // Fetch results only if fees are paid
               const { data: resultsData } = await supabase
                 .from('results')
                 .select('*')
+                .eq('student_id', studentData.id)
                 .order('session', { ascending: false })
                 .order('semester', { ascending: false });
 
               if (resultsData) {
                 setResults(resultsData);
+              }
+
+              // Fetch existing appeals for this student
+              const { data: appealsData } = await supabase
+                .from('grade_appeals')
+                .select('*')
+                .eq('student_id', studentData.id);
+
+              if (appealsData) {
+                setAppeals(appealsData);
               }
             }
           }
@@ -92,6 +125,79 @@ export function ResultsView() {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const getAppealStatus = (resultId: string) => {
+    return appeals.find(appeal => appeal.result_id === resultId);
+  };
+
+  const getAppealStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'under_review':
+        return 'bg-blue-100 text-blue-800';
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleAppealSubmit = async () => {
+    if (!selectedResult || !appealReason.trim() || !studentId) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    setSubmittingAppeal(true);
+    try {
+      const { error } = await supabase
+        .from('grade_appeals')
+        .insert({
+          result_id: selectedResult.id,
+          student_id: studentId,
+          reason: appealReason.trim(),
+          details: appealDetails.trim() || null,
+        });
+
+      if (error) {
+        if (error.message.includes('An appeal for this result is already pending')) {
+          toast.error('You already have an appeal pending for this result');
+        } else {
+          throw error;
+        }
+        return;
+      }
+
+      // Refresh appeals
+      const { data: appealsData } = await supabase
+        .from('grade_appeals')
+        .select('*')
+        .eq('student_id', studentId);
+
+      if (appealsData) {
+        setAppeals(appealsData);
+      }
+
+      toast.success('Grade appeal submitted successfully');
+      setAppealDialog(false);
+      setSelectedResult(null);
+      setAppealReason('');
+      setAppealDetails('');
+    } catch (error) {
+      console.error('Error submitting appeal:', error);
+      toast.error('Failed to submit appeal');
+    } finally {
+      setSubmittingAppeal(false);
+    }
+  };
+
+  const openAppealDialog = (result: Result) => {
+    setSelectedResult(result);
+    setAppealDialog(true);
   };
 
   if (loading) {
@@ -277,22 +383,49 @@ export function ResultsView() {
                         <TableHead className="text-center">Credit Units</TableHead>
                         <TableHead className="text-center">Grade</TableHead>
                         <TableHead className="text-center">Grade Points</TableHead>
+                        <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {semesterResults.map((result) => (
-                        <TableRow key={result.id}>
-                          <TableCell className="font-medium">{result.course_code}</TableCell>
-                          <TableCell>{result.course_title}</TableCell>
-                          <TableCell className="text-center">{result.credit_unit}</TableCell>
-                          <TableCell className="text-center">
-                            <Badge className={getGradeColor(result.grade)}>
-                              {result.grade}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-center">{result.point.toFixed(1)}</TableCell>
-                        </TableRow>
-                      ))}
+                      {semesterResults.map((result) => {
+                        const existingAppeal = getAppealStatus(result.id);
+                        return (
+                          <TableRow key={result.id}>
+                            <TableCell className="font-medium">{result.course_code}</TableCell>
+                            <TableCell>{result.course_title}</TableCell>
+                            <TableCell className="text-center">{result.credit_unit}</TableCell>
+                            <TableCell className="text-center">
+                              <Badge className={getGradeColor(result.grade)}>
+                                {result.grade}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-center">{result.point.toFixed(1)}</TableCell>
+                            <TableCell className="text-center">
+                              {existingAppeal ? (
+                                <div className="space-y-1">
+                                  <Badge className={getAppealStatusColor(existingAppeal.status)}>
+                                    {existingAppeal.status.replace('_', ' ')}
+                                  </Badge>
+                                  {existingAppeal.admin_response && (
+                                    <p className="text-xs text-muted-foreground">
+                                      Response: {existingAppeal.admin_response}
+                                    </p>
+                                  )}
+                                </div>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => openAppealDialog(result)}
+                                >
+                                  <MessageSquare className="h-3 w-3 mr-1" />
+                                  Appeal
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </CardContent>
@@ -301,6 +434,55 @@ export function ResultsView() {
           })}
         </div>
       )}
+
+      <Dialog open={appealDialog} onOpenChange={setAppealDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Submit Grade Appeal</DialogTitle>
+            <DialogDescription>
+              Request a review of your grade for{' '}
+              {selectedResult && `${selectedResult.course_code} - ${selectedResult.course_title}`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="reason">Reason for Appeal (Required)</Label>
+              <Textarea
+                id="reason"
+                placeholder="Please explain why you believe your grade should be reviewed..."
+                value={appealReason}
+                onChange={(e) => setAppealReason(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="details">Additional Details (Optional)</Label>
+              <Textarea
+                id="details"
+                placeholder="Provide any additional information that might support your appeal..."
+                value={appealDetails}
+                onChange={(e) => setAppealDetails(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setAppealDialog(false)}
+                disabled={submittingAppeal}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleAppealSubmit}
+                disabled={submittingAppeal || !appealReason.trim()}
+              >
+                {submittingAppeal ? 'Submitting...' : 'Submit Appeal'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
