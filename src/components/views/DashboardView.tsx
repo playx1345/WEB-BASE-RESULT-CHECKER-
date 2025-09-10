@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { GraduationCap, FileText, Bell, AlertTriangle } from 'lucide-react';
+import { GraduationCap, FileText, Bell, AlertTriangle, Calendar, ChevronRight } from 'lucide-react';
 
 interface StudentData {
   id: string;
@@ -21,10 +21,19 @@ interface Profile {
   level: string;
 }
 
+interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  target_level: string;
+}
+
 export function DashboardView() {
   const { user } = useAuth();
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,6 +61,17 @@ export function DashboardView() {
           if (studentDataResult) {
             setStudentData(studentDataResult);
           }
+        }
+
+        // Fetch recent announcements
+        const { data: announcementsData } = await supabase
+          .from('announcements')
+          .select('id, title, content, created_at, target_level')
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (announcementsData) {
+          setAnnouncements(announcementsData);
         }
       } catch (error) {
         console.error('Error fetching student data:', error);
@@ -188,13 +208,42 @@ export function DashboardView() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates and announcements</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  Recent Announcements
+                </CardTitle>
+                <CardDescription>Latest updates from the administration</CardDescription>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </div>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Check the announcements section for the latest updates from the academic office.
-            </p>
+            {announcements.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No announcements at the moment. Check back later for updates.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {announcements.map((announcement) => (
+                  <div key={announcement.id} className="border-l-2 border-primary/20 pl-3 py-2">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <h4 className="font-medium text-sm">{announcement.title}</h4>
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {announcement.content}
+                        </p>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(announcement.created_at).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

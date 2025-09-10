@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, GraduationCap, AlertTriangle, TrendingUp, DollarSign, BookOpen } from 'lucide-react';
+import { Users, GraduationCap, AlertTriangle, TrendingUp, DollarSign, BookOpen, Megaphone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardStats {
@@ -12,6 +12,7 @@ interface DashboardStats {
   averageCGP: number;
   recentResults: number;
   carryovers: number;
+  totalAnnouncements: number;
 }
 
 export function AdminDashboardView() {
@@ -64,6 +65,11 @@ export function AdminDashboardView() {
 
         const totalCarryovers = carryoverData?.reduce((sum, student) => sum + (student.carryovers || 0), 0) || 0;
 
+        // Fetch total announcements
+        const { count: totalAnnouncements } = await supabase
+          .from('announcements')
+          .select('*', { count: 'exact', head: true });
+
         setStats({
           totalStudents: totalStudents || 0,
           totalResults: totalResults || 0,
@@ -71,6 +77,7 @@ export function AdminDashboardView() {
           averageCGP: Number(averageCGP.toFixed(2)),
           recentResults: recentResults || 0,
           carryovers: totalCarryovers,
+          totalAnnouncements: totalAnnouncements || 0,
         });
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
@@ -191,6 +198,19 @@ export function AdminDashboardView() {
             <div className="text-2xl font-bold text-foreground">{stats?.carryovers}</div>
             <p className="text-xs text-muted-foreground">
               Across all students
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-accent/10">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-foreground">Announcements</CardTitle>
+            <Megaphone className="h-4 w-4 text-accent" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{stats?.totalAnnouncements}</div>
+            <p className="text-xs text-muted-foreground">
+              Active notices posted
             </p>
           </CardContent>
         </Card>

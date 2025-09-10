@@ -183,11 +183,8 @@ export function AdminAnnouncementsView() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Students</SelectItem>
-                    <SelectItem value="100">100 Level</SelectItem>
-                    <SelectItem value="200">200 Level</SelectItem>
-                    <SelectItem value="300">300 Level</SelectItem>
-                    <SelectItem value="400">400 Level</SelectItem>
-                    <SelectItem value="500">500 Level</SelectItem>
+                    <SelectItem value="ND1">ND1 Level</SelectItem>
+                    <SelectItem value="ND2">ND2 Level</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
