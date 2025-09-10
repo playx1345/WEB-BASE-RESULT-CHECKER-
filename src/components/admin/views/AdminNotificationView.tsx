@@ -105,8 +105,8 @@ export function AdminNotificationView() {
 
       const formattedNotifications = data?.map(notification => ({
         ...notification,
-        recipient_name: (notification as any).recipient?.raw_user_meta_data?.full_name || 'Unknown User',
-        recipient_email: (notification as any).recipient?.email || '',
+        recipient_name: ((notification as unknown) as { recipient?: { raw_user_meta_data?: { full_name?: string } } })?.recipient?.raw_user_meta_data?.full_name || 'Unknown User',
+        recipient_email: ((notification as unknown) as { recipient?: { email?: string } })?.recipient?.email || '',
       })) || [];
 
       setNotifications(formattedNotifications);

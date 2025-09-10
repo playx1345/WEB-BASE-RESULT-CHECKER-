@@ -2,7 +2,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { GraduationCap, AlertCircle, Megaphone, Info, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useNotifications, type Notification } from '@/hooks/useNotifications';
+import { useNotifications, type Notification, type GradeNotificationMetadata } from '@/hooks/useNotifications';
 
 interface NotificationItemProps {
   notification: Notification;
@@ -91,16 +91,16 @@ export function NotificationItem({ notification }: NotificationItemProps) {
             <div className="text-xs text-muted-foreground">
               {notification.notification_type === 'grade_posted' && (
                 <span className="inline-flex items-center gap-1">
-                  <span className="font-medium">{(notification.metadata as any)?.course_code}</span>
+                  <span className="font-medium">{(notification.metadata as GradeNotificationMetadata)?.course_code}</span>
                   <span>•</span>
-                  <span>{(notification.metadata as any)?.semester} semester</span>
+                  <span>{(notification.metadata as GradeNotificationMetadata)?.semester} semester</span>
                 </span>
               )}
               {notification.notification_type === 'grade_updated' && (
                 <span className="inline-flex items-center gap-1">
-                  <span className="font-medium">{(notification.metadata as any)?.course_code}</span>
+                  <span className="font-medium">{(notification.metadata as GradeNotificationMetadata)?.course_code}</span>
                   <span>•</span>
-                  <span>{(notification.metadata as any)?.old_grade} → {(notification.metadata as any)?.new_grade}</span>
+                  <span>{(notification.metadata as GradeNotificationMetadata)?.old_grade} → {(notification.metadata as GradeNotificationMetadata)?.new_grade}</span>
                 </span>
               )}
             </div>

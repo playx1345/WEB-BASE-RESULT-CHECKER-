@@ -5,6 +5,22 @@ import { Tables } from '@/integrations/supabase/types';
 
 export type Notification = Tables<'notifications'>;
 
+export interface GradeNotificationMetadata {
+  course_code?: string;
+  course_title?: string;
+  grade?: string;
+  old_grade?: string;
+  new_grade?: string;
+  semester?: string;
+  session?: string;
+  level?: string;
+}
+
+export interface SystemNotificationMetadata {
+  sent_by_admin?: boolean;
+  target_level?: string;
+}
+
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
