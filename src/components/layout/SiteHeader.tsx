@@ -15,10 +15,10 @@ export function SiteHeader() {
           </div>
           <div className="flex items-center space-x-2">
             <Button asChild variant="ghost" size="sm">
-              <a href="/auth">Login</a>
+              <a href="/auth">Student Login</a>
             </Button>
             <Button asChild size="sm">
-              <a href="/auth">Get Started</a>
+              <a href="/auth">Admin Login</a>
             </Button>
           </div>
         </div>
