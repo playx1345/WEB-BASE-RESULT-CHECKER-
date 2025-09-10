@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, School, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, School, ArrowLeft, Shield } from 'lucide-react';
 
 const Auth = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -27,14 +28,20 @@ const Auth = () => {
   const [showReset, setShowReset] = useState(false);
   
   const { signIn, signUp, resetPassword, user, loading } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && !loading) {
-      navigate('/');
+    if (user && !loading && !profileLoading && profile) {
+      // Redirect based on user role
+      if (profile.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, profileLoading, profile, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -47,9 +54,19 @@ const Auth = () => {
       const { error } = await signIn(formData.email, formData.password);
       
       if (error) {
+        // Provide specific error messages
+        let errorMessage = error.message;
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = "Invalid email or password. Please check your credentials and try again.";
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = "Please check your email and confirm your account before signing in.";
+        } else if (error.message.includes('Too many requests')) {
+          errorMessage = "Too many login attempts. Please wait a few minutes before trying again.";
+        }
+        
         toast({
           title: "Sign In Failed",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive",
         });
       } else {
@@ -61,7 +78,7 @@ const Auth = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description: "An unexpected error occurred during sign in. Please try again.",
         variant: "destructive",
       });
     }
@@ -79,22 +96,34 @@ const Auth = () => {
       return;
     }
 
-    if (!formData.matricNumber || !formData.level) {
-      toast({
-        title: "Missing Information",
-        description: "Please provide matric number and level for student registration.",
-        variant: "destructive",
-      });
-      return;
+    // Validate required fields based on role
+    if (formData.role === 'student') {
+      if (!formData.matricNumber || !formData.level) {
+        toast({
+          title: "Missing Information",
+          description: "Please provide matric number and level for student registration.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else if (formData.role === 'admin') {
+      if (!formData.fullName) {
+        toast({
+          title: "Missing Information",
+          description: "Please provide your full name for admin registration.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     try {
       const metadata = {
-        role: 'student',
+        role: formData.role,
         full_name: formData.fullName,
-        matric_number: formData.matricNumber,
+        matric_number: formData.role === 'student' ? formData.matricNumber : null,
         phone_number: formData.phoneNumber,
-        level: formData.level
+        level: formData.role === 'student' ? formData.level : null
       };
 
       const { error } = await signUp(formData.email, formData.password, metadata);
@@ -114,9 +143,10 @@ const Auth = () => {
           });
         }
       } else {
+        const roleText = formData.role === 'admin' ? 'admin' : 'student';
         toast({
           title: "Registration Successful",
-          description: "Please check your email to verify your account.",
+          description: `Your ${roleText} account has been created. Please check your email to verify your account.`,
         });
         setActiveTab('signin');
       }
@@ -281,6 +311,20 @@ const Auth = () => {
                         Forgot your password?
                       </Button>
                     </div>
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">Admin Access</span>
+                      </div>
+                    </div>
+
+                    <div className="text-center text-sm text-muted-foreground">
+                      <Shield className="h-4 w-4 inline mr-1" />
+                      Admin users can sign in with the same form above
+                    </div>
                   </form>
                 </CardContent>
               </Card>
@@ -296,6 +340,29 @@ const Auth = () => {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="account-type">Account Type</Label>
+                      <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select account type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="student">
+                            <div className="flex items-center gap-2">
+                              <School className="h-4 w-4" />
+                              Student Account
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="admin">
+                            <div className="flex items-center gap-2">
+                              <Shield className="h-4 w-4" />
+                              Admin Account
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="signup-email">Email</Label>
@@ -321,41 +388,46 @@ const Auth = () => {
                       />
                     </div>
 
-                     <div className="space-y-2">
-                       <Label htmlFor="matric-number">Matric Number</Label>
-                       <Input
-                         id="matric-number"
-                         type="text"
-                         value={formData.matricNumber}
-                         onChange={(e) => handleInputChange('matricNumber', e.target.value)}
-                         placeholder="Enter your matric number"
-                         required
-                       />
-                     </div>
+                    {formData.role === 'student' && (
+                      <>
+                        <div className="space-y-2">
+                          <Label htmlFor="matric-number">Matric Number</Label>
+                          <Input
+                            id="matric-number"
+                            type="text"
+                            value={formData.matricNumber}
+                            onChange={(e) => handleInputChange('matricNumber', e.target.value)}
+                            placeholder="Enter your matric number"
+                            required
+                          />
+                        </div>
 
-                     <div className="space-y-2">
-                       <Label htmlFor="level">Level</Label>
-                       <Select value={formData.level} onValueChange={(value) => handleInputChange('level', value)}>
-                         <SelectTrigger>
-                           <SelectValue placeholder="Select your level" />
-                         </SelectTrigger>
-                         <SelectContent>
-                           <SelectItem value="ND1">ND1</SelectItem>
-                           <SelectItem value="ND2">ND2</SelectItem>
-                         </SelectContent>
-                       </Select>
-                     </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="level">Level</Label>
+                          <Select value={formData.level} onValueChange={(value) => handleInputChange('level', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select your level" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ND1">ND1</SelectItem>
+                              <SelectItem value="ND2">ND2</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </>
+                    )}
 
-                     <div className="space-y-2">
-                       <Label htmlFor="phone-number">Phone Number</Label>
-                       <Input
-                         id="phone-number"
-                         type="tel"
-                         value={formData.phoneNumber}
-                         onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                         placeholder="Enter your phone number"
-                       />
-                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone-number">Phone Number {formData.role === 'admin' ? '(Optional)' : ''}</Label>
+                      <Input
+                        id="phone-number"
+                        type="tel"
+                        value={formData.phoneNumber}
+                        onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                        placeholder="Enter your phone number"
+                        required={formData.role === 'student'}
+                      />
+                    </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Password</Label>
