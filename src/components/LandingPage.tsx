@@ -1,10 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
-      {/* Header Section */}
-      <header className="container mx-auto px-4 py-8 text-center">
+      <SiteHeader />
+      
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 text-center">
         <div className="flex flex-col items-center space-y-6">
           {/* Logo */}
           <div className="flex items-center justify-center w-32 h-32 bg-white rounded-full shadow-lg">
@@ -28,7 +32,7 @@ const LandingPage = () => {
             </p>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* Action Buttons Section */}
       <section className="container mx-auto px-4 py-8">
@@ -44,7 +48,7 @@ const LandingPage = () => {
               href="/auth"
               className="bg-secondary text-secondary-foreground px-6 py-4 rounded-lg hover:bg-secondary/90 transition-colors font-medium text-center shadow-md hover:shadow-lg"
             >
-              Admin Login
+              Student Login
             </a>
             <a
               href="/auth"
@@ -102,17 +106,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="container mx-auto px-4 py-8 mt-12">
-        <div className="text-center border-t border-border pt-8">
-          <p className="text-muted-foreground">
-            © 2024 Plateau State Polytechnic Barkin Ladi. All rights reserved.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            School of Information and Communication Technology - Building Future Tech Leaders
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };
