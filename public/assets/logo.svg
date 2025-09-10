@@ -1,0 +1,11 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="55" fill="#1a365d" stroke="#2d3748" stroke-width="2"/>
+  <circle cx="60" cy="60" r="45" fill="#2d3748"/>
+  <path d="M40 45 L60 25 L80 45 L75 50 L60 35 L45 50 Z" fill="#ffffff"/>
+  <rect x="35" y="50" width="50" height="5" fill="#ffffff"/>
+  <rect x="35" y="60" width="50" height="3" fill="#ffffff"/>
+  <rect x="35" y="68" width="35" height="3" fill="#ffffff"/>
+  <rect x="35" y="76" width="40" height="3" fill="#ffffff"/>
+  <circle cx="75" cy="75" r="3" fill="#4a90e2"/>
+  <text x="60" y="95" text-anchor="middle" fill="#ffffff" font-size="8" font-family="Arial, sans-serif">PSPBL</text>
+</svg>
