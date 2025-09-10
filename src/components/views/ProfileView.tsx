@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Phone, IdCard, GraduationCap } from 'lucide-react';
+import { useActivityLogger } from '@/lib/auditLogger';
 
 interface Profile {
   id: string;
@@ -23,6 +24,7 @@ interface Profile {
 export function ProfileView() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { logActivity } = useActivityLogger();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -36,6 +38,15 @@ export function ProfileView() {
       if (!user) return;
 
       try {
+        // Log profile view activity
+        await logActivity('view_student_profile', {
+          tableName: 'profiles',
+          metadata: {
+            action: 'access_profile_page',
+            userId: user.id
+          }
+        });
+
         const { data } = await supabase
           .from('profiles')
           .select('*')
@@ -57,7 +68,7 @@ export function ProfileView() {
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, logActivity]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +76,8 @@ export function ProfileView() {
 
     setUpdating(true);
     try {
+      const oldData = { ...profile };
+      
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -74,6 +87,19 @@ export function ProfileView() {
         .eq('user_id', user.id);
 
       if (error) throw error;
+
+      // Log profile update activity
+      await logActivity('update_profile', {
+        tableName: 'profiles',
+        recordId: profile.id,
+        metadata: {
+          action: 'profile_self_update',
+          changes: {
+            full_name: { old: oldData.full_name, new: formData.full_name },
+            phone_number: { old: oldData.phone_number, new: formData.phone_number }
+          }
+        }
+      });
 
       setProfile({ ...profile, ...formData });
       toast({
