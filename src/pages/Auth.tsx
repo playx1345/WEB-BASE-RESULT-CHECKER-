@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, School, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, School, ArrowLeft, Shield } from 'lucide-react';
 
 const Auth = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -25,8 +26,11 @@ const Auth = () => {
   });
   const [resetEmail, setResetEmail] = useState('');
   const [showReset, setShowReset] = useState(false);
+  const [show2FA, setShow2FA] = useState(false);
+  const [otpValue, setOtpValue] = useState('');
+  const [isVerifying2FA, setIsVerifying2FA] = useState(false);
   
-  const { signIn, signUp, resetPassword, user, loading } = useAuth();
+  const { signIn, signUp, resetPassword, user, loading, sendOTP, verifyOTP, check2FAStatus, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -53,10 +57,38 @@ const Auth = () => {
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-        });
+        // Check if user has 2FA enabled
+        const { enabled, error: statusError } = await check2FAStatus();
+        
+        if (statusError) {
+          toast({
+            title: "Warning",
+            description: "Could not verify 2FA status, but login succeeded",
+          });
+        } else if (enabled) {
+          // 2FA is enabled, need to verify
+          setShow2FA(true);
+          // Send OTP for verification
+          const { error: otpError } = await sendOTP(formData.email);
+          if (otpError) {
+            toast({
+              title: "Error",
+              description: "Failed to send verification code",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Verification Required",
+              description: "Please check your email for the verification code",
+            });
+          }
+        } else {
+          // No 2FA, login complete
+          toast({
+            title: "Welcome back!",
+            description: "You have successfully signed in.",
+          });
+        }
       }
     } catch (error) {
       toast({
@@ -158,12 +190,155 @@ const Auth = () => {
     }
   };
 
+  const handleVerify2FA = async () => {
+    if (otpValue.length !== 6) {
+      toast({
+        title: "Invalid Code",
+        description: "Please enter a 6-digit verification code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsVerifying2FA(true);
+    
+    try {
+      const { error } = await verifyOTP(formData.email, otpValue);
+      
+      if (error) {
+        toast({
+          title: "Invalid Code",
+          description: "The verification code is incorrect or expired",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in with 2FA.",
+        });
+        setShow2FA(false);
+        setOtpValue('');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred during verification",
+        variant: "destructive",
+      });
+    } finally {
+      setIsVerifying2FA(false);
+    }
+  };
+
+  const handleCancel2FA = () => {
+    setShow2FA(false);
+    setOtpValue('');
+    toast({
+      title: "Sign In Cancelled",
+      description: "2FA verification was cancelled. Please sign in again.",
+    });
+  };
+
+  const handleResendOTP = async () => {
+    try {
+      const { error } = await sendOTP(formData.email);
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to resend verification code",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Code Sent",
+          description: "A new verification code has been sent to your email",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
         <div className="text-center">
           <School className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
           <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (show2FA) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <Shield className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h1 className="text-3xl font-bold text-primary">Two-Factor Authentication</h1>
+            <p className="text-muted-foreground mt-2">Enter the verification code sent to your email</p>
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Verify Your Identity</CardTitle>
+              <CardDescription>
+                We've sent a 6-digit code to {formData.email}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="otp">Verification Code</Label>
+                <InputOTP
+                  value={otpValue}
+                  onChange={setOtpValue}
+                  maxLength={6}
+                  className="justify-center"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              
+              <Button 
+                onClick={handleVerify2FA} 
+                disabled={isVerifying2FA || otpValue.length !== 6}
+                className="w-full"
+              >
+                {isVerifying2FA ? "Verifying..." : "Verify Code"}
+              </Button>
+              
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={handleResendOTP}
+                  disabled={isVerifying2FA}
+                  className="flex-1"
+                >
+                  Resend Code
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  onClick={handleCancel2FA}
+                  disabled={isVerifying2FA}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );

@@ -10,6 +10,10 @@ interface AuthContextType {
   signUp: (email: string, password: string, metadata?: any) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any }>;
+  sendOTP: (email: string) => Promise<{ error: any }>;
+  verifyOTP: (email: string, token: string) => Promise<{ error: any }>;
+  enable2FA: (enabled: boolean) => Promise<{ error: any }>;
+  check2FAStatus: () => Promise<{ enabled: boolean; error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -82,6 +86,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return { error };
   };
 
+  const sendOTP = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false,
+      }
+    });
+    return { error };
+  };
+
+  const verifyOTP = async (email: string, token: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'email'
+    });
+    return { error };
+  };
+
+  const enable2FA = async (enabled: boolean) => {
+    if (!user) return { error: new Error('User not authenticated') };
+    
+    const { error } = await supabase
+      .from('profiles')
+      .update({ two_factor_enabled: enabled })
+      .eq('user_id', user.id);
+    
+    return { error };
+  };
+
+  const check2FAStatus = async () => {
+    if (!user) return { enabled: false, error: new Error('User not authenticated') };
+    
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('two_factor_enabled')
+      .eq('user_id', user.id)
+      .single();
+    
+    return { 
+      enabled: data?.two_factor_enabled || false, 
+      error 
+    };
+  };
+
   const value = {
     user,
     session,
@@ -90,6 +139,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signUp,
     signOut,
     resetPassword,
+    sendOTP,
+    verifyOTP,
+    enable2FA,
+    check2FAStatus,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
