@@ -32,13 +32,9 @@ const LandingPage = () => {
       <section className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="/auth" className="bg-primary text-primary-foreground px-6 py-4 rounded-lg hover:bg-primary/90 transition-colors font-medium text-center shadow-md hover:shadow-lg">
-              Student Login
-            </a>
             
-            <a href="/auth" className="bg-accent text-accent-foreground px-6 py-4 rounded-lg hover:bg-accent/90 transition-colors font-medium text-center shadow-md hover:shadow-lg">
-              View My Results
-            </a>
+            
+            
           </div>
         </div>
       </section>
