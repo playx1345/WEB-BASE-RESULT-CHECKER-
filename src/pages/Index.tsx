@@ -2,7 +2,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Dashboard } from '@/components/Dashboard';
-import LandingPage from '@/components/LandingPage';
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -19,7 +18,27 @@ const Index = () => {
   }
 
   if (!user) {
-    return <LandingPage />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <h1 className="text-4xl font-bold mb-4 text-primary">Student Portal</h1>
+          <p className="text-xl text-muted-foreground mb-8">
+            Access your academic records, results, and announcements
+          </p>
+          <div className="space-y-4">
+            <a 
+              href="/auth" 
+              className="inline-block w-full bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            >
+              Sign In
+            </a>
+            <p className="text-sm text-muted-foreground">
+              New student? Create an account to get started
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
