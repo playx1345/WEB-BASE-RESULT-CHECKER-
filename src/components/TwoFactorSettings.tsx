@@ -19,7 +19,7 @@ const TwoFactorSettings = () => {
 
   useEffect(() => {
     checkCurrentStatus();
-  }, [user]);
+  }, [user, check2FAStatus]);
 
   const checkCurrentStatus = async () => {
     if (!user) return;
