@@ -6,7 +6,7 @@ import { School } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'student' | 'admin';
+  requiredRole?: 'student' | 'admin' | 'teacher' | 'parent';
 }
 
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {

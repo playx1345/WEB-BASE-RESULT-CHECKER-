@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AppSidebar } from './AppSidebar';
 import { AdminDashboard } from './admin/AdminDashboard';
+import { TeacherDashboard } from './teacher/TeacherDashboard';
 import { DashboardView } from './views/DashboardView';
 import { ResultsView } from './views/ResultsView';
 import { AnnouncementsView } from './views/AnnouncementsView';
@@ -22,9 +23,13 @@ export function Dashboard() {
     );
   }
 
-  // Show admin dashboard if user is admin
+  // Show appropriate dashboard based on user role
   if (profile?.role === 'admin') {
     return <AdminDashboard />;
+  }
+
+  if (profile?.role === 'teacher') {
+    return <TeacherDashboard />;
   }
 
   const renderView = () => {
