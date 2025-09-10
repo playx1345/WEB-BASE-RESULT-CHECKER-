@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logUserActivity } from '@/lib/auditLogger';
 
 interface AuthContextType {
   user: User | null;
@@ -30,10 +31,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Log authentication events
+        if (event === 'SIGNED_IN' && session?.user) {
+          await logUserActivity('user_login', {
+            metadata: {
+              email: session.user.email,
+              loginMethod: 'password',
+              userAgent: navigator.userAgent,
+            }
+          });
+        } else if (event === 'SIGNED_OUT') {
+          await logUserActivity('user_logout', {
+            metadata: {
+              logoutReason: 'user_initiated'
+            }
+          });
+        }
       }
     );
 
@@ -66,6 +84,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         data: metadata
       }
     });
+    
+    if (!error) {
+      await logUserActivity('user_signup', {
+        metadata: {
+          email,
+          signupMethod: 'password',
+          userRole: metadata?.role || 'student'
+        }
+      });
+    }
+    
     return { error };
   };
 
@@ -79,6 +108,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
+    
+    if (!error) {
+      await logUserActivity('password_reset_requested', {
+        metadata: {
+          email,
+          resetMethod: 'email'
+        }
+      });
+    }
+    
     return { error };
   };
 

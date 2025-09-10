@@ -9,6 +9,7 @@ import { AlertTriangle, FileText, Search, Download, Filter } from 'lucide-react'
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { useActivityLogger } from '@/lib/auditLogger';
 
 interface Result {
   id: string;
@@ -24,6 +25,7 @@ interface Result {
 
 export function ResultsView() {
   const { user } = useAuth();
+  const { logActivity } = useActivityLogger();
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [feeStatus, setFeeStatus] = useState<string>('');
@@ -36,6 +38,15 @@ export function ResultsView() {
       if (!user) return;
 
       try {
+        // Log that user is viewing results
+        await logActivity('view_results', {
+          tableName: 'results',
+          metadata: {
+            action: 'access_results_page',
+            userId: user.id
+          }
+        });
+
         // First check fee status
         const { data: profileData } = await supabase
           .from('profiles')
