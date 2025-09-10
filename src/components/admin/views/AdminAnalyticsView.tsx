@@ -11,6 +11,7 @@ import { PerformanceTrendChart } from '@/components/charts/PerformanceTrendChart
 import { SubjectAnalysisChart } from '@/components/charts/SubjectAnalysisChart';
 import { TopPerformersList } from '@/components/charts/TopPerformersList';
 import { exportAnalyticsToPDF, exportAnalyticsToExcel } from '@/utils/exportUtils';
+import { mockAnalyticsData } from '@/utils/mockData';
 import { toast } from 'sonner';
 
 interface AnalyticsData {
@@ -50,6 +51,7 @@ interface AnalyticsData {
 export function AdminAnalyticsView() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [useMockData, setUseMockData] = useState(false);
 
   useEffect(() => {
     fetchAnalytics();
@@ -77,7 +79,14 @@ export function AdminAnalyticsView() {
         .from('results')
         .select('grade, point, course_code, course_title, credit_unit, semester, session, level');
 
-      if (!studentsWithProfiles || !results) return;
+      // If no data is available, use mock data for demonstration
+      if (!studentsWithProfiles || studentsWithProfiles.length === 0 || !results || results.length === 0) {
+        console.log('No real data found, using mock data for demonstration');
+        setAnalytics(mockAnalyticsData);
+        setUseMockData(true);
+        setLoading(false);
+        return;
+      }
 
       // Calculate level distribution
       const levelDistribution = studentsWithProfiles.reduce((acc, student) => {
@@ -276,6 +285,11 @@ export function AdminAnalyticsView() {
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Analytics & Reports</h1>
           <p className="text-muted-foreground">
             Comprehensive insights into student performance and system metrics.
+            {useMockData && (
+              <span className="block text-sm text-orange-600 mt-1">
+                ⚠️ Demo mode: Showing sample data for demonstration purposes
+              </span>
+            )}
           </p>
         </div>
         <div className="flex gap-2">
