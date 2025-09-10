@@ -1,10 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-
 const LandingPage = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
+  return <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
       <SiteHeader />
       
       {/* Hero Section */}
@@ -12,11 +10,7 @@ const LandingPage = () => {
         <div className="flex flex-col items-center space-y-6">
           {/* Logo */}
           <div className="flex items-center justify-center w-32 h-32 bg-white rounded-full shadow-lg">
-            <img 
-              src="/assets/logo.svg" 
-              alt="Plateau State Polytechnic Barkin Ladi Logo" 
-              className="w-24 h-24"
-            />
+            <img src="/assets/logo.svg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-24 h-24" />
           </div>
           
           {/* School Information */}
@@ -38,22 +32,11 @@ const LandingPage = () => {
       <section className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a
-              href="/auth"
-              className="bg-primary text-primary-foreground px-6 py-4 rounded-lg hover:bg-primary/90 transition-colors font-medium text-center shadow-md hover:shadow-lg"
-            >
+            <a href="/auth" className="bg-primary text-primary-foreground px-6 py-4 rounded-lg hover:bg-primary/90 transition-colors font-medium text-center shadow-md hover:shadow-lg">
               Student Login
             </a>
-            <a
-              href="/auth"
-              className="bg-secondary text-secondary-foreground px-6 py-4 rounded-lg hover:bg-secondary/90 transition-colors font-medium text-center shadow-md hover:shadow-lg"
-            >
-              Student Login
-            </a>
-            <a
-              href="/auth"
-              className="bg-accent text-accent-foreground px-6 py-4 rounded-lg hover:bg-accent/90 transition-colors font-medium text-center shadow-md hover:shadow-lg"
-            >
+            
+            <a href="/auth" className="bg-accent text-accent-foreground px-6 py-4 rounded-lg hover:bg-accent/90 transition-colors font-medium text-center shadow-md hover:shadow-lg">
               View My Results
             </a>
           </div>
@@ -107,8 +90,6 @@ const LandingPage = () => {
       </section>
 
       <SiteFooter />
-    </div>
-  );
+    </div>;
 };
-
 export default LandingPage;
