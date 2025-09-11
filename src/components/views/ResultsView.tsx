@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useActivityLogger } from '@/lib/auditLogger';
+import { generateResultsPDF } from '@/lib/pdfUtils';
+import { toast } from 'sonner';
 
 interface Result {
   id: string;
@@ -32,6 +34,9 @@ export function ResultsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sessionFilter, setSessionFilter] = useState('all');
   const [semesterFilter, setSemesterFilter] = useState('all');
+  const [profile, setProfile] = useState<any>(null);
+  const [studentData, setStudentData] = useState<any>(null);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -50,21 +55,24 @@ export function ResultsView() {
         // First check fee status
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('id')
+          .select('*')
           .eq('user_id', user.id)
           .single();
 
         if (profileData) {
-          const { data: studentData } = await supabase
+          setProfile(profileData);
+          
+          const { data: studentDataResult } = await supabase
             .from('students')
-            .select('fee_status')
+            .select('*')
             .eq('profile_id', profileData.id)
             .single();
 
-          if (studentData) {
-            setFeeStatus(studentData.fee_status);
+          if (studentDataResult) {
+            setStudentData(studentDataResult);
+            setFeeStatus(studentDataResult.fee_status);
 
-            if (studentData.fee_status === 'paid') {
+            if (studentDataResult.fee_status === 'paid') {
               // Fetch results only if fees are paid
               const { data: resultsData } = await supabase
                 .from('results')
@@ -102,6 +110,44 @@ export function ResultsView() {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!profile || !results.length) {
+      toast.error('No results available to download');
+      return;
+    }
+
+    setDownloading(true);
+    try {
+      await generateResultsPDF({
+        results,
+        profile: {
+          full_name: profile.full_name,
+          matric_number: studentData?.matric_number,
+          level: profile.level
+        },
+        cgpa: studentData?.cgp || 0,
+        totalGP: studentData?.total_gp || 0
+      });
+      
+      toast.success('PDF downloaded successfully!');
+      
+      // Log the download activity
+      await logActivity('download_results', {
+        tableName: 'results',
+        metadata: {
+          action: 'download_pdf',
+          userId: user?.id,
+          resultCount: results.length
+        }
+      });
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast.error('Failed to download PDF. Please try again.');
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -241,6 +287,16 @@ export function ResultsView() {
         <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
+        </Button>
+        
+        <Button 
+          onClick={handleDownloadPDF} 
+          disabled={downloading || results.length === 0}
+          variant="default" 
+          className="whitespace-nowrap"
+        >
+          <FileText className="h-4 w-4 mr-2" />
+          {downloading ? 'Generating...' : 'Download PDF'}
         </Button>
       </div>
 
