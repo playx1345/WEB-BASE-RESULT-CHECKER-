@@ -12,6 +12,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { MessageSquare, Send, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
+import { ApiErrorHandler } from '@/lib/errorHandler';
+import { messageSchema, validateWithSchema } from '@/lib/validation';
 
 interface Message {
   id: string;
@@ -29,6 +31,7 @@ export function MessagingView() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [newMessage, setNewMessage] = useState({
     subject: '',
     content: '',
@@ -42,52 +45,63 @@ export function MessagingView() {
   const fetchMessages = async () => {
     if (!user) return;
 
-    try {
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('sender_id', user.id)
-        .order('created_at', { ascending: false });
+    const result = await ApiErrorHandler.withErrorHandling(
+      async () => {
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('sender_id', user.id)
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setMessages(data || []);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      toast.error('Failed to load messages');
-    } finally {
-      setLoading(false);
+        if (error) throw error;
+        return data || [];
+      },
+      'fetching messages'
+    );
+
+    if (result) {
+      setMessages(result);
     }
+    setLoading(false);
   };
 
   const sendMessage = async () => {
-    if (!user || !newMessage.subject.trim() || !newMessage.content.trim()) {
-      toast.error('Please fill in all fields');
+    if (!user) return;
+
+    // Validate form data
+    const validation = validateWithSchema(messageSchema, newMessage);
+    if (!validation.success) {
+      setErrors(validation.errors);
       return;
     }
 
+    setErrors({});
     setSending(true);
-    try {
-      const { error } = await supabase
-        .from('messages')
-        .insert({
-          sender_id: user.id,
-          subject: newMessage.subject,
-          content: newMessage.content,
-          recipient_type: newMessage.recipient_type,
-          status: 'sent'
-        });
 
-      if (error) throw error;
+    const result = await ApiErrorHandler.withErrorHandling(
+      async () => {
+        const { error } = await supabase
+          .from('messages')
+          .insert({
+            sender_id: user.id,
+            subject: newMessage.subject,
+            content: newMessage.content,
+            recipient_type: newMessage.recipient_type,
+            status: 'sent'
+          });
 
-      toast.success('Message sent successfully!');
+        if (error) throw error;
+        return true;
+      },
+      'sending message',
+      'Message sent successfully!'
+    );
+
+    if (result) {
       setNewMessage({ subject: '', content: '', recipient_type: 'admin' });
       fetchMessages(); // Refresh messages
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast.error('Failed to send message');
-    } finally {
-      setSending(false);
     }
+    setSending(false);
   };
 
   const getStatusBadge = (status: string) => {
@@ -185,7 +199,11 @@ export function MessagingView() {
                 placeholder="Enter message subject"
                 value={newMessage.subject}
                 onChange={(e) => setNewMessage(prev => ({ ...prev, subject: e.target.value }))}
+                className={errors.subject ? 'border-destructive' : ''}
               />
+              {errors.subject && (
+                <p className="text-sm text-destructive">{errors.subject}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -193,10 +211,13 @@ export function MessagingView() {
               <Textarea
                 id="content"
                 placeholder="Type your message here..."
-                className="min-h-[120px]"
+                className={`min-h-[120px] ${errors.content ? 'border-destructive' : ''}`}
                 value={newMessage.content}
                 onChange={(e) => setNewMessage(prev => ({ ...prev, content: e.target.value }))}
               />
+              {errors.content && (
+                <p className="text-sm text-destructive">{errors.content}</p>
+              )}
             </div>
 
             <Button 
