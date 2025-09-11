@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { ChevronRight, Users, BookOpen, Award } from 'lucide-react';
+import { ChevronRight, Users, BookOpen, Award, Shield, Heart } from 'lucide-react';
 const LandingPage = () => {
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <SiteHeader />
@@ -45,6 +45,27 @@ const LandingPage = () => {
             <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
               <a href="/auth">Student Portal</a>
             </Button>
+          </div>
+
+          {/* Login Options for Different User Types */}
+          <div className="mt-8 pt-8 border-t border-blue-200">
+            <p className="text-lg font-semibold text-secondary-foreground mb-4">
+              Quick Access for Staff & Parents
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button asChild variant="secondary" size="lg" className="px-6 py-3 font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 transition-all duration-300">
+                <a href="/admin-login" className="flex items-center">
+                  <Shield className="mr-2 h-5 w-5" />
+                  Admin Login
+                </a>
+              </Button>
+              <Button asChild variant="secondary" size="lg" className="px-6 py-3 font-semibold bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 transition-all duration-300">
+                <a href="/parent-login" className="flex items-center">
+                  <Heart className="mr-2 h-5 w-5" />
+                  Parent Login
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
