@@ -19,7 +19,7 @@ export interface AppError {
 }
 
 // Error classification helpers
-export function classifyError(error: any): AppError {
+export function classifyError(error: Error | { code?: string; message: string; details?: string; hint?: string }): AppError {
   // Handle Supabase/PostgreSQL errors
   if (error?.code) {
     if (error.code === 'PGRST116' || error.code === '42501') {
@@ -73,7 +73,7 @@ export function classifyError(error: any): AppError {
 }
 
 // Toast notification helpers
-export function showErrorToast(error: AppError | any, customMessage?: string) {
+export function showErrorToast(error: AppError | Error | { message: string }, customMessage?: string) {
   const appError = error.type ? error : classifyError(error);
   
   toast.error(customMessage || appError.message, {
@@ -158,7 +158,7 @@ export async function withErrorHandling<T>(
 
 // Database operation helpers
 export async function handleDatabaseOperation<T>(
-  operation: () => Promise<{ data: T; error: any }>,
+  operation: () => Promise<{ data: T; error: Error | null }>,
   options: {
     errorMessage?: string;
     successMessage?: string;
@@ -190,7 +190,7 @@ export async function handleDatabaseOperation<T>(
 }
 
 // Form submission error handler
-export function handleFormError(error: any, setFieldError?: (field: string, message: string) => void) {
+export function handleFormError(error: Error | { message: string }, setFieldError?: (field: string, message: string) => void) {
   const appError = classifyError(error);
   
   // If it's a validation error and we have field error setter
@@ -250,7 +250,7 @@ export class LoadingStateManager {
 
 // React hook for standardized error handling
 export function useErrorHandler() {
-  const handleError = (error: any, customMessage?: string) => {
+  const handleError = (error: Error | { message: string }, customMessage?: string) => {
     showErrorToast(error, customMessage);
   };
 
@@ -259,7 +259,7 @@ export function useErrorHandler() {
   };
 
   const handleDatabaseError = async <T>(
-    operation: () => Promise<{ data: T; error: any }>,
+    operation: () => Promise<{ data: T; error: Error | null }>,
     options?: {
       errorMessage?: string;
       successMessage?: string;

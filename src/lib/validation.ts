@@ -16,7 +16,7 @@ export const matricNumberSchema = z.string()
 
 export const phoneNumberSchema = z.string()
   .optional()
-  .refine((val) => !val || /^\+?[\d\s\-\(\)]+$/.test(val), {
+  .refine((val) => !val || /^\+?[\d\s\-()]+$/.test(val), {
     message: 'Invalid phone number format'
   });
 
@@ -135,7 +135,7 @@ export function validateCsvData<T>(
             row: index + 2, // +2 because CSV header is row 1, data starts at row 2
             field: zodError.path.join('.'),
             message: zodError.message,
-            value: zodError.path.reduce((obj: any, key) => obj?.[key], row)
+            value: zodError.path.reduce((obj: Record<string, unknown>, key) => obj?.[key], row as Record<string, unknown>)
           });
         });
       }

@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export interface ColumnDef<T> {
   key: string;
   header: string;
-  accessor?: keyof T | ((item: T) => any);
-  render?: (value: any, item: T, index: number) => ReactNode;
+  accessor?: keyof T | ((item: T) => unknown);
+  render?: (value: unknown, item: T, index: number) => ReactNode;
   sortable?: boolean;
   className?: string;
 }
@@ -33,7 +33,7 @@ interface DataTableProps<T> {
   className?: string;
 }
 
-export function DataTable<T extends Record<string, any>>({
+export function DataTable<T extends Record<string, unknown>>({
   data,
   columns,
   loading = false,

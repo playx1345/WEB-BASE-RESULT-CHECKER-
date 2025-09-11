@@ -1,17 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Megaphone, Edit, Trash2, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useAnnouncementsData } from '@/hooks/useDataFetching';
+import { useErrorHandler } from '@/lib/errorHandling';
+import { announcementSchema, validateSafely } from '@/lib/validation';
+import { DataTable, ColumnDef } from '@/components/ui/DataTable';
+import { DataTableErrorBoundary } from '@/components/ErrorBoundary';
 
 interface Announcement {
   id: string;
@@ -23,122 +26,125 @@ interface Announcement {
 }
 
 export function AdminAnnouncementsView() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: announcements, loading, refetch } = useAnnouncementsData();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     target_level: 'all'
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const { user } = useAuth();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    fetchAnnouncements();
-  }, []);
-
-  const fetchAnnouncements = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('announcements')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch announcements",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setAnnouncements(data || []);
-    } catch (error) {
-      console.error('Error fetching announcements:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { handleDatabaseError, showError } = useErrorHandler();
 
   const createAnnouncement = async () => {
-    if (!formData.title || !formData.content || !user) return;
+    // Clear previous errors
+    setFormErrors({});
 
-    try {
-      const { error } = await supabase
-        .from('announcements')
-        .insert({
-          title: formData.title,
-          content: formData.content,
-          target_level: formData.target_level === 'all' ? 'all' : formData.target_level,
-          created_by: user.id
-        });
+    // Validate form data
+    const validation = validateSafely(announcementSchema, formData);
+    if (!validation.success) {
+      setFormErrors(validation.errors);
+      return;
+    }
 
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to create announcement",
-          variant: "destructive",
-        });
-        return;
+    if (!user) {
+      showError(new Error('User not authenticated'));
+      return;
+    }
+
+    const result = await handleDatabaseError(
+      () => supabase.from('announcements').insert({
+        title: formData.title,
+        content: formData.content,
+        target_level: formData.target_level === 'all' ? 'all' : formData.target_level,
+        created_by: user.id
+      }),
+      {
+        errorMessage: 'Failed to create announcement',
+        successMessage: 'Announcement created successfully',
+        showSuccess: true
       }
+    );
 
-      toast({
-        title: "Success",
-        description: "Announcement created successfully",
-      });
-
+    if (result) {
       setFormData({ title: '', content: '', target_level: 'all' });
       setIsDialogOpen(false);
-      fetchAnnouncements();
-    } catch (error) {
-      console.error('Error creating announcement:', error);
+      refetch();
     }
   };
 
   const deleteAnnouncement = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('announcements')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to delete announcement",
-          variant: "destructive",
-        });
-        return;
+    const result = await handleDatabaseError(
+      () => supabase.from('announcements').delete().eq('id', id),
+      {
+        errorMessage: 'Failed to delete announcement',
+        successMessage: 'Announcement deleted successfully',
+        showSuccess: true
       }
+    );
 
-      toast({
-        title: "Success",
-        description: "Announcement deleted successfully",
-      });
-
-      fetchAnnouncements();
-    } catch (error) {
-      console.error('Error deleting announcement:', error);
+    if (result) {
+      refetch();
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
+  // Define table columns
+  const columns: ColumnDef<Announcement>[] = [
+    {
+      key: 'title',
+      header: 'Title',
+      className: 'font-medium max-w-xs',
+      render: (value) => (
+        <div className="truncate" title={value}>
+          {value}
         </div>
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <Skeleton key={i} className="h-32 w-full" />
-          ))}
+      )
+    },
+    {
+      key: 'target_level',
+      header: 'Target',
+      render: (value) => (
+        <Badge variant="outline">
+          {value === 'all' ? 'All Students' : `${value} Level`}
+        </Badge>
+      )
+    },
+    {
+      key: 'created_at',
+      header: 'Date',
+      render: (value) => (
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          <Calendar className="h-3 w-3" />
+          {new Date(value).toLocaleDateString()}
         </div>
-      </div>
-    );
-  }
+      )
+    },
+    {
+      key: 'content',
+      header: 'Preview',
+      className: 'max-w-sm',
+      render: (value) => (
+        <div className="truncate text-muted-foreground" title={value}>
+          {value}
+        </div>
+      )
+    }
+  ];
+
+  const emptyState = (
+    <div className="text-center py-8">
+      <Megaphone className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+      <h3 className="text-lg font-medium text-foreground mb-2">No announcements yet</h3>
+      <p className="text-muted-foreground text-center mb-4">
+        Create your first announcement to notify students about important updates.
+      </p>
+      <Button onClick={() => setIsDialogOpen(true)}>
+        <Plus className="h-4 w-4 mr-2" />
+        Create Announcement
+      </Button>
+    </div>
+  );
 
   return (
     <div className="p-6 space-y-6">
@@ -172,24 +178,33 @@ export function AdminAnnouncementsView() {
                   placeholder="Enter announcement title..."
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className={formErrors.title ? 'border-destructive' : ''}
                 />
+                {formErrors.title && (
+                  <p className="text-sm text-destructive">{formErrors.title}</p>
+                )}
               </div>
               
               <div className="grid gap-2">
                 <Label htmlFor="target">Target Audience</Label>
-                <Select value={formData.target_level} onValueChange={(value) => setFormData({ ...formData, target_level: value })}>
-                  <SelectTrigger>
+                <Select 
+                  value={formData.target_level} 
+                  onValueChange={(value) => setFormData({ ...formData, target_level: value })}
+                >
+                  <SelectTrigger className={formErrors.target_level ? 'border-destructive' : ''}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Students</SelectItem>
-                    <SelectItem value="100">100 Level</SelectItem>
-                    <SelectItem value="200">200 Level</SelectItem>
-                    <SelectItem value="300">300 Level</SelectItem>
-                    <SelectItem value="400">400 Level</SelectItem>
-                    <SelectItem value="500">500 Level</SelectItem>
+                    <SelectItem value="ND1">ND1 Level</SelectItem>
+                    <SelectItem value="ND2">ND2 Level</SelectItem>
+                    <SelectItem value="HND1">HND1 Level</SelectItem>
+                    <SelectItem value="HND2">HND2 Level</SelectItem>
                   </SelectContent>
                 </Select>
+                {formErrors.target_level && (
+                  <p className="text-sm text-destructive">{formErrors.target_level}</p>
+                )}
               </div>
               
               <div className="grid gap-2">
@@ -197,10 +212,13 @@ export function AdminAnnouncementsView() {
                 <Textarea
                   id="content"
                   placeholder="Enter announcement content..."
-                  className="min-h-32"
+                  className={`min-h-32 ${formErrors.content ? 'border-destructive' : ''}`}
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 />
+                {formErrors.content && (
+                  <p className="text-sm text-destructive">{formErrors.content}</p>
+                )}
               </div>
             </div>
             
@@ -216,60 +234,29 @@ export function AdminAnnouncementsView() {
         </Dialog>
       </div>
 
-      <div className="grid gap-6">
-        {announcements.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <Megaphone className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">No announcements yet</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                Create your first announcement to notify students about important updates.
-              </p>
-              <Button onClick={() => setIsDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Announcement
+      <DataTableErrorBoundary>
+        <DataTable
+          data={announcements}
+          columns={columns}
+          loading={loading}
+          emptyState={emptyState}
+          actions={(announcement) => (
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm">
+                <Edit className="h-3 w-3" />
               </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          announcements.map((announcement) => (
-            <Card key={announcement.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <CardTitle className="text-foreground">{announcement.title}</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">
-                        {announcement.target_level === 'all' ? 'All Students' : `${announcement.target_level} Level`}
-                      </Badge>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(announcement.created_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Edit className="h-3 w-3" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => deleteAnnouncement(announcement.id)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground whitespace-pre-wrap">{announcement.content}</p>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => deleteAnnouncement(announcement.id)}
+                className="text-destructive hover:text-destructive"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
+        />
+      </DataTableErrorBoundary>
     </div>
   );
 }

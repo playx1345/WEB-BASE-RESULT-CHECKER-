@@ -6,7 +6,7 @@ interface UseDataFetchingOptions<T> {
   initialData?: T;
   errorMessage?: string;
   fetchOnMount?: boolean;
-  dependencies?: any[];
+  dependencies?: unknown[];
 }
 
 interface UseDataFetchingReturn<T> {
@@ -19,7 +19,7 @@ interface UseDataFetchingReturn<T> {
 
 // Generic hook for data fetching with error handling
 export function useDataFetching<T>(
-  fetchFunction: () => Promise<{ data: T; error: any }>,
+  fetchFunction: () => Promise<{ data: T; error: Error | null }>,
   options: UseDataFetchingOptions<T> = {}
 ): UseDataFetchingReturn<T> {
   const {
@@ -124,10 +124,10 @@ export function useAnnouncementsData() {
 interface UseFilteredDataOptions<T> {
   searchFields: (keyof T | string)[];
   searchTerm: string;
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
 }
 
-export function useFilteredData<T extends Record<string, any>>(
+export function useFilteredData<T extends Record<string, unknown>>(
   data: T[],
   options: UseFilteredDataOptions<T>
 ): T[] {
@@ -154,8 +154,13 @@ export function useFilteredData<T extends Record<string, any>>(
 }
 
 // Helper function to get nested object values
-function getNestedValue(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
+function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  return path.split('.').reduce((current, key) => {
+    if (current && typeof current === 'object' && key in current) {
+      return (current as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, obj);
 }
 
 // Hook for table pagination
