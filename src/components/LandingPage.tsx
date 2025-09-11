@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { ChevronRight, Users, BookOpen, Award } from 'lucide-react';
+import { ChevronRight, Users, BookOpen, Award, Shield } from 'lucide-react';
 const LandingPage = () => {
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <SiteHeader />
@@ -44,6 +44,12 @@ const LandingPage = () => {
             </Button>
             <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
               <a href="/auth">Student Portal</a>
+            </Button>
+            <Button asChild variant="secondary" size="lg" className="px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <a href="/admin" className="flex items-center">
+                <Shield className="mr-2 h-5 w-5" />
+                Admin
+              </a>
             </Button>
           </div>
         </div>
