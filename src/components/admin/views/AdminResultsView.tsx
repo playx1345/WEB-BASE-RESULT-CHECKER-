@@ -6,11 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Plus, Search, Upload, FileText, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
+import { Plus, Search, Upload, FileText, Download } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { UploadResultsModal } from '@/components/admin/modals/UploadResultsModal';
 
 interface Result {
   id: string;
@@ -36,10 +34,7 @@ export function AdminResultsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sessionFilter, setSessionFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
-  const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const { toast } = useToast();
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   useEffect(() => {
     fetchResults();
@@ -110,189 +105,6 @@ export function AdminResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
-  const downloadTemplate = () => {
-    const csv = [
-      ['Matric Number', 'Course Code', 'Course Title', 'Credit Units', 'Grade', 'Grade Points', 'Session', 'Semester', 'Level'],
-      ['SAMPLE123', 'CSC101', 'Introduction to Computing', '3', 'A', '4.0', '2023/2024', 'first', 'ND1'],
-      ['SAMPLE456', 'MTH102', 'Mathematics I', '3', 'B', '3.0', '2023/2024', 'first', 'ND1']
-    ].map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'results_template.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload a CSV file.",
-          variant: "destructive"
-        });
-        return;
-      }
-      setUploadFile(file);
-    }
-  };
-
-  const parseCsvData = (csvText: string): any[] => {
-    const lines = csvText.split('\n').filter(line => line.trim());
-    const headers = lines[0].split(',').map(h => h.trim());
-    
-    // Skip sample rows by checking if matric number starts with "SAMPLE"
-    const dataLines = lines.slice(1).filter(line => {
-      const firstCol = line.split(',')[0]?.trim();
-      return firstCol && !firstCol.toUpperCase().startsWith('SAMPLE');
-    });
-    
-    return dataLines.map(line => {
-      const values = line.split(',').map(v => v.trim());
-      const row: any = {};
-      headers.forEach((header, index) => {
-        row[header.toLowerCase().replace(/\s+/g, '_')] = values[index] || '';
-      });
-      return row;
-    });
-  };
-
-  const validateRowData = (row: any, rowIndex: number): string[] => {
-    const errors: string[] = [];
-    
-    if (!row.matric_number) errors.push(`Row ${rowIndex + 2}: Matric Number is required`);
-    if (!row.course_code) errors.push(`Row ${rowIndex + 2}: Course Code is required`);
-    if (!row.course_title) errors.push(`Row ${rowIndex + 2}: Course Title is required`);
-    if (!row.credit_units || isNaN(parseInt(row.credit_units))) {
-      errors.push(`Row ${rowIndex + 2}: Credit Units must be a valid number`);
-    }
-    if (!row.grade) errors.push(`Row ${rowIndex + 2}: Grade is required`);
-    if (!row.grade_points || isNaN(parseFloat(row.grade_points))) {
-      errors.push(`Row ${rowIndex + 2}: Grade Points must be a valid number`);
-    }
-    if (!row.session) errors.push(`Row ${rowIndex + 2}: Session is required`);
-    if (!row.semester) errors.push(`Row ${rowIndex + 2}: Semester is required`);
-    if (!['first', 'second'].includes(row.semester)) {
-      errors.push(`Row ${rowIndex + 2}: Semester must be 'first' or 'second'`);
-    }
-    if (!row.level) errors.push(`Row ${rowIndex + 2}: Level is required`);
-    if (!['ND1', 'ND2'].includes(row.level)) {
-      errors.push(`Row ${rowIndex + 2}: Level must be 'ND1' or 'ND2'`);
-    }
-    
-    return errors;
-  };
-
-  const processBulkUpload = async () => {
-    if (!uploadFile) return;
-    
-    setIsUploading(true);
-    
-    try {
-      const csvText = await uploadFile.text();
-      const parsedData = parseCsvData(csvText);
-      
-      if (parsedData.length === 0) {
-        toast({
-          title: "No data found",
-          description: "The CSV file contains no valid data rows.",
-          variant: "destructive"
-        });
-        setIsUploading(false);
-        return;
-      }
-      
-      // Validate all rows first
-      const allErrors: string[] = [];
-      parsedData.forEach((row, index) => {
-        const rowErrors = validateRowData(row, index);
-        allErrors.push(...rowErrors);
-      });
-      
-      if (allErrors.length > 0) {
-        toast({
-          title: "Validation errors",
-          description: `Found ${allErrors.length} error(s). Please check the console for details.`,
-          variant: "destructive"
-        });
-        console.error('Validation errors:', allErrors);
-        setIsUploading(false);
-        return;
-      }
-      
-      // Get student IDs for matric numbers
-      const matricNumbers = parsedData.map(row => row.matric_number);
-      const { data: students, error: studentsError } = await supabase
-        .from('students')
-        .select('id, matric_number')
-        .in('matric_number', matricNumbers);
-      
-      if (studentsError) {
-        throw studentsError;
-      }
-      
-      const studentMap = new Map(students?.map(s => [s.matric_number, s.id]) || []);
-      
-      // Check for missing students
-      const missingStudents = matricNumbers.filter(mn => !studentMap.has(mn));
-      if (missingStudents.length > 0) {
-        toast({
-          title: "Students not found",
-          description: `The following matric numbers were not found: ${missingStudents.join(', ')}`,
-          variant: "destructive"
-        });
-        setIsUploading(false);
-        return;
-      }
-      
-      // Prepare data for insertion
-      const resultsToInsert = parsedData.map(row => ({
-        student_id: studentMap.get(row.matric_number)!,
-        course_code: row.course_code,
-        course_title: row.course_title,
-        credit_unit: parseInt(row.credit_units),
-        grade: row.grade,
-        point: parseFloat(row.grade_points),
-        session: row.session,
-        semester: row.semester,
-        level: row.level
-      }));
-      
-      // Insert results
-      const { error: insertError } = await supabase
-        .from('results')
-        .insert(resultsToInsert);
-      
-      if (insertError) {
-        throw insertError;
-      }
-      
-      toast({
-        title: "Success",
-        description: `Successfully uploaded ${resultsToInsert.length} results.`,
-      });
-      
-      // Reset form and refresh data
-      setUploadFile(null);
-      setIsBulkUploadOpen(false);
-      await fetchResults();
-      
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast({
-        title: "Upload failed",
-        description: "There was an error uploading the results. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="p-6 space-y-6">
@@ -322,67 +134,10 @@ export function AdminResultsView() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Dialog open={isBulkUploadOpen} onOpenChange={setIsBulkUploadOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <Upload className="h-4 w-4 mr-2" />
-                Bulk Upload
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Bulk Upload Results</DialogTitle>
-                <DialogDescription>
-                  Upload student results using a CSV file. Download the template first to ensure correct format.
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                  <AlertCircle className="h-4 w-4 text-blue-600" />
-                  <div className="text-sm">
-                    <p className="text-blue-800 font-medium">Before uploading:</p>
-                    <p className="text-blue-700">Download the template to see the required format</p>
-                  </div>
-                </div>
-                
-                <Button 
-                  variant="outline" 
-                  onClick={downloadTemplate}
-                  className="w-full"
-                >
-                  <FileSpreadsheet className="h-4 w-4 mr-2" />
-                  Download CSV Template
-                </Button>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="csv-file">Upload CSV File</Label>
-                  <Input
-                    id="csv-file"
-                    type="file"
-                    accept=".csv"
-                    onChange={handleFileUpload}
-                    disabled={isUploading}
-                  />
-                  {uploadFile && (
-                    <p className="text-sm text-muted-foreground">
-                      Selected: {uploadFile.name}
-                    </p>
-                  )}
-                </div>
-              </div>
-              
-              <DialogFooter className="sm:justify-start">
-                <Button
-                  onClick={processBulkUpload}
-                  disabled={!uploadFile || isUploading}
-                  className="w-full"
-                >
-                  {isUploading ? 'Uploading...' : 'Upload Results'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" onClick={() => setIsUploadModalOpen(true)}>
+            <Upload className="h-4 w-4 mr-2" />
+            Bulk Upload
+          </Button>
           <Button>
             <Plus className="h-4 w-4 mr-2" />
             Add Result
@@ -436,11 +191,6 @@ export function AdminResultsView() {
             <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
               <Download className="h-4 w-4 mr-2" />
               Export CSV
-            </Button>
-            
-            <Button onClick={downloadTemplate} variant="outline" className="whitespace-nowrap">
-              <FileSpreadsheet className="h-4 w-4 mr-2" />
-              CSV Template
             </Button>
           </div>
 
@@ -499,6 +249,12 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
+
+      <UploadResultsModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onSuccess={fetchResults}
+      />
     </div>
   );
 }
