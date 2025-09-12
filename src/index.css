@@ -17,26 +17,26 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 213 100% 45%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 213 15% 95%;
-    --secondary-foreground: 213 100% 30%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 213 10% 96%;
-    --muted-foreground: 213 8% 45%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 213 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 213 15% 90%;
-    --input: 213 15% 90%;
-    --ring: 213 100% 45%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -102,30 +102,4 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
-}
-
-@layer components {
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes glow {
-  from { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-  to { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
 }

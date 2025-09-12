@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent';
+  role: 'student' | 'admin';
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -51,5 +51,5 @@ export const useProfile = () => {
     fetchProfile();
   }, [user]);
 
-  return { profile, loading, isAdmin: profile?.role === 'admin', isTeacher: profile?.role === 'teacher', isStudent: profile?.role === 'student', isParent: profile?.role === 'parent' };
+  return { profile, loading, isAdmin: profile?.role === 'admin' };
 };

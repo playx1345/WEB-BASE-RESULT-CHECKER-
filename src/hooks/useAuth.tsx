@@ -1,18 +1,15 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { logUserActivity } from '@/lib/auditLogger';
-
-import { AuthError } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string, metadata?: Record<string, unknown>) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, metadata?: any) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -33,27 +30,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-        
-        // Log authentication events
-        if (event === 'SIGNED_IN' && session?.user) {
-          await logUserActivity('user_login', {
-            metadata: {
-              email: session.user.email,
-              loginMethod: 'password',
-              userAgent: navigator.userAgent,
-            }
-          });
-        } else if (event === 'SIGNED_OUT') {
-          await logUserActivity('user_logout', {
-            metadata: {
-              logoutReason: 'user_initiated'
-            }
-          });
-        }
       }
     );
 
@@ -75,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return { error };
   };
 
-  const signUp = async (email: string, password: string, metadata?: Record<string, unknown>) => {
+  const signUp = async (email: string, password: string, metadata?: any) => {
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
@@ -86,17 +66,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         data: metadata
       }
     });
-    
-    if (!error) {
-      await logUserActivity('user_signup', {
-        metadata: {
-          email,
-          signupMethod: 'password',
-          userRole: metadata?.role || 'student'
-        }
-      });
-    }
-    
     return { error };
   };
 
@@ -110,16 +79,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
-    
-    if (!error) {
-      await logUserActivity('password_reset_requested', {
-        metadata: {
-          email,
-          resetMethod: 'email'
-        }
-      });
-    }
-    
     return { error };
   };
 

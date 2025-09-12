@@ -5,20 +5,9 @@ import { AdminStudentsView } from './views/AdminStudentsView';
 import { AdminResultsView } from './views/AdminResultsView';
 import { AdminAnnouncementsView } from './views/AdminAnnouncementsView';
 import { AdminAnalyticsView } from './views/AdminAnalyticsView';
-import { AdminAuditLogsView } from './views/AdminAuditLogsView';
-import { useActivityLogger } from '@/lib/auditLogger';
-import { useEffect } from 'react';
 
 export function AdminDashboard() {
   const [activeView, setActiveView] = useState('dashboard');
-  const { logActivity } = useActivityLogger();
-
-  useEffect(() => {
-    // Log admin dashboard access
-    logActivity('access_admin_dashboard', {
-      metadata: { view: activeView }
-    });
-  }, [activeView, logActivity]);
 
   const renderView = () => {
     switch (activeView) {
@@ -30,8 +19,6 @@ export function AdminDashboard() {
         return <AdminAnnouncementsView />;
       case 'analytics':
         return <AdminAnalyticsView />;
-      case 'audit-logs':
-        return <AdminAuditLogsView />;
       default:
         return <AdminDashboardView />;
     }

@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, FileText, Megaphone, BarChart3, Shield, LogOut } from 'lucide-react';
+import { Home, Users, GraduationCap, FileText, Megaphone, BarChart3, LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -24,7 +24,6 @@ const adminMenuItems = [
   { id: 'results', label: 'Results', icon: GraduationCap },
   { id: 'announcements', label: 'Announcements', icon: Megaphone },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'audit-logs', label: 'Audit Logs', icon: Shield },
 ];
 
 export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
