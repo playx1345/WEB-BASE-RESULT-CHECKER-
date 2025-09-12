@@ -30,6 +30,18 @@ interface Result {
   };
 }
 
+interface CsvRowData {
+  matric_number: string;
+  course_code: string;
+  course_title: string;
+  credit_units: string;
+  grade: string;
+  grade_points: string;
+  session: string;
+  semester: string;
+  level: string;
+}
+
 export function AdminResultsView() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
@@ -141,7 +153,7 @@ export function AdminResultsView() {
     }
   };
 
-  const parseCsvData = (csvText: string): any[] => {
+  const parseCsvData = (csvText: string): CsvRowData[] => {
     const lines = csvText.split('\n').filter(line => line.trim());
     const headers = lines[0].split(',').map(h => h.trim());
     
@@ -153,15 +165,15 @@ export function AdminResultsView() {
     
     return dataLines.map(line => {
       const values = line.split(',').map(v => v.trim());
-      const row: any = {};
+      const row: Record<string, string> = {};
       headers.forEach((header, index) => {
         row[header.toLowerCase().replace(/\s+/g, '_')] = values[index] || '';
       });
-      return row;
+      return row as CsvRowData;
     });
   };
 
-  const validateRowData = (row: any, rowIndex: number): string[] => {
+  const validateRowData = (row: CsvRowData, rowIndex: number): string[] => {
     const errors: string[] = [];
     
     if (!row.matric_number) errors.push(`Row ${rowIndex + 2}: Matric Number is required`);
