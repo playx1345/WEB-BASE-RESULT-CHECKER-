@@ -92,9 +92,9 @@ const Auth = () => {
       const metadata = {
         role: formData.role,
         full_name: formData.fullName,
-        matric_number: formData.matricNumber,
+        matric_number: formData.role === 'student' ? formData.matricNumber : null,
         phone_number: formData.phoneNumber,
-        level: formData.level
+        level: formData.role === 'student' ? formData.level : null
       };
 
       const { error } = await signUp(formData.email, formData.password, metadata);
@@ -296,18 +296,6 @@ const Auth = () => {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="role">Account Type</Label>
-                      <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select account type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="student">Student</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="signup-email">Email</Label>
@@ -333,45 +321,66 @@ const Auth = () => {
                       />
                     </div>
 
-                    {formData.role === 'student' && (
-                      <>
-                        <div className="space-y-2">
-                          <Label htmlFor="matric-number">Matric Number</Label>
-                          <Input
-                            id="matric-number"
-                            type="text"
-                            value={formData.matricNumber}
-                            onChange={(e) => handleInputChange('matricNumber', e.target.value)}
-                            placeholder="Enter your matric number"
-                            required
-                          />
-                        </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Role</Label>
+                      <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="teacher">Teacher</SelectItem>
+                          <SelectItem value="parent">Parent</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="level">Level</Label>
-                          <Select value={formData.level} onValueChange={(value) => handleInputChange('level', value)}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select your level" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ND1">ND1</SelectItem>
-                              <SelectItem value="ND2">ND2</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                    <div className="space-y-2"
+                      style={{
+                        display: formData.role === 'student' ? 'block' : 'none'
+                      }}
+                    >
+                      <Label htmlFor="matric-number">Matric Number</Label>
+                      <Input
+                        id="matric-number"
+                        type="text"
+                        value={formData.matricNumber}
+                        onChange={(e) => handleInputChange('matricNumber', e.target.value)}
+                        placeholder="Enter your matric number"
+                        required={formData.role === 'student'}
+                      />
+                    </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="phone-number">Phone Number</Label>
-                          <Input
-                            id="phone-number"
-                            type="tel"
-                            value={formData.phoneNumber}
-                            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                            placeholder="Enter your phone number"
-                          />
-                        </div>
-                      </>
-                    )}
+                    <div className="space-y-2"
+                      style={{
+                        display: formData.role === 'student' ? 'block' : 'none'
+                      }}
+                    >
+                      <Label htmlFor="level">Level</Label>
+                      <Select 
+                        value={formData.level} 
+                        onValueChange={(value) => handleInputChange('level', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ND1">ND1</SelectItem>
+                          <SelectItem value="ND2">ND2</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                     <div className="space-y-2">
+                       <Label htmlFor="phone-number">Phone Number</Label>
+                       <Input
+                         id="phone-number"
+                         type="tel"
+                         value={formData.phoneNumber}
+                         onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                         placeholder="Enter your phone number"
+                       />
+                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Password</Label>

@@ -1,24 +1,58 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { School } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'student' | 'admin';
+  requiredRole?: 'student' | 'admin' | 'teacher' | 'parent';
 }
 
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [roleChecking, setRoleChecking] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
+      return;
     }
-  }, [user, loading, navigate]);
 
-  if (loading) {
+    if (user && requiredRole) {
+      checkUserRole();
+    } else if (user) {
+      setRoleChecking(false);
+      setHasAccess(true);
+    }
+  }, [user, loading, navigate, requiredRole]);
+
+  const checkUserRole = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (profile?.role === requiredRole) {
+        setHasAccess(true);
+      } else {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error checking user role:', error);
+      navigate('/');
+    } finally {
+      setRoleChecking(false);
+    }
+  };
+
+  if (loading || roleChecking) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
         <div className="text-center">
@@ -29,7 +63,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     );
   }
 
-  if (!user) {
+  if (!user || (requiredRole && !hasAccess)) {
     return null;
   }
 
