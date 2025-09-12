@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Home, FileText, Bell, User, LogOut, GraduationCap, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { 
+  Home, 
+  Users, 
+  BookOpen, 
+  FileText, 
+  Bell, 
+  User, 
+  LogOut, 
+  GraduationCap 
+} from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import {
   Sidebar,
   SidebarContent,
@@ -17,50 +25,27 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 
-const menuItems = [
+const adminMenuItems = [
   { title: 'Dashboard', icon: Home, id: 'dashboard' },
+  { title: 'Students', icon: Users, id: 'students' },
+  { title: 'Courses', icon: BookOpen, id: 'courses' },
   { title: 'Results', icon: FileText, id: 'results' },
   { title: 'Announcements', icon: Bell, id: 'announcements' },
   { title: 'Profile', icon: User, id: 'profile' },
 ];
 
-interface AppSidebarProps {
+interface AdminSidebarProps {
   activeView?: string;
   onViewChange?: (view: string) => void;
 }
 
-export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSidebarProps) {
+export function AdminSidebar({ activeView = 'dashboard', onViewChange }: AdminSidebarProps) {
   const { state } = useSidebar();
-  const { signOut, user } = useAuth();
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const { signOut } = useAuth();
   const collapsed = state === 'collapsed';
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      if (!user) return;
-
-      try {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
-
-        setUserRole(profile?.role || null);
-      } catch (error) {
-        console.error('Error fetching user role:', error);
-      }
-    };
-
-    fetchUserRole();
-  }, [user]);
 
   const handleViewChange = (view: string) => {
     onViewChange?.(view);
-  };
-
-  const handleAdminAccess = () => {
-    window.location.href = '/admin';
   };
 
   return (
@@ -70,8 +55,8 @@ export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSideba
           <GraduationCap className="h-6 w-6 text-sidebar-primary" />
           {!collapsed && (
             <div>
-              <h1 className="text-lg font-semibold text-sidebar-foreground">Student Portal</h1>
-              <p className="text-xs text-sidebar-foreground/60">Academic System</p>
+              <h1 className="text-lg font-semibold text-sidebar-foreground">Admin Portal</h1>
+              <p className="text-xs text-sidebar-foreground/60">Management System</p>
             </div>
           )}
         </div>
@@ -80,10 +65,10 @@ export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSideba
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>Admin Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {adminMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     onClick={() => handleViewChange(item.id)}
@@ -101,25 +86,6 @@ export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSideba
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {userRole === 'admin' && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Administration</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    onClick={handleAdminAccess}
-                    className="w-full hover:bg-sidebar-accent/50"
-                  >
-                    <Settings className="h-4 w-4" />
-                    {!collapsed && <span>Admin Panel</span>}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">

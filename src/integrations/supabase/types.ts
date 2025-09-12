@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      courses: {
+        Row: {
+          code: string
+          created_at: string | null
+          credit_unit: number
+          description: string | null
+          id: string
+          level: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          credit_unit: number
+          description?: string | null
+          id?: string
+          level: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          credit_unit?: number
+          description?: string | null
+          id?: string
+          level?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
