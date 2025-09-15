@@ -1,10 +1,35 @@
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { ChevronRight, Users, BookOpen, Award } from 'lucide-react';
+import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
+import { ChevronRight, Users, BookOpen, Award, Settings } from 'lucide-react';
+
 const LandingPage = () => {
-  return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+  const [showAdminSetup, setShowAdminSetup] = useState(false);
+
+  if (showAdminSetup) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <div className="container mx-auto py-8">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowAdminSetup(false)}
+            className="mb-4"
+          >
+            ← Back to Home
+          </Button>
+          <AdminSetupInstructions />
+        </div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <SiteHeader />
       
       {/* Hero Section */}
@@ -17,33 +42,38 @@ const LandingPage = () => {
         <div className="flex flex-col items-center space-y-8 max-w-4xl mx-auto">
           {/* Logo */}
           <div className="flex items-center justify-center w-36 h-36 bg-white rounded-full shadow-xl ring-8 ring-blue-50 hover:shadow-2xl transition-shadow duration-300">
-            <img src="/assets/logo.svg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-28 h-28" />
+            <img src="/assets/logo.svg" alt="Plateau State University Logo" className="w-28 h-28" />
           </div>
           
           {/* School Information */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight">
-              Plateau State Polytechnic
-              <span className="block text-4xl md:text-5xl text-primary/80">Barkin Ladi</span>
+              Plateau State University
             </h1>
             <h2 className="text-xl md:text-2xl font-semibold text-secondary-foreground max-w-3xl">
-              School of Information and Communication Technology
+              Student Portal & Academic Management System
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Department of Computer Science - Online Result Checker
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Access your academic records, check results, view announcements, and manage your student profile all in one secure platform.
             </p>
           </div>
 
-          {/* Call to Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Button asChild size="lg" className="px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="px-8 py-6 text-lg font-semibold bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
               <a href="/auth" className="flex items-center">
-                Check Your Results
+                Get Started
                 <ChevronRight className="ml-2 h-5 w-5" />
               </a>
             </Button>
-            <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-              <a href="/auth">Student Portal</a>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => setShowAdminSetup(true)}
+              className="flex items-center gap-2 px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
+              <Settings className="h-4 w-4" />
+              Admin Setup
             </Button>
           </div>
         </div>
@@ -53,92 +83,91 @@ const LandingPage = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-primary mb-4">Why Choose PSPBL?</h3>
+            <h3 className="text-3xl font-bold text-primary mb-4">System Features</h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Leading the way in technical education with modern facilities and innovative learning approaches
+              A comprehensive platform for students, administrators, and academic management
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border border-blue-100">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-full mx-auto mb-4">
-                <Users className="h-8 w-8 text-primary" />
-              </div>
-              <h4 className="text-xl font-semibold text-primary mb-3">Expert Faculty</h4>
-              <p className="text-muted-foreground">Learn from industry professionals and experienced educators</p>
-            </div>
-            <div className="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border border-blue-100">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-full mx-auto mb-4">
-                <BookOpen className="h-8 w-8 text-primary" />
-              </div>
-              <h4 className="text-xl font-semibold text-primary mb-3">Modern Curriculum</h4>
-              <p className="text-muted-foreground">Up-to-date courses aligned with industry standards</p>
-            </div>
-            <div className="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border border-blue-100">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-full mx-auto mb-4">
-                <Award className="h-8 w-8 text-primary" />
-              </div>
-              <h4 className="text-xl font-semibold text-primary mb-3">Excellence</h4>
-              <p className="text-muted-foreground">Recognized for quality education and student success</p>
-            </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white/80 backdrop-blur">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <Users className="h-8 w-8 text-blue-600" />
+                </div>
+                <CardTitle className="text-xl font-bold text-primary">Student Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-base leading-relaxed">
+                  Comprehensive student records, fee tracking, and academic progress monitoring with secure access controls.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white/80 backdrop-blur">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <BookOpen className="h-8 w-8 text-green-600" />
+                </div>
+                <CardTitle className="text-xl font-bold text-primary">Results Portal</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-base leading-relaxed">
+                  Real-time access to academic results, grade reports, and performance analytics for informed decision making.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white/80 backdrop-blur">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                  <Award className="h-8 w-8 text-purple-600" />
+                </div>
+                <CardTitle className="text-xl font-bold text-primary">Admin Dashboard</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-base leading-relaxed">
+                  Powerful administrative tools for managing students, results, announcements, and system analytics.
+                </CardDescription>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Vision and Mission Section */}
-      <section className="container mx-auto px-4 py-16 bg-gradient-to-r from-blue-50/50 to-purple-50/50 rounded-3xl mx-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-primary mb-4">Our Foundation</h3>
-            <p className="text-lg text-muted-foreground">Built on strong values and clear direction</p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Vision Card */}
-            <Card className="shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-gradient-to-br from-white to-blue-50/30">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl text-primary flex items-center">
-                  <div className="flex items-center justify-center w-10 h-10 bg-blue-500/10 rounded-full mr-3">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  </div>
-                  Our Vision
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base leading-relaxed text-gray-700">
-                  To be a leading polytechnic institution in Nigeria, recognized for excellence in 
-                  technical education, innovation, and the development of skilled professionals 
-                  who contribute meaningfully to national development and global competitiveness.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            {/* Mission Card */}
-            <Card className="shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-gradient-to-br from-white to-purple-50/30">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl text-primary flex items-center">
-                  <div className="flex items-center justify-center w-10 h-10 bg-blue-500/10 rounded-full mr-3">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  Our Mission
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base leading-relaxed text-gray-700">
-                  To provide quality technical and vocational education that empowers students with 
-                  practical skills, knowledge, and values necessary for productive careers, 
-                  entrepreneurship, and lifelong learning in an ever-evolving technological landscape.
-                </CardDescription>
-              </CardContent>
-            </Card>
+      {/* Info Section */}
+      <section className="bg-primary/5 py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h3 className="text-2xl font-bold text-primary mb-6">
+              Secure & Reliable Academic Platform
+            </h3>
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              Our platform ensures data security, user privacy, and reliable access to academic information. 
+              Built with modern technology to provide a seamless experience for all users.
+            </p>
+            
+            <div className="grid sm:grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-3xl font-bold text-primary mb-2">24/7</div>
+                <div className="text-muted-foreground">System Availability</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-primary mb-2">100%</div>
+                <div className="text-muted-foreground">Data Security</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-primary mb-2">Fast</div>
+                <div className="text-muted-foreground">Response Time</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <SiteFooter />
-    </div>;
+    </div>
+  );
 };
+
 export default LandingPage;
