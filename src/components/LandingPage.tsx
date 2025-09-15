@@ -240,27 +240,27 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20 animate-fade-in">
+      <section className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto relative rounded-3xl overflow-hidden modern-shadow" style={{ backgroundImage: 'url(/src/assets/university-building.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-accent/80"></div>
-          <div className="relative z-10 p-12">
-          <div className="text-center mb-16">
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">System Features</h3>
-            <p className="text-base text-white/90 max-w-3xl mx-auto leading-relaxed">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-accent/60"></div>
+          <div className="relative z-10 p-8">
+          <div className="text-center mb-8">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-4">System Features</h3>
+            <p className="text-sm text-white/90 max-w-3xl mx-auto leading-relaxed">
               A comprehensive platform designed for the future of academic excellence and administrative efficiency
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-6">
             <Card className="glass-morphism border-white/20 modern-shadow hover-lift group">
               <CardHeader className="text-center">
-                <div className="mx-auto w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Users className="h-10 w-10 text-white" />
+                <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-lg font-bold text-white">Student Management</CardTitle>
+                <CardTitle className="text-base font-bold text-white">Student Management</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-lg leading-relaxed text-white/90">
+                <CardDescription className="text-center text-sm leading-relaxed text-white/90">
                   Advanced student records management with comprehensive progress tracking, secure access controls, and real-time updates.
                 </CardDescription>
               </CardContent>
@@ -268,13 +268,13 @@ const LandingPage = () => {
 
             <Card className="glass-morphism border-white/20 modern-shadow hover-lift group">
               <CardHeader className="text-center">
-                <div className="mx-auto w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <BookOpen className="h-10 w-10 text-white" />
+                <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <BookOpen className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-white">Results Portal</CardTitle>
+                <CardTitle className="text-base font-bold text-white">Results Portal</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-lg leading-relaxed text-white/90">
+                <CardDescription className="text-center text-sm leading-relaxed text-white/90">
                   Instant access to academic results with advanced analytics, performance insights, and comprehensive grade reporting.
                 </CardDescription>
               </CardContent>
@@ -282,13 +282,13 @@ const LandingPage = () => {
 
             <Card className="glass-morphism border-white/20 modern-shadow hover-lift group">
               <CardHeader className="text-center">
-                <div className="mx-auto w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Award className="h-10 w-10 text-white" />
+                <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Award className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-white">Admin Dashboard</CardTitle>
+                <CardTitle className="text-base font-bold text-white">Admin Dashboard</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-lg leading-relaxed text-white/90">
+                <CardDescription className="text-center text-sm leading-relaxed text-white/90">
                   Powerful administrative suite with advanced analytics, bulk operations, SMS notifications, and comprehensive system management.
                 </CardDescription>
               </CardContent>
