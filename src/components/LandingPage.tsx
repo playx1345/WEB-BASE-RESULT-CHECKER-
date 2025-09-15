@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
-import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield } from 'lucide-react';
+import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield, User, Globe, Briefcase } from 'lucide-react';
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   if (showAdminSetup) {
@@ -119,6 +119,112 @@ const LandingPage = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="bg-primary/5 py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold text-primary mb-4">Why Choose Our Platform</h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Discover the advantages that make our academic management system the preferred choice
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Academic Excellence */}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <BookOpen className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-primary">Academic Excellence</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-base leading-relaxed">
+                    Our platform is designed to support rigorous academic programs with comprehensive result tracking, taught by expert faculty members who are leaders in their fields.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Professional Development */}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                    <Award className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-primary">Professional Development</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-base leading-relaxed">
+                    Enhance your career prospects with industry-recognized academic tracking. Our system helps you build credentials needed to stand out in a competitive job market.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Modern Technology */}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Settings className="h-8 w-8 text-green-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-primary">State-of-the-Art Technology</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-base leading-relaxed">
+                    We offer modern facilities and cutting-edge technology to enhance your academic experience. From secure data management to intuitive user interfaces.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Student Life */}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                    <User className="h-8 w-8 text-orange-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-primary">Enhanced Student Experience</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-base leading-relaxed">
+                    At Plateau State University, learning extends beyond the classroom. Our diverse and inclusive digital environment fosters personal growth and academic success.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Global Opportunities */}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mb-4">
+                    <Globe className="h-8 w-8 text-cyan-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-primary">Global Opportunities</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-base leading-relaxed">
+                    We provide our students with international exposure through digital platforms, partnerships, and global academic standards to prepare you for success worldwide.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Career Support */}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                    <Briefcase className="h-8 w-8 text-indigo-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-primary">Career Support & Networking</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-base leading-relaxed">
+                    With dedicated career services, strong alumni network, and partnerships with industry leaders, our platform provides unparalleled support to help you launch and grow your career.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
