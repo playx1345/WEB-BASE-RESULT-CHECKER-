@@ -5,21 +5,31 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
 import { ChevronRight, Users, BookOpen, Award, Settings } from 'lucide-react';
+
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
+
   if (showAdminSetup) {
-    return <div className="min-h-screen bg-background">
+    return (
+      <div className="min-h-screen bg-background">
         <SiteHeader />
         <div className="container mx-auto py-8">
-          <Button variant="outline" onClick={() => setShowAdminSetup(false)} className="mb-4">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowAdminSetup(false)}
+            className="mb-4"
+          >
             ← Back to Home
           </Button>
           <AdminSetupInstructions />
         </div>
         <SiteFooter />
-      </div>;
+      </div>
+    );
   }
-  return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <SiteHeader />
       
       {/* Hero Section */}
@@ -32,7 +42,7 @@ const LandingPage = () => {
         <div className="flex flex-col items-center space-y-8 max-w-4xl mx-auto">
           {/* Logo */}
           <div className="flex items-center justify-center w-36 h-36 bg-white rounded-full shadow-xl ring-8 ring-blue-50 hover:shadow-2xl transition-shadow duration-300">
-            <img src="/assets/logo.svg" alt="Plateau State University Logo" className="w-28 h-28" />
+            <img src="/assets/logo.jpg" alt="Plateau State University Logo" className="w-28 h-28 object-contain" />
           </div>
           
           {/* School Information */}
@@ -51,9 +61,17 @@ const LandingPage = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="px-8 py-6 text-lg font-semibold bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
-              
+              <a href="/auth" className="flex items-center">
+                Get Started
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </a>
             </Button>
-            <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="flex items-center gap-2 px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => setShowAdminSetup(true)}
+              className="flex items-center gap-2 px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
               <Settings className="h-4 w-4" />
               Admin Setup
             </Button>
@@ -148,6 +166,8 @@ const LandingPage = () => {
       </section>
 
       <SiteFooter />
-    </div>;
+    </div>
+  );
 };
+
 export default LandingPage;
