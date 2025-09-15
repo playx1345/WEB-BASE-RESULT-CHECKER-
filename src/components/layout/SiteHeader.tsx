@@ -41,8 +41,9 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5">
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 bg-cover bg-center bg-no-repeat relative" style={{backgroundImage: `url('/src/assets/university-header-bg.jpg')`}}>
+      <div className="absolute inset-0 bg-background/90 backdrop-blur-sm"></div>
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5 relative z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
             <div className="flex items-center space-x-3 sm:space-x-4">
