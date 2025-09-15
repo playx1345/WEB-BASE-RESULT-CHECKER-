@@ -42,7 +42,7 @@ const LandingPage = () => {
         <div className="flex flex-col items-center space-y-8 max-w-4xl mx-auto">
           {/* Logo */}
           <div className="flex items-center justify-center w-36 h-36 bg-white rounded-full shadow-xl ring-8 ring-blue-50 hover:shadow-2xl transition-shadow duration-300">
-            <img src="/assets/logo.svg" alt="Plateau State University Logo" className="w-28 h-28" />
+            <img src="/assets/logo.jpg" alt="Plateau State University Logo" className="w-28 h-28 object-contain" />
           </div>
           
           {/* School Information */}
