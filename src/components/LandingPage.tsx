@@ -5,31 +5,21 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
 import { ChevronRight, Users, BookOpen, Award, Settings } from 'lucide-react';
-
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
-
   if (showAdminSetup) {
-    return (
-      <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-background">
         <SiteHeader />
         <div className="container mx-auto py-8">
-          <Button 
-            variant="outline" 
-            onClick={() => setShowAdminSetup(false)}
-            className="mb-4"
-          >
+          <Button variant="outline" onClick={() => setShowAdminSetup(false)} className="mb-4">
             ← Back to Home
           </Button>
           <AdminSetupInstructions />
         </div>
         <SiteFooter />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <SiteHeader />
       
       {/* Hero Section */}
@@ -42,20 +32,17 @@ const LandingPage = () => {
         <div className="flex flex-col items-center space-y-8 max-w-4xl mx-auto">
           {/* Logo */}
           <div className="flex items-center justify-center w-36 h-36 bg-white rounded-full shadow-xl ring-8 ring-blue-50 hover:shadow-2xl transition-shadow duration-300">
-            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-28 h-28 object-contain" />
+            <img src="/assets/logo.jpg" alt="Plateau State University Logo" className="w-28 h-28 object-contain" />
           </div>
           
           {/* School Information */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight">
-              Plateau State Polytechnic Barkin Ladi
+              Plateau State University
             </h1>
             <h2 className="text-xl md:text-2xl font-semibold text-secondary-foreground max-w-3xl">
-              School of Information and Communication Technology
+              Student Portal & Academic Management System
             </h2>
-            <h3 className="text-lg md:text-xl font-medium text-muted-foreground max-w-2xl">
-              Department of Computer Science - Online Result Checker
-            </h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Access your academic records, check results, view announcements, and manage your student profile all in one secure platform.
             </p>
@@ -69,12 +56,7 @@ const LandingPage = () => {
                 <ChevronRight className="ml-2 h-5 w-5" />
               </a>
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={() => setShowAdminSetup(true)}
-              className="flex items-center gap-2 px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-            >
+            <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="flex items-center gap-2 px-8 py-6 text-lg font-semibold border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
               <Settings className="h-4 w-4" />
               Admin Setup
             </Button>
@@ -142,9 +124,7 @@ const LandingPage = () => {
       <section className="bg-primary/5 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h3 className="text-2xl font-bold text-primary mb-6">
-              Secure & Reliable Academic Platform
-            </h3>
+            
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
               Our platform ensures data security, user privacy, and reliable access to academic information. 
               Built with modern technology to provide a seamless experience for all users.
@@ -169,8 +149,6 @@ const LandingPage = () => {
       </section>
 
       <SiteFooter />
-    </div>
-  );
+    </div>;
 };
-
 export default LandingPage;
