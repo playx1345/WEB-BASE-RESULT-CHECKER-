@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
-import { ChevronRight, Users, BookOpen, Award, Settings } from 'lucide-react';
+import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield } from 'lucide-react';
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   if (showAdminSetup) {
@@ -60,6 +60,65 @@ const LandingPage = () => {
               <Settings className="h-4 w-4" />
               Admin Setup
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission and Vision Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-primary mb-4">Our Mission & Vision</h3>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Driving excellence in academic management and student empowerment
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Vision Card */}
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <GraduationCap className="h-8 w-8 text-blue-600" />
+                </div>
+                <CardTitle className="text-xl font-bold text-primary">Our Vision</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-base leading-relaxed">
+                  To revolutionize academic transparency and efficiency through a secure, accessible, and intelligent result management system—empowering students and administrators of the Department of Computer Science with real-time academic insights and digital autonomy.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            {/* Mission Card */}
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <Shield className="h-8 w-8 text-green-600" />
+                </div>
+                <CardTitle className="text-xl font-bold text-primary">Our Mission</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 text-base leading-relaxed">
+                  <div className="flex items-start">
+                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <p>Develop a comprehensive platform for seamless academic data management</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <p>Ensure data integrity and security for all academic records</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <p>Drive digital transformation in academic administration</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <p>Support academic excellence through innovative technology solutions</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
