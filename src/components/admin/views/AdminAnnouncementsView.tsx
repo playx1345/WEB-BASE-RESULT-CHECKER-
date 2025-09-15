@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Megaphone, Edit, Trash2, Calendar } from 'lucide-react';
+import { Plus, Megaphone, Edit, Trash2, Calendar, MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,6 +31,7 @@ export function AdminAnnouncementsView() {
     content: '',
     target_level: 'all'
   });
+  const [sendingSMS, setSendingSMS] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -66,14 +67,16 @@ export function AdminAnnouncementsView() {
     if (!formData.title || !formData.content || !user) return;
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('announcements')
         .insert({
           title: formData.title,
           content: formData.content,
           target_level: formData.target_level === 'all' ? 'all' : formData.target_level,
           created_by: user.id
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
         toast({
@@ -89,11 +92,62 @@ export function AdminAnnouncementsView() {
         description: "Announcement created successfully",
       });
 
+      // Send SMS notification
+      if (data) {
+        sendSMSNotification(data.id, formData.target_level);
+      }
+
       setFormData({ title: '', content: '', target_level: 'all' });
       setIsDialogOpen(false);
       fetchAnnouncements();
     } catch (error) {
       console.error('Error creating announcement:', error);
+    }
+  };
+
+  const sendSMSNotification = async (announcementId: string, targetLevel: string) => {
+    try {
+      setSendingSMS(true);
+      
+      const { data, error } = await supabase.functions.invoke('send-sms', {
+        body: {
+          announcementId,
+          targetLevel
+        }
+      });
+
+      if (error) {
+        console.error('SMS sending error:', error);
+        toast({
+          title: "SMS Warning",
+          description: "Announcement created but SMS notification failed",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const result = data as { sent: number; failed: number; total: number };
+      
+      if (result.sent > 0) {
+        toast({
+          title: "SMS Sent",
+          description: `SMS notifications sent to ${result.sent} students`,
+        });
+      } else {
+        toast({
+          title: "SMS Info",
+          description: "No students found with phone numbers for SMS",
+        });
+      }
+    } catch (error) {
+      console.error('Error sending SMS:', error);
+      toast({
+        title: "SMS Warning", 
+        description: "Failed to send SMS notifications",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingSMS(false);
     }
   };
 
@@ -208,8 +262,15 @@ export function AdminAnnouncementsView() {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={createAnnouncement}>
-                Create Announcement
+              <Button onClick={createAnnouncement} disabled={sendingSMS}>
+                {sendingSMS ? (
+                  <>
+                    <MessageSquare className="h-4 w-4 mr-2 animate-pulse" />
+                    Sending SMS...
+                  </>
+                ) : (
+                  'Create Announcement'
+                )}
               </Button>
             </DialogFooter>
           </DialogContent>
