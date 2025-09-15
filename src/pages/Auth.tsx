@@ -134,7 +134,7 @@ export default function Auth() {
           <div className="flex justify-center">
             <img src="/assets/plasu-logo.jpg" alt="PLASU Logo" className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold">PLASU Portal</h1>
+          <h1 className="text-2xl font-bold">Plateau State Polytechnic Result Management System</h1>
           <p className="text-sm text-muted-foreground">Plateau State University</p>
         </div>
 
