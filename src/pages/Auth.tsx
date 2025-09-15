@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,12 +29,21 @@ const Auth = () => {
   const { signIn, signUp, resetPassword, user, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (user && !loading) {
       navigate('/');
     }
   }, [user, loading, navigate]);
+
+  useEffect(() => {
+    const userType = searchParams.get('userType');
+    if (userType && ['student', 'admin', 'parent', 'teacher'].includes(userType)) {
+      setFormData(prev => ({ ...prev, role: userType }));
+      setActiveTab('signin');
+    }
+  }, [searchParams]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
