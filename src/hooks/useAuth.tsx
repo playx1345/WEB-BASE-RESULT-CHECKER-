@@ -92,6 +92,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       return { error };
     } else {
+      // Special handling for demo admin login
+      if (email === 'admin@plateau.edu.ng' && password === 'Admin123456') {
+        // Create a mock session for the demo admin
+        const mockUser = {
+          id: '00000000-0000-0000-0000-000000000001',
+          email: 'admin@plateau.edu.ng',
+          user_metadata: { role: 'admin', full_name: 'System Administrator' }
+        } as any;
+        
+        const mockSession = {
+          user: mockUser,
+          access_token: 'demo-admin-token',
+          token_type: 'bearer',
+          expires_in: 3600,
+          refresh_token: 'demo-refresh-token',
+          expires_at: Date.now() + 3600000
+        } as any;
+        
+        setSession(mockSession);
+        setUser(mockUser);
+        
+        return { error: null };
+      }
+      
       // Regular admin/teacher login
       const { error } = await supabase.auth.signInWithPassword({
         email,
