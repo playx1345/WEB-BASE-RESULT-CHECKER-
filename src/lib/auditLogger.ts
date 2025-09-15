@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 
 export type AuditAction = 
   | 'user_login' 
@@ -15,11 +16,11 @@ export interface AuditLogEntry {
   action: string;
   table_name: string | null;
   record_id: string | null;
-  old_values: Record<string, unknown> | null;
-  new_values: Record<string, unknown> | null;
+  old_values: Json | null;
+  new_values: Json | null;
   ip_address: string | null;
   user_agent: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Json | null;
   created_at: string;
 }
 
