@@ -49,16 +49,16 @@ export function SiteHeader() {
               <img 
                 src="/assets/plasu-polytechnic-logo.jpg" 
                 alt="Plateau State Polytechnic Barkin Ladi Logo" 
-                className="h-10 w-10 sm:h-12 sm:w-12 object-contain flex-shrink-0 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 animate-pulse-slow"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain flex-shrink-0 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
               />
-              <div className="min-w-0 time-ribbon">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold gradient-text leading-tight truncate">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-lg lg:text-xl font-bold gradient-text leading-tight truncate">
                   Plateau State Polytechnic Barkin Ladi
                 </h1>
-                <p className="text-sm sm:text-base text-muted-foreground font-semibold tracking-wide hidden sm:block animate-fade-in">
+                <p className="text-xs sm:text-sm text-muted-foreground font-semibold tracking-wide hidden sm:block">
                   School of Information and Communication Technology
                 </p>
-                <p className="text-xs sm:text-sm text-primary/80 font-medium tracking-wide hidden lg:block animate-fade-in">
+                <p className="text-xs text-primary/80 font-medium tracking-wide hidden lg:block">
                   Department of Computer Science - Online Result Checker
                 </p>
               </div>
@@ -67,7 +67,7 @@ export function SiteHeader() {
           
           <div className="flex items-center space-x-3">
             {user && (
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground animate-fade-in">
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <User className="h-4 w-4" />
                 <span className="hidden sm:block font-medium">
                   {user.email}
@@ -80,13 +80,13 @@ export function SiteHeader() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="h-10 w-10 p-0 hover:bg-primary/20 transition-all duration-300 hover:scale-105 glass-morphism border-0 animate-bounce-gentle"
+                  className="h-10 w-10 p-0 hover:bg-primary/20 transition-all duration-300 hover:scale-105 glass-morphism border-0"
                 >
                   <MoreVertical className="h-5 w-5 text-primary" />
                   <span className="sr-only">Menu options</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 glass-morphism-card border-primary/20 animate-fade-in-up">
+              <DropdownMenuContent align="end" className="w-56 glass-morphism-card border-primary/20">
                 {!user ? (
                   <>
                     <DropdownMenuItem asChild>
