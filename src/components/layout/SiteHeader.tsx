@@ -45,28 +45,58 @@ export function SiteHeader() {
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <img 
+                src="/assets/plasu-polytechnic-logo.jpg" 
+                alt="Plateau State Polytechnic Barkin Ladi Logo" 
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain flex-shrink-0 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 animate-pulse-slow"
+              />
+              <div className="min-w-0 time-ribbon">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold gradient-text leading-tight truncate">
+                  Plateau State Polytechnic Barkin Ladi
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground font-semibold tracking-wide hidden sm:block animate-fade-in">
+                  School of Information and Communication Technology
+                </p>
+                <p className="text-xs sm:text-sm text-primary/80 font-medium tracking-wide hidden lg:block animate-fade-in">
+                  Department of Computer Science - Online Result Checker
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            {user && (
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground animate-fade-in">
+                <User className="h-4 w-4" />
+                <span className="hidden sm:block font-medium">
+                  {user.email}
+                </span>
+              </div>
+            )}
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="h-9 w-9 p-0 hover:bg-primary/10 transition-colors"
+                  className="h-10 w-10 p-0 hover:bg-primary/20 transition-all duration-300 hover:scale-105 glass-morphism border-0 animate-bounce-gentle"
                 >
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreVertical className="h-5 w-5 text-primary" />
                   <span className="sr-only">Menu options</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56 bg-popover border-border">
+              <DropdownMenuContent align="end" className="w-56 glass-morphism-card border-primary/20 animate-fade-in-up">
                 {!user ? (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/auth?role=student" className="w-full flex items-center space-x-2">
+                      <Link to="/auth?role=student" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
                         <GraduationCap className="h-4 w-4" />
                         <span>Student Login</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/auth?role=admin" className="w-full flex items-center space-x-2">
+                      <Link to="/auth?role=admin" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
                         <Shield className="h-4 w-4" />
                         <span>Admin Login</span>
                       </Link>
@@ -77,7 +107,7 @@ export function SiteHeader() {
                     {userRole === 'admin' && (
                       <>
                         <DropdownMenuItem asChild>
-                          <Link to="/admin" className="w-full flex items-center space-x-2 text-primary">
+                          <Link to="/admin" className="w-full flex items-center space-x-2 text-primary hover:bg-primary/10 transition-colors">
                             <Shield className="h-4 w-4" />
                             <span>Admin Dashboard</span>
                           </Link>
@@ -85,7 +115,7 @@ export function SiteHeader() {
                         <DropdownMenuSeparator />
                       </>
                     )}
-                    <DropdownMenuItem onClick={handleSignOut} className="w-full flex items-center space-x-2 text-destructive">
+                    <DropdownMenuItem onClick={handleSignOut} className="w-full flex items-center space-x-2 text-destructive hover:bg-destructive/10 transition-colors">
                       <LogOut className="h-4 w-4" />
                       <span>Sign Out</span>
                     </DropdownMenuItem>
@@ -93,35 +123,7 @@ export function SiteHeader() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <img 
-                src="/assets/plasu-polytechnic-logo.jpg" 
-                alt="Plateau State Polytechnic Barkin Ladi Logo" 
-                className="h-8 w-8 sm:h-10 sm:w-10 object-contain flex-shrink-0 rounded-sm"
-              />
-              <div className="min-w-0">
-                <h1 className="text-base sm:text-lg lg:text-xl font-heading font-bold text-foreground leading-tight truncate">
-                  Plateau State Polytechnic Barkin Ladi
-                </h1>
-                <p className="text-sm sm:text-base text-muted-foreground font-medium tracking-wide hidden sm:block">
-                  School of Information and Communication Technology
-                </p>
-                <p className="text-xs sm:text-sm text-muted-foreground font-medium tracking-wide hidden lg:block">
-                  Department of Computer Science - Online Result Checker
-                </p>
-              </div>
-            </div>
           </div>
-          
-          {user && (
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4" />
-              <span className="hidden sm:block">
-                {user.email}
-              </span>
-            </div>
-          )}
         </div>
       </div>
     </header>
