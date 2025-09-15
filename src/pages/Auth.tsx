@@ -206,9 +206,6 @@ export default function Auth() {
                         )}
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Default PIN is 112233. Contact admin to change your PIN.
-                    </p>
                   </div>
 
                   <Button 
