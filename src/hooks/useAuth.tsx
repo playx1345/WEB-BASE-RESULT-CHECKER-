@@ -9,8 +9,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string, metadata?: Record<string, unknown>) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
@@ -67,38 +66,43 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+  const signIn = async (email: string, password: string, isStudent = false) => {
+    if (isStudent) {
+      // For students, email is matric number, password is PIN
+      const matricNumber = email;
+      const pin = password;
+      
+      // Authenticate student using custom function
+      const { data: studentData, error: studentError } = await supabase
+        .rpc('authenticate_student', {
+          p_matric_number: matricNumber,
+          p_pin: pin
+        });
+      
+      if (studentError || !studentData || studentData.length === 0) {
+        return { error: studentError || { message: 'Invalid matric number or PIN' } };
+      }
+      
+      // Sign in with constructed email
+      const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
+      const { error } = await supabase.auth.signInWithPassword({
+        email: studentEmail,
+        password: pin,
+      });
+      
+      return { error };
+    } else {
+      // Regular admin/teacher login
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      return { error };
+    }
   };
 
-  const signUp = async (email: string, password: string, metadata?: Record<string, unknown>) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: metadata
-      }
-    });
-    
-    if (!error) {
-      await logUserActivity('user_signup', {
-        metadata: {
-          email,
-          signupMethod: 'password',
-          userRole: metadata?.role || 'student'
-        }
-      });
-    }
-    
-    return { error };
-  };
+  // Remove signUp - only admins can create users now
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -127,8 +131,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     session,
     loading,
-    signIn,
-    signUp,
+        signIn,
     signOut,
     resetPassword,
   };

@@ -181,6 +181,7 @@ export type Database = {
           id: string
           level: string
           matric_number: string
+          pin: string | null
           profile_id: string
           total_gp: number | null
           updated_at: string | null
@@ -193,6 +194,7 @@ export type Database = {
           id?: string
           level: string
           matric_number: string
+          pin?: string | null
           profile_id: string
           total_gp?: number | null
           updated_at?: string | null
@@ -205,6 +207,7 @@ export type Database = {
           id?: string
           level?: string
           matric_number?: string
+          pin?: string | null
           profile_id?: string
           total_gp?: number | null
           updated_at?: string | null
@@ -224,6 +227,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_create_student: {
+        Args: {
+          p_full_name: string
+          p_level: string
+          p_matric_number: string
+          p_phone_number?: string
+          p_pin?: string
+        }
+        Returns: string
+      }
+      authenticate_student: {
+        Args: { p_matric_number: string; p_pin: string }
+        Returns: {
+          full_name: string
+          level: string
+          profile_id: string
+          student_id: string
+          user_id: string
+        }[]
+      }
       log_user_activity: {
         Args: {
           p_action: string

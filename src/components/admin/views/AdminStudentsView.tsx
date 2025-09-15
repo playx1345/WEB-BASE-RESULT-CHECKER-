@@ -8,9 +8,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, Edit, DollarSign, User, Phone, Mail } from 'lucide-react';
+import { UserPlus, Search, Edit, DollarSign, User, Phone, Mail } from 'lucide-react';
+import { AdminCreateStudentDialog } from './AdminCreateStudentDialog';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface Student {
   id: string;
@@ -33,7 +34,8 @@ export function AdminStudentsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  // Removed useToast hook - using sonner toast instead
 
   useEffect(() => {
     fetchStudents();
@@ -49,11 +51,7 @@ export function AdminStudentsView() {
         `);
 
       if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch students",
-          variant: "destructive",
-        });
+        toast.error("Failed to fetch students");
         return;
       }
 
@@ -73,18 +71,11 @@ export function AdminStudentsView() {
         .eq('id', studentId);
 
       if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to update fee status",
-          variant: "destructive",
-        });
+        toast.error("Failed to update fee status");
         return;
       }
 
-      toast({
-        title: "Success",
-        description: "Fee status updated successfully",
-      });
+      toast.success("Fee status updated successfully");
 
       fetchStudents();
     } catch (error) {
@@ -123,8 +114,8 @@ export function AdminStudentsView() {
             Manage student records, fees, and academic information.
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={() => setIsCreateDialogOpen(true)}>
+          <UserPlus className="h-4 w-4 mr-2" />
           Add Student
         </Button>
       </div>
@@ -270,6 +261,13 @@ export function AdminStudentsView() {
           )}
         </CardContent>
       </Card>
+
+      {/* Create Student Dialog */}
+      <AdminCreateStudentDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        onStudentCreated={fetchStudents}
+      />
     </div>
   );
 }
