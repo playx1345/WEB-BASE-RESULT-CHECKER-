@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Eye, EyeOff, School, User, Shield } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, User, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -110,7 +110,7 @@ export default function Auth() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
         <div className="text-center">
-          <School className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
+          <img src="/assets/plasu-logo.jpg" alt="PLASU Logo" className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
           <p className="text-muted-foreground">Signing in...</p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function Auth() {
         {/* School Branding */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
-            <School className="h-12 w-12 text-primary" />
+            <img src="/assets/plasu-logo.jpg" alt="PLASU Logo" className="h-12 w-12 text-primary" />
           </div>
           <h1 className="text-2xl font-bold">PLASU Portal</h1>
           <p className="text-sm text-muted-foreground">Plateau State University</p>
