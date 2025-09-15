@@ -66,7 +66,9 @@ const LandingPage = () => {
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto relative" style={{ backgroundImage: 'url(/src/assets/university-building.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}>
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm"></div>
+          <div className="relative z-10">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-primary mb-4">System Features</h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -116,6 +118,7 @@ const LandingPage = () => {
                 </CardDescription>
               </CardContent>
             </Card>
+          </div>
           </div>
         </div>
       </section>
