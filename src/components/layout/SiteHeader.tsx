@@ -97,15 +97,18 @@ export function SiteHeader() {
             <div className="flex items-center space-x-3 sm:space-x-4">
               <img 
                 src="/assets/plasu-polytechnic-logo.jpg" 
-                alt="Plateau State Polytechnic Logo" 
+                alt="Plateau State Polytechnic Barkin Ladi Logo" 
                 className="h-8 w-8 sm:h-10 sm:w-10 object-contain flex-shrink-0 rounded-sm"
               />
               <div className="min-w-0">
                 <h1 className="text-base sm:text-lg lg:text-xl font-heading font-bold text-foreground leading-tight truncate">
-                  Plateau State Polytechnic Result Management System
+                  Plateau State Polytechnic Barkin Ladi
                 </h1>
                 <p className="text-sm sm:text-base text-muted-foreground font-medium tracking-wide hidden sm:block">
-                  Department of Computer Science
+                  School of Information and Communication Technology
+                </p>
+                <p className="text-xs sm:text-sm text-muted-foreground font-medium tracking-wide hidden lg:block">
+                  Department of Computer Science - Online Result Checker
                 </p>
               </div>
             </div>

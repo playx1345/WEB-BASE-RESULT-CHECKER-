@@ -42,17 +42,20 @@ const LandingPage = () => {
         <div className="flex flex-col items-center space-y-8 max-w-4xl mx-auto">
           {/* Logo */}
           <div className="flex items-center justify-center w-36 h-36 bg-white rounded-full shadow-xl ring-8 ring-blue-50 hover:shadow-2xl transition-shadow duration-300">
-            <img src="/assets/logo.jpg" alt="Plateau State University Logo" className="w-28 h-28 object-contain" />
+            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-28 h-28 object-contain" />
           </div>
           
           {/* School Information */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight">
-              Plateau State University
+              Plateau State Polytechnic Barkin Ladi
             </h1>
             <h2 className="text-xl md:text-2xl font-semibold text-secondary-foreground max-w-3xl">
-              Student Portal & Academic Management System
+              School of Information and Communication Technology
             </h2>
+            <h3 className="text-lg md:text-xl font-medium text-muted-foreground max-w-2xl">
+              Department of Computer Science - Online Result Checker
+            </h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Access your academic records, check results, view announcements, and manage your student profile all in one secure platform.
             </p>
