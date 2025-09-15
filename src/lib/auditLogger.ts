@@ -44,7 +44,7 @@ export async function logUserActivity(
       ...metadata,
       timestamp: new Date().toISOString(),
       url: window.location.href,
-    };
+    } as Json;
 
     const { data, error } = await supabase.rpc('log_user_activity', {
       p_action: action,
