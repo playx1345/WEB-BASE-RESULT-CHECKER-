@@ -87,7 +87,7 @@ const LandingPage = () => {
 
       {/* Mission and Vision Section */}
       <section className="container mx-auto px-4 py-20">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto computer-lab-bg rounded-3xl p-16 modern-shadow">
           <div className="text-center mb-16">
             <h3 className="text-2xl md:text-3xl font-bold gradient-text mb-6">Our Mission & Vision</h3>
             <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
