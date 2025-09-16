@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { InputSanitizer } from '@/lib/security';
 
 interface AdminCreateStudentDialogProps {
   open: boolean;
@@ -31,15 +32,18 @@ export function AdminCreateStudentDialog({
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
     
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-    } else if (formData.fullName.trim().length < 2) {
+    const sanitizedName = InputSanitizer.sanitizeText(formData.fullName);
+    const sanitizedMatric = InputSanitizer.sanitizeMatricNumber(formData.matricNumber);
+    const sanitizedPhone = InputSanitizer.sanitizePhoneNumber(formData.phoneNumber);
+    const sanitizedPIN = InputSanitizer.sanitizePIN(formData.pin);
+    
+    if (!sanitizedName || sanitizedName.length < 2) {
       newErrors.fullName = 'Full name must be at least 2 characters';
     }
     
-    if (!formData.matricNumber.trim()) {
+    if (!sanitizedMatric) {
       newErrors.matricNumber = 'Matric number is required';
-    } else if (!/^[A-Z]{2,3}\/\d{4}\/\d{3}$/.test(formData.matricNumber)) {
+    } else if (!InputSanitizer.validateMatricNumber(sanitizedMatric)) {
       newErrors.matricNumber = 'Invalid format. Use: CS/2021/001';
     }
     
@@ -47,11 +51,11 @@ export function AdminCreateStudentDialog({
       newErrors.level = 'Level is required';
     }
     
-    if (formData.phoneNumber && !/^\+?[\d\s\-()]{10,15}$/.test(formData.phoneNumber)) {
+    if (sanitizedPhone && !InputSanitizer.validatePhoneNumber(sanitizedPhone)) {
       newErrors.phoneNumber = 'Invalid phone number format';
     }
     
-    if (formData.pin.length !== 6) {
+    if (!InputSanitizer.validatePIN(sanitizedPIN)) {
       newErrors.pin = 'PIN must be exactly 6 digits';
     }
     
@@ -60,7 +64,26 @@ export function AdminCreateStudentDialog({
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    let sanitizedValue = value;
+    
+    // Apply appropriate sanitization based on field type
+    switch (field) {
+      case 'fullName':
+        sanitizedValue = InputSanitizer.sanitizeText(value);
+        break;
+      case 'matricNumber':
+        sanitizedValue = InputSanitizer.sanitizeMatricNumber(value);
+        break;
+      case 'phoneNumber':
+        sanitizedValue = InputSanitizer.sanitizePhoneNumber(value);
+        break;
+      case 'pin':
+        sanitizedValue = InputSanitizer.sanitizePIN(value);
+        break;
+    }
+    
+    setFormData(prev => ({ ...prev, [field]: sanitizedValue }));
+    
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -78,13 +101,16 @@ export function AdminCreateStudentDialog({
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.rpc('admin_create_student', {
-        p_full_name: formData.fullName.trim(),
-        p_matric_number: formData.matricNumber.trim(),
+      // Final sanitization before sending to backend
+      const sanitizedData = {
+        p_full_name: InputSanitizer.sanitizeText(formData.fullName),
+        p_matric_number: InputSanitizer.sanitizeMatricNumber(formData.matricNumber),
         p_level: formData.level,
-        p_phone_number: formData.phoneNumber.trim() || null,
-        p_pin: formData.pin
-      });
+        p_phone_number: formData.phoneNumber ? InputSanitizer.sanitizePhoneNumber(formData.phoneNumber) : null,
+        p_pin: InputSanitizer.sanitizePIN(formData.pin)
+      };
+
+      const { data, error } = await supabase.rpc('admin_create_student', sanitizedData);
 
       if (error) {
         console.error('Error creating student:', error);
