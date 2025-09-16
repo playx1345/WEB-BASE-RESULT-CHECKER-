@@ -26,16 +26,52 @@ export function AdminCreateStudentDialog({
     pin: '112233' // Default PIN
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    } else if (formData.fullName.trim().length < 2) {
+      newErrors.fullName = 'Full name must be at least 2 characters';
+    }
+    
+    if (!formData.matricNumber.trim()) {
+      newErrors.matricNumber = 'Matric number is required';
+    } else if (!/^[A-Z]{2,3}\/\d{4}\/\d{3}$/.test(formData.matricNumber)) {
+      newErrors.matricNumber = 'Invalid format. Use: CS/2021/001';
+    }
+    
+    if (!formData.level) {
+      newErrors.level = 'Level is required';
+    }
+    
+    if (formData.phoneNumber && !/^\+?[\d\s\-()]{10,15}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = 'Invalid phone number format';
+    }
+    
+    if (formData.pin.length !== 6) {
+      newErrors.pin = 'PIN must be exactly 6 digits';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.fullName || !formData.matricNumber || !formData.level) {
-      toast.error('Please fill in all required fields');
+    if (!validateForm()) {
+      toast.error('Please fix the validation errors');
       return;
     }
 
@@ -43,16 +79,17 @@ export function AdminCreateStudentDialog({
 
     try {
       const { data, error } = await supabase.rpc('admin_create_student', {
-        p_full_name: formData.fullName,
-        p_matric_number: formData.matricNumber,
+        p_full_name: formData.fullName.trim(),
+        p_matric_number: formData.matricNumber.trim(),
         p_level: formData.level,
-        p_phone_number: formData.phoneNumber || null,
+        p_phone_number: formData.phoneNumber.trim() || null,
         p_pin: formData.pin
       });
 
       if (error) {
         console.error('Error creating student:', error);
-        if (error.message.includes('duplicate key')) {
+        if (error.message.includes('duplicate key') || error.message.includes('already exists')) {
+          setErrors({ matricNumber: 'A student with this matric number already exists' });
           toast.error('A student with this matric number already exists');
         } else {
           toast.error('Failed to create student: ' + error.message);
@@ -60,7 +97,7 @@ export function AdminCreateStudentDialog({
         return;
       }
 
-      toast.success('Student created successfully!');
+      toast.success(`Student ${formData.fullName} created successfully!`);
       
       // Reset form
       setFormData({
@@ -70,6 +107,7 @@ export function AdminCreateStudentDialog({
         phoneNumber: '',
         pin: '112233'
       });
+      setErrors({});
       
       onStudentCreated();
       onOpenChange(false);
@@ -90,6 +128,7 @@ export function AdminCreateStudentDialog({
       phoneNumber: '',
       pin: '112233'
     });
+    setErrors({});
     onOpenChange(false);
   };
 
@@ -111,8 +150,12 @@ export function AdminCreateStudentDialog({
               value={formData.fullName}
               onChange={(e) => handleInputChange('fullName', e.target.value)}
               placeholder="Enter student's full name"
+              className={errors.fullName ? 'border-destructive' : ''}
               required
             />
+            {errors.fullName && (
+              <p className="text-sm text-destructive">{errors.fullName}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -122,24 +165,28 @@ export function AdminCreateStudentDialog({
               value={formData.matricNumber}
               onChange={(e) => handleInputChange('matricNumber', e.target.value.toUpperCase())}
               placeholder="e.g., CS/2021/001"
+              className={errors.matricNumber ? 'border-destructive' : ''}
               required
             />
+            {errors.matricNumber && (
+              <p className="text-sm text-destructive">{errors.matricNumber}</p>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="level">Level *</Label>
             <Select value={formData.level} onValueChange={(value) => handleInputChange('level', value)}>
-              <SelectTrigger>
+              <SelectTrigger className={errors.level ? 'border-destructive' : ''}>
                 <SelectValue placeholder="Select level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="100">100 Level</SelectItem>
-                <SelectItem value="200">200 Level</SelectItem>
-                <SelectItem value="300">300 Level</SelectItem>
-                <SelectItem value="400">400 Level</SelectItem>
-                <SelectItem value="500">500 Level</SelectItem>
+                <SelectItem value="ND1">ND1 (First Year)</SelectItem>
+                <SelectItem value="ND2">ND2 (Second Year)</SelectItem>
               </SelectContent>
             </Select>
+            {errors.level && (
+              <p className="text-sm text-destructive">{errors.level}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -149,7 +196,11 @@ export function AdminCreateStudentDialog({
               value={formData.phoneNumber}
               onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
               placeholder="Enter phone number (optional)"
+              className={errors.phoneNumber ? 'border-destructive' : ''}
             />
+            {errors.phoneNumber && (
+              <p className="text-sm text-destructive">{errors.phoneNumber}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -159,8 +210,12 @@ export function AdminCreateStudentDialog({
               value={formData.pin}
               onChange={(e) => handleInputChange('pin', e.target.value.replace(/\D/g, '').slice(0, 6))}
               placeholder="6-digit PIN"
+              className={errors.pin ? 'border-destructive' : ''}
               maxLength={6}
             />
+            {errors.pin && (
+              <p className="text-sm text-destructive">{errors.pin}</p>
+            )}
             <p className="text-xs text-muted-foreground">
               Default PIN is 112233. Student can request PIN change later.
             </p>
