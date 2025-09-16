@@ -3,8 +3,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { GraduationCap, FileText, Bell, AlertTriangle } from 'lucide-react';
+import { LoadingState } from '@/components/ui/loading-state';
+import { PerformanceCharts } from '@/components/charts/PerformanceCharts';
+import { QuickActions } from '@/components/QuickActions';
+import { ActivityTimeline } from '@/components/ActivityTimeline';
+import { GraduationCap, FileText, Bell, AlertTriangle, TrendingUp, Users, Calendar } from 'lucide-react';
 
 interface StudentData {
   id: string;
@@ -63,34 +66,30 @@ export function DashboardView() {
     fetchData();
   }, [user]);
 
+  const handleViewResults = () => {
+    // This would be implemented to navigate to results view
+    console.log('Navigate to results');
+  };
+
+  const handleViewProfile = () => {
+    // This would be implemented to navigate to profile view
+    console.log('Navigate to profile');
+  };
+
+  const handleViewAnnouncements = () => {
+    // This would be implemented to navigate to announcements view
+    console.log('Navigate to announcements');
+  };
+
   if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="pb-2">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-6 w-20" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-4 w-24" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
+    return <LoadingState type="dashboard" />;
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+          <TrendingUp className="h-8 w-8 text-primary" />
           Welcome back, {profile?.full_name || 'Student'}
         </h1>
         <p className="text-muted-foreground">
@@ -98,8 +97,9 @@ export function DashboardView() {
         </p>
       </div>
 
+      {/* Quick Stats Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Current Level</CardTitle>
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
@@ -110,7 +110,7 @@ export function DashboardView() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">CGPA</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -123,7 +123,7 @@ export function DashboardView() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Fee Status</CardTitle>
             <Bell className="h-4 w-4 text-muted-foreground" />
@@ -139,7 +139,7 @@ export function DashboardView() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Carryovers</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
@@ -153,6 +153,7 @@ export function DashboardView() {
         </Card>
       </div>
 
+      {/* Fee Payment Warning */}
       {studentData?.fee_status !== 'paid' && (
         <Card className="border-destructive/50 bg-destructive/5">
           <CardHeader>
@@ -168,35 +169,96 @@ export function DashboardView() {
         </Card>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Stats</CardTitle>
-            <CardDescription>Your academic performance summary</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Matric Number</span>
-              <span className="font-medium">{studentData?.matric_number || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total Grade Points</span>
-              <span className="font-medium">{studentData?.total_gp?.toFixed(2) || '0.00'}</span>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Quick Actions */}
+      <QuickActions 
+        onViewResults={handleViewResults}
+        onViewProfile={handleViewProfile}
+        onViewAnnouncements={handleViewAnnouncements}
+        feeStatus={studentData?.fee_status}
+      />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates and announcements</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Check the announcements section for the latest updates from the academic office.
-            </p>
-          </CardContent>
-        </Card>
+      {/* Performance Charts */}
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <TrendingUp className="h-6 w-6 text-primary" />
+            Academic Performance
+          </h2>
+          <p className="text-muted-foreground">
+            Visual analysis of your academic progress and achievements
+          </p>
+        </div>
+        <PerformanceCharts />
+      </div>
+
+      {/* Activity and Summary */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Activity Timeline - Takes 2 columns */}
+        <div className="lg:col-span-2">
+          <ActivityTimeline />
+        </div>
+
+        {/* Quick Summary - Takes 1 column */}
+        <div className="space-y-6">
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Quick Stats
+              </CardTitle>
+              <CardDescription>Your academic performance summary</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Matric Number</span>
+                <span className="font-medium">{studentData?.matric_number || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Grade Points</span>
+                <span className="font-medium">{studentData?.total_gp?.toFixed(2) || '0.00'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Academic Session</span>
+                <span className="font-medium">2024/2025</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Upcoming Events
+              </CardTitle>
+              <CardDescription>Important dates and deadlines</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                  <div>
+                    <p className="text-sm font-medium">Exam Registration</p>
+                    <p className="text-xs text-muted-foreground">Opens in 5 days</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
+                  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                  <div>
+                    <p className="text-sm font-medium">Course Registration</p>
+                    <p className="text-xs text-muted-foreground">Now open</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20">
+                  <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                  <div>
+                    <p className="text-sm font-medium">Fee Payment</p>
+                    <p className="text-xs text-muted-foreground">Due in 14 days</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

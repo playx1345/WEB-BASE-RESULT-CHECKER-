@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { MoreVertical, User, Shield, GraduationCap, LogOut } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -75,6 +76,8 @@ export function SiteHeader() {
                 </span>
               </div>
             )}
+            
+            <ThemeToggle />
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

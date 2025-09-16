@@ -133,6 +133,26 @@ All colors MUST be HSL.
     animation: shimmer 2s ease-in-out infinite;
   }
 
+  .animate-slide-in-up {
+    animation: slideInUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out forwards;
+  }
+
+  .animate-zoom-in {
+    animation: zoomIn 0.5s ease-out forwards;
+  }
+
+  .animate-rotate-in {
+    animation: rotateIn 0.8s ease-out forwards;
+  }
+
   .glass-morphism {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
@@ -227,4 +247,59 @@ All colors MUST be HSL.
 @keyframes shimmer {
   0% { left: -100%; }
   100% { left: 100%; }
+}
+
+@keyframes slideInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(50px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes slideInLeft {
+  from { 
+    opacity: 0; 
+    transform: translateX(-50px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0; 
+    transform: translateX(50px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes zoomIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.8); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes rotateIn {
+  from { 
+    opacity: 0; 
+    transform: rotate(-10deg) scale(0.9); 
+  }
+  to { 
+    opacity: 1; 
+    transform: rotate(0deg) scale(1); 
+  }
 }

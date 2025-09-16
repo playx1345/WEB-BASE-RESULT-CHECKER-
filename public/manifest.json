@@ -1,0 +1,76 @@
+{
+  "name": "Plateau State Polytechnic Grade Access",
+  "short_name": "PlaPoly Grades", 
+  "description": "Online result checker for Plateau State Polytechnic Barkin Ladi - Department of Computer Science",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "id": "plateau-poly-grades",
+  "categories": ["education", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/assets/plasu-polytechnic-logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/assets/plasu-polytechnic-logo.jpg", 
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/assets/plasu-polytechnic-logo.jpg",
+      "sizes": "144x144", 
+      "type": "image/jpeg"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop view of the grade access dashboard"
+    },
+    {
+      "src": "/assets/screenshot-mobile.png", 
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile view of the grade access dashboard"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View Results",
+      "short_name": "Results",
+      "description": "Check your latest academic results",
+      "url": "/?action=results",
+      "icons": [
+        {
+          "src": "/assets/plasu-polytechnic-logo.jpg",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Student Login",
+      "short_name": "Login", 
+      "description": "Sign in as a student",
+      "url": "/auth",
+      "icons": [
+        {
+          "src": "/assets/plasu-polytechnic-logo.jpg",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
