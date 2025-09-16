@@ -5,6 +5,7 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
 import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield, User, Globe, Briefcase } from 'lucide-react';
+import buildingBg from '@/assets/building-bg.jpg';
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   if (showAdminSetup) {
@@ -30,7 +31,17 @@ const LandingPage = () => {
       
       {/* Hero Section */}
       <section className="relative container mx-auto px-4 py-24 text-center overflow-hidden">        
-        <div className="flex flex-col items-center space-y-12 max-w-6xl mx-auto">
+        <div 
+          className="flex flex-col items-center space-y-12 max-w-6xl mx-auto relative rounded-3xl overflow-hidden modern-shadow p-16"
+          style={{ 
+            backgroundImage: `url(${buildingBg})`, 
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center' 
+          }}
+        >
+          {/* Background overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/70 via-background/60 to-accent/70"></div>
+          <div className="relative z-10 flex flex-col items-center space-y-12 w-full">
           {/* Logo */}
           <div className="flex items-center justify-center w-40 h-40 glass-morphism-card rounded-full shadow-2xl hover-lift">
             <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-32 h-32 object-contain" />
@@ -69,6 +80,7 @@ const LandingPage = () => {
               <Settings className="h-5 w-5" />
               Admin Setup
             </Button>
+          </div>
           </div>
         </div>
       </section>
