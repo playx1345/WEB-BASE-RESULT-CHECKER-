@@ -98,7 +98,7 @@ export function DashboardView() {
       </div>
 
       {/* Quick Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Current Level</CardTitle>
@@ -193,13 +193,13 @@ export function DashboardView() {
 
       {/* Activity and Summary */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Activity Timeline - Takes 2 columns */}
-        <div className="lg:col-span-2">
+        {/* Activity Timeline - Takes 2 columns on large screens, full width on smaller */}
+        <div className="lg:col-span-2 order-2 lg:order-1">
           <ActivityTimeline />
         </div>
 
-        {/* Quick Summary - Takes 1 column */}
-        <div className="space-y-6">
+        {/* Quick Summary - Takes 1 column on large screens, full width on smaller */}
+        <div className="space-y-6 order-1 lg:order-2">
           <Card className="hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

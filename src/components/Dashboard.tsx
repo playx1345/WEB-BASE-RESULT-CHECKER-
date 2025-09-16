@@ -6,6 +6,8 @@ import { DashboardView } from './views/DashboardView';
 import { ResultsView } from './views/ResultsView';
 import { AnnouncementsView } from './views/AnnouncementsView';
 import { ProfileView } from './views/ProfileView';
+import { NotificationsView } from './views/NotificationsView';
+import { DocumentsView } from './views/DocumentsView';
 import { useProfile } from '@/hooks/useProfile';
 
 export function Dashboard() {
@@ -38,6 +40,10 @@ export function Dashboard() {
         return <ResultsView />;
       case 'announcements':
         return <AnnouncementsView />;
+      case 'notifications':
+        return <NotificationsView />;
+      case 'documents':
+        return <DocumentsView />;
       case 'profile':
         return <ProfileView />;
       default:

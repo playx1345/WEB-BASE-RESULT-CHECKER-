@@ -9,7 +9,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: any }>;
+  signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           id: '00000000-0000-0000-0000-000000000001',
           email: 'admin@plateau.edu.ng',
           user_metadata: { role: 'admin', full_name: 'System Administrator' }
-        } as any;
+        } as User;
         
         const mockSession = {
           user: mockUser,
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           expires_in: 3600,
           refresh_token: 'demo-refresh-token',
           expires_at: Date.now() + 3600000
-        } as any;
+        } as Session;
         
         setSession(mockSession);
         setUser(mockUser);
