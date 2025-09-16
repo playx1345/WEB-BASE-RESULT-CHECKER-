@@ -43,8 +43,8 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/10 to-accent/20"></div>
           <div className="relative z-10 flex flex-col items-center space-y-12 w-full">
           {/* Logo */}
-          <div className="flex items-center justify-center w-40 h-40 glass-morphism-card rounded-full shadow-2xl hover-lift">
-            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-32 h-32 object-contain" />
+          <div className="flex items-center justify-center w-40 h-40 glass-enhanced rounded-full shadow-2xl float-animation">
+            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-32 h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110" />
           </div>
           
           {/* Time Ribbon */}
@@ -70,14 +70,14 @@ const LandingPage = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button asChild size="lg" className="px-12 py-8 text-base font-bold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-500 shadow-2xl hover-lift">
+            <Button asChild size="lg" className="px-12 py-8 text-base font-bold btn-gradient ripple shadow-2xl hover:shadow-primary/30">
               <a href="/auth" className="flex items-center">
                 Get Started Now
-                <ChevronRight className="ml-3 h-6 w-6" />
+                <ChevronRight className="ml-3 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </Button>
-            <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="flex items-center gap-3 px-12 py-8 text-base font-bold glass-morphism border-2 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all duration-500 hover-lift">
-              <Settings className="h-5 w-5" />
+            <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="flex items-center gap-3 px-12 py-8 text-base font-bold glass-enhanced border-2 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all duration-500">
+              <Settings className="h-5 w-5 transition-transform duration-300 hover:rotate-45" />
               Admin Setup
             </Button>
           </div>
@@ -264,29 +264,29 @@ const LandingPage = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <Card className="glass-morphism border-white/20 modern-shadow hover-lift group">
+            <Card className="glass-enhanced border-white/20 modern-shadow stagger-in group">
               <CardHeader className="text-center">
-                <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Users className="h-8 w-8 text-white" />
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                  <Users className="h-8 w-8 text-white transition-colors duration-300 group-hover:text-primary-foreground" />
                 </div>
-                <CardTitle className="text-base font-bold text-white">Student Management</CardTitle>
+                <CardTitle className="text-base font-bold text-white text-shadow-bright group-hover:text-primary-foreground transition-colors duration-300">Student Management</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-sm leading-relaxed text-white/90">
+                <CardDescription className="text-center text-sm leading-relaxed text-white/95 text-shadow-bright transition-colors duration-300 group-hover:text-white">
                   Advanced student records management with comprehensive progress tracking, secure access controls, and real-time updates.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="glass-morphism border-white/20 modern-shadow hover-lift group">
+            <Card className="glass-enhanced border-white/20 modern-shadow stagger-in group">
               <CardHeader className="text-center">
-                <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <BookOpen className="h-8 w-8 text-white" />
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-secondary/30 to-primary/30 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                  <BookOpen className="h-8 w-8 text-white transition-colors duration-300 group-hover:text-secondary-foreground" />
                 </div>
-                <CardTitle className="text-base font-bold text-white">Results Portal</CardTitle>
+                <CardTitle className="text-base font-bold text-white text-shadow-bright group-hover:text-secondary-foreground transition-colors duration-300">Results Portal</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-sm leading-relaxed text-white/90">
+                <CardDescription className="text-center text-sm leading-relaxed text-white/95 text-shadow-bright transition-colors duration-300 group-hover:text-white">
                   Instant access to academic results with advanced analytics, performance insights, and comprehensive grade reporting.
                 </CardDescription>
               </CardContent>
