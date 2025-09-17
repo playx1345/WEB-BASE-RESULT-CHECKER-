@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 213 100% 45%;
+    --primary: 213 100% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 213 15% 95%;
-    --secondary-foreground: 213 100% 30%;
+    --secondary: 280 100% 70%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 213 10% 96%;
     --muted-foreground: 213 8% 45%;
 
-    --accent: 213 100% 50%;
+    --accent: 340 100% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -327,6 +327,36 @@ All colors MUST be HSL.
   }
 }
 
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background: linear-gradient(45deg, 
+      hsl(var(--primary) / 0.3), 
+      hsl(var(--secondary) / 0.25), 
+      hsl(var(--accent) / 0.3)
+    );
+  }
+  33% {
+    background: linear-gradient(45deg, 
+      hsl(var(--accent) / 0.35), 
+      hsl(var(--primary) / 0.3), 
+      hsl(var(--secondary) / 0.25)
+    );
+  }
+  66% {
+    background: linear-gradient(45deg, 
+      hsl(var(--secondary) / 0.3), 
+      hsl(var(--accent) / 0.35), 
+      hsl(var(--primary) / 0.25)
+    );
+  }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -501,4 +531,65 @@ All colors MUST be HSL.
 .computer-lab-bg > * {
   position: relative;
   z-index: 2;
+}
+
+/* Full Viewport Immersive Background */
+.immersive-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: -30;
+}
+
+.immersive-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, 
+    hsl(var(--primary) / 0.3), 
+    hsl(var(--secondary) / 0.25), 
+    hsl(var(--accent) / 0.3)
+  );
+  animation: gradientShift 12s ease-in-out infinite;
+}
+
+.vibrant-overlay {
+  background: linear-gradient(135deg,
+    hsl(var(--primary) / 0.15) 0%,
+    hsl(var(--secondary) / 0.12) 30%,
+    hsl(var(--accent) / 0.18) 60%,
+    hsl(var(--primary) / 0.2) 100%
+  );
+  animation: colorPulse 8s ease-in-out infinite;
+}
+
+@keyframes colorPulse {
+  0%, 100% {
+    background: linear-gradient(135deg,
+      hsl(var(--primary) / 0.15) 0%,
+      hsl(var(--secondary) / 0.12) 30%,
+      hsl(var(--accent) / 0.18) 60%,
+      hsl(var(--primary) / 0.2) 100%
+    );
+  }
+  50% {
+    background: linear-gradient(135deg,
+      hsl(var(--accent) / 0.2) 0%,
+      hsl(var(--primary) / 0.15) 30%,
+      hsl(var(--secondary) / 0.2) 60%,
+      hsl(var(--accent) / 0.25) 100%
+    );
+  }
+}
+
+.enhanced-glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(25px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
