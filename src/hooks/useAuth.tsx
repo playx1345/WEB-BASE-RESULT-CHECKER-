@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       
       if (studentError || !studentData || studentData.length === 0) {
-        return { error: studentError || { message: 'Invalid matric number or PIN' } };
+        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
       }
       
       // Sign in with constructed email
@@ -98,7 +98,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const mockUser = {
           id: '00000000-0000-0000-0000-000000000001',
           email: 'admin@plateau.edu.ng',
-          user_metadata: { role: 'admin', full_name: 'System Administrator' }
+          user_metadata: { role: 'admin', full_name: 'System Administrator' },
+          app_metadata: {},
+          aud: 'authenticated',
+          created_at: new Date().toISOString()
         } as User;
         
         const mockSession = {
