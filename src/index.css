@@ -130,8 +130,45 @@ All colors MUST be HSL.
 @layer components {
   /* Mobile accessibility improvements */
   .touch-target {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 48px;
+    min-width: 48px;
+    @apply transition-all duration-200 active:scale-95;
+  }
+
+  /* Mobile-specific enhancements */
+  @media (max-width: 767px) {
+    .mobile-optimized {
+      padding: 0.75rem;
+    }
+    
+    .mobile-text {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+    
+    .mobile-hero-bg {
+      background-attachment: scroll;
+      background-size: cover;
+      background-position: center center;
+    }
+    
+    .mobile-card-padding {
+      padding: 1rem;
+    }
+    
+    .mobile-spacing {
+      margin-bottom: 1rem;
+    }
+    
+    /* Better mobile button styles */
+    .btn-mobile {
+      @apply w-full py-4 text-base font-semibold rounded-lg shadow-lg active:scale-95 transition-all duration-200;
+    }
+    
+    /* Mobile navigation improvements */
+    .mobile-nav {
+      @apply fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border p-4 z-50;
+    }
   }
 
   /* Improved text contrast for accessibility */
