@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Eye, EyeOff, User, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ForgotPasswordDialog } from '@/components/auth/ForgotPasswordDialog';
 
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,8 +71,8 @@ export default function Auth() {
     
     if (!studentForm.matricNumber.trim()) {
       errors.matricNumber = 'Matric number is required';
-    } else if (!/^[A-Z]{2,3}\/\d{4}\/\d{3}$/.test(studentForm.matricNumber)) {
-      errors.matricNumber = 'Invalid format. Use: CS/2021/001';
+    } else if (!/^[A-Z]{2,4}\/([A-Z]{2}\/)?[0-9]{4}\/[0-9]{3}$/.test(studentForm.matricNumber)) {
+      errors.matricNumber = 'Invalid format. Use: PLT/ND/2023/001 or CS/2021/001';
     }
     
     if (!studentForm.pin) {
@@ -343,6 +344,14 @@ export default function Auth() {
                   >
                     {loading ? 'Signing in...' : 'Sign In as Admin'}
                   </Button>
+
+                  <div className="text-center">
+                    <ForgotPasswordDialog>
+                      <Button variant="link" className="text-sm text-muted-foreground hover:text-primary">
+                        Forgot your password?
+                      </Button>
+                    </ForgotPasswordDialog>
+                  </div>
                 </form>
               </TabsContent>
             </Tabs>
