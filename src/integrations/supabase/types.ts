@@ -252,6 +252,7 @@ export type Database = {
           level: string
           matric_number: string
           pin: string | null
+          pin_hash: string | null
           profile_id: string
           total_gp: number | null
           updated_at: string | null
@@ -265,6 +266,7 @@ export type Database = {
           level: string
           matric_number: string
           pin?: string | null
+          pin_hash?: string | null
           profile_id: string
           total_gp?: number | null
           updated_at?: string | null
@@ -278,6 +280,7 @@ export type Database = {
           level?: string
           matric_number?: string
           pin?: string | null
+          pin_hash?: string | null
           profile_id?: string
           total_gp?: number | null
           updated_at?: string | null
@@ -326,7 +329,7 @@ export type Database = {
           p_phone_number?: string
           p_pin?: string
         }
-        Returns: string
+        Returns: Json
       }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }
@@ -337,6 +340,18 @@ export type Database = {
           student_id: string
           user_id: string
         }[]
+      }
+      generate_secure_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      hash_pin: {
+        Args: { pin_text: string }
+        Returns: string
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       log_user_activity: {
         Args: {
