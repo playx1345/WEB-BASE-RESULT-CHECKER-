@@ -45,7 +45,7 @@ const Contact = () => {
     }, 2000);
   };
 
-  const formatOfficeHours = (hours: { [key: string]: string }) => {
+  const formatOfficeHours = (hours: Record<string, string>) => {
     return Object.entries(hours).map(([day, time]) => ({
       day,
       time
