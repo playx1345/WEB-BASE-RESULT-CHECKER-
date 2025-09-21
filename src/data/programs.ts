@@ -1,4 +1,4 @@
-import { Program, Course } from './types';
+import { Course, Program } from './types';
 
 // Course definitions
 const ndCourses: { [level: string]: { [semester: string]: Course[] } } = {
