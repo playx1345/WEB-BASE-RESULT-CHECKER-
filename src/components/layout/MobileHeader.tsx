@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { Menu, X, User, Shield, GraduationCap, LogOut, Home, Settings } from 'lucide-react';
+import { Menu, X, User, Shield, GraduationCap, LogOut, Home, Settings, BookOpen, Users, Mail, Newspaper } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -115,20 +115,79 @@ export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
                   </SheetHeader>
 
                   <div className="flex-1 p-6">
-                    <nav className="space-y-4">
+                    <nav className="space-y-2">
+                      <Button 
+                        asChild 
+                        variant="ghost" 
+                        className="w-full justify-start h-12 text-left"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/" className="flex items-center space-x-3">
+                          <Home className="h-5 w-5" />
+                          <span>Home</span>
+                        </Link>
+                      </Button>
+                      <Button 
+                        asChild 
+                        variant="ghost" 
+                        className="w-full justify-start h-12 text-left"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/about" className="flex items-center space-x-3">
+                          <BookOpen className="h-5 w-5" />
+                          <span>About</span>
+                        </Link>
+                      </Button>
+                      <Button 
+                        asChild 
+                        variant="ghost" 
+                        className="w-full justify-start h-12 text-left"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/programs" className="flex items-center space-x-3">
+                          <GraduationCap className="h-5 w-5" />
+                          <span>Programs</span>
+                        </Link>
+                      </Button>
+                      <Button 
+                        asChild 
+                        variant="ghost" 
+                        className="w-full justify-start h-12 text-left"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/faculty" className="flex items-center space-x-3">
+                          <Users className="h-5 w-5" />
+                          <span>Faculty</span>
+                        </Link>
+                      </Button>
+                      <Button 
+                        asChild 
+                        variant="ghost" 
+                        className="w-full justify-start h-12 text-left"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/news" className="flex items-center space-x-3">
+                          <Newspaper className="h-5 w-5" />
+                          <span>News</span>
+                        </Link>
+                      </Button>
+                      <Button 
+                        asChild 
+                        variant="ghost" 
+                        className="w-full justify-start h-12 text-left"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/contact" className="flex items-center space-x-3">
+                          <Mail className="h-5 w-5" />
+                          <span>Contact</span>
+                        </Link>
+                      </Button>
+
                       {!user ? (
                         <>
-                          <Button 
-                            asChild 
-                            variant="ghost" 
-                            className="w-full justify-start h-12 text-left"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            <Link to="/" className="flex items-center space-x-3">
-                              <Home className="h-5 w-5" />
-                              <span>Home</span>
-                            </Link>
-                          </Button>
+                          <div className="py-2">
+                            <div className="border-t border-border"></div>
+                          </div>
                           <Button 
                             asChild 
                             variant="ghost" 

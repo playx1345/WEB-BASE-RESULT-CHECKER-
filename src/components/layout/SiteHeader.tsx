@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { MoreVertical, User, Shield, GraduationCap, LogOut } from 'lucide-react';
+import { MoreVertical, User, Shield, GraduationCap, LogOut, BookOpen, Users, Mail, Newspaper } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
@@ -93,6 +93,37 @@ export function SiteHeader() {
               <DropdownMenuContent align="end" className="w-56 glass-morphism-card border-primary/20">
                 {!user ? (
                   <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/about" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
+                        <BookOpen className="h-4 w-4" />
+                        <span>About</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/programs" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
+                        <GraduationCap className="h-4 w-4" />
+                        <span>Programs</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/faculty" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
+                        <Users className="h-4 w-4" />
+                        <span>Faculty</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/news" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
+                        <Newspaper className="h-4 w-4" />
+                        <span>News</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/contact" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
+                        <Mail className="h-4 w-4" />
+                        <span>Contact</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/auth?role=student" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
                         <GraduationCap className="h-4 w-4" />
