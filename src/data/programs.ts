@@ -179,7 +179,7 @@ const ndCourses: { [level: string]: { [semester: string]: Course[] } } = {
         learningOutcomes: [
           "Understand network protocols",
           "Configure basic network systems",
-          "Implement network security measures"
+          "Implement network security measures",
         ]
       },
       {
