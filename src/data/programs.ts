@@ -268,7 +268,7 @@ const ndCourses: { [level: string]: { [semester: string]: Course[] } } = {
         learningOutcomes: [
           "Develop Android applications",
           "Implement mobile UI/UX",
-          "Deploy apps to app stores"
+          "Deploy apps to app stores",
         ]
       },
       {
