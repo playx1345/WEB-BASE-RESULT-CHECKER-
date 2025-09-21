@@ -333,7 +333,7 @@ const News = () => {
                 <div 
                   key={news.id} 
                   className="animate-fade-in-up"
-                  style={{animationDelay: `${0.5 + index * 0.1}s`}}
+                  const ANIMATION_DELAY_BASE = 0.5;
                 >
                   <NewsCard news={news} />
                 </div>
