@@ -5,7 +5,7 @@ import { MobileHeader } from '@/components/layout/MobileHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { departmentInfo } from '@/data/contact';
-import { GraduationCap, Award, Users, Building, BookOpen, Target, Heart, Star } from 'lucide-react';
+import { Award, Building, GraduationCap, Heart, Star, Target, Users, BookOpen } from 'lucide-react';
 
 const About = () => {
   const isMobile = useIsMobile();
