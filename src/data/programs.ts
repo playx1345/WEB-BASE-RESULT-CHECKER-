@@ -282,7 +282,7 @@ const ndCourses: { [level: string]: { [semester: string]: Course[] } } = {
         learningOutcomes: [
           "Create 2D and 3D graphics",
           "Implement graphics algorithms",
-          "Use graphics libraries"
+          "Use graphics libraries",
         ]
       },
       {
