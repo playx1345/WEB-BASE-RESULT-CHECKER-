@@ -56,7 +56,7 @@ export const departmentInfo: DepartmentInfo = {
     "Local Tech Companies - Internship and Job Placements",
     "International Development Research Centre - Research Collaboration",
     "Nigerian Communications Commission - Cybersecurity Initiatives",
-    "Plateau State ICT Agency - Technology Policy Development"
+    "Plateau State ICT Agency - Technology Policy Development",
   ]
 };
 
