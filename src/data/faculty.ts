@@ -222,7 +222,7 @@ export const facultyMembers: FacultyMember[] = [
       "Software Process Improvement",
       "Project Management in Software Development",
       "Agile Transformation",
-      "Software Metrics"
+      "Software Metrics",
     ],
     yearsOfExperience: 9,
     bio: "Mr. Joseph Bulus serves as the Industry Liaison Officer, facilitating partnerships between the department and technology companies. He has extensive experience in software project management and helps students with internship and job placements.",
