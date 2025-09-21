@@ -21,8 +21,8 @@ export function AdminAuditLogsView() {
     actionBreakdown: Record<string, number>;
   } | null>(null);
   const [filters, setFilters] = useState({
-    action: '',
-    tableName: '',
+    action: 'all',
+    tableName: 'all',
     userId: '',
     fromDate: '',
     toDate: '',
@@ -40,8 +40,8 @@ export function AdminAuditLogsView() {
       const { data, error } = await fetchAuditLogs({
         limit: pageSize,
         offset: page * pageSize,
-        action: filters.action || undefined,
-        tableName: filters.tableName || undefined,
+        action: filters.action !== 'all' ? filters.action : undefined,
+        tableName: filters.tableName !== 'all' ? filters.tableName : undefined,
         userId: filters.userId || undefined,
         fromDate: filters.fromDate || undefined,
         toDate: filters.toDate || undefined,
@@ -210,7 +210,7 @@ export function AdminAuditLogsView() {
                   <SelectValue placeholder="All actions" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All actions</SelectItem>
+                  <SelectItem value="all">All actions</SelectItem>
                   <SelectItem value="login">Login/Logout</SelectItem>
                   <SelectItem value="insert">Create/Insert</SelectItem>
                   <SelectItem value="update">Update/Modify</SelectItem>
@@ -227,7 +227,7 @@ export function AdminAuditLogsView() {
                   <SelectValue placeholder="All tables" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All tables</SelectItem>
+                  <SelectItem value="all">All tables</SelectItem>
                   <SelectItem value="results">Results</SelectItem>
                   <SelectItem value="students">Students</SelectItem>
                   <SelectItem value="profiles">Profiles</SelectItem>
