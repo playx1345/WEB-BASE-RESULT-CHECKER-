@@ -67,7 +67,7 @@ export const facultyMembers: FacultyMember[] = [
       "Mobile Learning Applications for Technical Education (2022)"
     ],
     yearsOfExperience: 12,
-    bio: "Dr. Sarah Okafor is an Associate Professor specializing in software engineering and web technologies. She has extensive experience in developing educational software and has led numerous projects in mobile application development for educational institutions."
+    bio: "Dr. Sarah Okafor is an Associate Professor specializing in software engineering and web technologies. She has extensive experience in developing educational software and has led numerous projects in mobile application development for educational institutions.",
   },
   {
     id: "3",
