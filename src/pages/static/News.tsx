@@ -35,7 +35,7 @@ const News = () => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'long', year: 'numeric',
       day: 'numeric'
     });
   };
