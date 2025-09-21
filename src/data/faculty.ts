@@ -176,7 +176,7 @@ export const facultyMembers: FacultyMember[] = [
     qualifications: [
       "Ph.D. Information Technology, University of Jos",
       "M.Sc. Computer Science, University of Nigeria, Nsukka",
-      "B.Sc. Computer Science, Nnamdi Azikiwe University"
+      "B.Sc. Computer Science, Nnamdi Azikiwe University",
     ],
     specializations: [
       "Human-Computer Interaction",
