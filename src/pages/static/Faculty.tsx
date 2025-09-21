@@ -78,7 +78,7 @@ const Faculty = () => {
     >
       <div 
         className="glass-morphism-card border-primary/20 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); }}
       >
         <CardHeader className="p-4 sm:p-6 border-b border-primary/10">
           <div className="flex items-start justify-between gap-4">
