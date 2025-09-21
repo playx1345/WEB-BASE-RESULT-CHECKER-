@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,7 +33,7 @@ export function AdminAuditLogsView() {
 
   const pageSize = 50;
 
-  const loadAuditLogs = async (page = 0, resetData = false) => {
+  const loadAuditLogs = useCallback(async (page = 0, resetData = false) => {
     try {
       setLoading(true);
       
@@ -66,21 +66,21 @@ export function AdminAuditLogsView() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
       const statsData = await getAuditLogStats();
       setStats(statsData);
     } catch (error) {
       console.error('Error loading audit stats:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadAuditLogs(0, true);
     loadStats();
-  }, [filters]);
+  }, [loadAuditLogs, loadStats]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
