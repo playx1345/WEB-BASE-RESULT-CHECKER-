@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Search, Edit, DollarSign, User, Phone, Mail, Trash2, UserCheck, UserX } from 'lucide-react';
+import { UserPlus, Search, Edit, User, Trash2, UserCheck, UserX } from 'lucide-react';
 import { AdminCreateStudentDialog } from './AdminCreateStudentDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
