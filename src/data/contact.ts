@@ -44,7 +44,7 @@ export const departmentInfo: DepartmentInfo = {
     "Alumni working in top tech companies globally",
     "5 faculty members with international PhD degrees",
     "Host of Annual Tech Innovation Summit",
-    "Active participation in National IT competitions with multiple wins"
+    "Active participation in National IT competitions with multiple wins",
   ],
   partnerships: [
     "Microsoft Nigeria - Azure Cloud Services and Certifications",
