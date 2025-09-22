@@ -35,7 +35,7 @@ const News = () => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long', year: 'numeric',
+      month: 'long',
       day: 'numeric'
     });
   };
@@ -333,7 +333,7 @@ const News = () => {
                 <div 
                   key={news.id} 
                   className="animate-fade-in-up"
-                  const ANIMATION_DELAY_BASE = 0.5;
+                  style={{animationDelay: `${0.5 + index * 0.1}s`}}
                 >
                   <NewsCard news={news} />
                 </div>
