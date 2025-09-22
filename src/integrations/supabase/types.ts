@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      admins: {
+        Row: {
+          admin_level: string
+          created_at: string
+          department: string
+          id: string
+          permissions: Json | null
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          admin_level?: string
+          created_at?: string
+          department?: string
+          id?: string
+          permissions?: Json | null
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          admin_level?: string
+          created_at?: string
+          department?: string
+          id?: string
+          permissions?: Json | null
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admins_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       announcements: {
         Row: {
           content: string
@@ -83,6 +121,45 @@ export type Database = {
           table_name?: string | null
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      investment_plans: {
+        Row: {
+          created_at: string
+          daily_roi_rate: number
+          description: string | null
+          duration_days: number
+          id: string
+          maximum_amount: number | null
+          minimum_amount: number
+          name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          daily_roi_rate: number
+          description?: string | null
+          duration_days: number
+          id?: string
+          maximum_amount?: number | null
+          minimum_amount: number
+          name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          daily_roi_rate?: number
+          description?: string | null
+          duration_days?: number
+          id?: string
+          maximum_amount?: number | null
+          minimum_amount?: number
+          name?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -158,35 +235,56 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_balance: number | null
           created_at: string | null
           full_name: string | null
           id: string
+          investment_experience: string | null
+          investment_goals: string[] | null
           level: string | null
           matric_number: string | null
+          monthly_income_range: string | null
           phone_number: string | null
+          risk_tolerance: string | null
           role: Database["public"]["Enums"]["user_role"]
+          total_invested: number | null
+          total_withdrawn: number | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          account_balance?: number | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          investment_experience?: string | null
+          investment_goals?: string[] | null
           level?: string | null
           matric_number?: string | null
+          monthly_income_range?: string | null
           phone_number?: string | null
+          risk_tolerance?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          total_invested?: number | null
+          total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          account_balance?: number | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          investment_experience?: string | null
+          investment_goals?: string[] | null
           level?: string | null
           matric_number?: string | null
+          monthly_income_range?: string | null
           phone_number?: string | null
+          risk_tolerance?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          total_invested?: number | null
+          total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
         }
@@ -316,6 +414,106 @@ export type Database = {
         }
         Relationships: []
       }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          investment_id: string | null
+          metadata: Json | null
+          reference_id: string | null
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          investment_id?: string | null
+          metadata?: Json | null
+          reference_id?: string | null
+          status?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          investment_id?: string | null
+          metadata?: Json | null
+          reference_id?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_investment_id_fkey"
+            columns: ["investment_id"]
+            isOneToOne: false
+            referencedRelation: "user_investments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_investments: {
+        Row: {
+          amount: number
+          created_at: string
+          end_date: string
+          id: string
+          last_profit_calculation: string | null
+          plan_id: string
+          start_date: string
+          status: string
+          total_profit: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          end_date: string
+          id?: string
+          last_profit_calculation?: string | null
+          plan_id: string
+          start_date?: string
+          status?: string
+          total_profit?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          end_date?: string
+          id?: string
+          last_profit_calculation?: string | null
+          plan_id?: string
+          start_date?: string
+          status?: string
+          total_profit?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_investments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "investment_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -340,6 +538,10 @@ export type Database = {
           student_id: string
           user_id: string
         }[]
+      }
+      calculate_investment_profit: {
+        Args: { investment_id: string }
+        Returns: number
       }
       generate_secure_pin: {
         Args: Record<PropertyKey, never>
