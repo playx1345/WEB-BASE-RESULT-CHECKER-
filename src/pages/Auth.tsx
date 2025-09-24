@@ -71,8 +71,8 @@ export default function Auth() {
     
     if (!studentForm.matricNumber.trim()) {
       errors.matricNumber = 'Matric number is required';
-    } else if (!/^[A-Z]{2,4}\/([A-Z]{2}\/)?[0-9]{4}\/[0-9]{3}$/.test(studentForm.matricNumber)) {
-      errors.matricNumber = 'Invalid format. Use: PLT/ND/2023/001 or CS/2021/001';
+    } else if (!/^[A-Z]{2,4}\/([A-Z]{2,4}\/)?[0-9]{2,4}\/[0-9]{3}$/.test(studentForm.matricNumber)) {
+      errors.matricNumber = 'Invalid format. Use: ND/CSC/22/001 or PLT/ND/2023/001';
     }
     
     if (!studentForm.pin) {
