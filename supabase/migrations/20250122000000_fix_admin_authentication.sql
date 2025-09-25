@@ -41,7 +41,7 @@ INSERT INTO auth.users (
 )
 ON CONFLICT (id) DO UPDATE SET
   email = EXCLUDED.email,
-  encrypted_password = EXCLUDED.encrypted_password,
+  encrypted_password = excluded.encrypted_password,
   raw_user_meta_data = EXCLUDED.raw_user_meta_data;
 
 -- Insert demo admin profile if not exists
