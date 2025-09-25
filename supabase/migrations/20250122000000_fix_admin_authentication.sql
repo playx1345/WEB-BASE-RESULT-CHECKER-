@@ -9,7 +9,7 @@ INSERT INTO auth.users (
       aud,
   role,
   email,
-  encrypted_password,
+      encrypted_password,
   email_confirmed_at,
   raw_app_meta_data,
   raw_user_meta_data,
