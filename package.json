@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "create-admin": "node scripts/create-admin.js",
+    "setup-admin": "node scripts/setup-admin-now.js",
     "check-admin": "node scripts/check-admin.js",
+    "verify-admin": "node scripts/verify-admin-setup.js",
     "test-rbac": "node scripts/test-rbac.js",
     "test-rbac-full": "node scripts/test-rbac-comprehensive.js"
   },

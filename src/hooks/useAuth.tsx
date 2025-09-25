@@ -93,19 +93,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error };
     } else {
       // For admin/teacher login, try database authentication first
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
+      // If login successful, verify admin role and setup
+      if (!error && data.user && email === 'admin@plateau.edu.ng') {
+        try {
+          // Check if admin setup is complete
+          const { data: setupCheck, error: checkError } = await supabase
+            .rpc('check_admin_setup', { user_email: email });
+          
+          if (checkError) {
+            console.warn('Failed to check admin setup:', checkError);
+          } else if (setupCheck && !setupCheck.admin_exists && setupCheck.profile_role === 'admin') {
+            // Admin profile exists but admin record is missing, try to fix
+            console.log('Admin profile found but admin record missing, attempting to fix...');
+            const { error: setupError } = await supabase
+              .rpc('setup_admin_for_user', { user_email: email });
+            
+            if (setupError) {
+              console.warn('Failed to setup admin record:', setupError);
+            } else {
+              console.log('Admin setup completed successfully');
+            }
+          }
+        } catch (adminSetupError) {
+          console.warn('Admin setup check failed:', adminSetupError);
+        }
+      }
+      
       // If database auth fails and this is the demo admin, show helpful message
       if (error && email === 'admin@plateau.edu.ng') {
-        if (error.message?.includes('Invalid login credentials')) {
+        if (error.message?.includes('Invalid login credentials') || error.message?.includes('Invalid email or password')) {
           return { 
             error: { 
               ...error,
-              message: 'Demo admin login failed. Please ensure the admin account is properly created in the database. Run: npm run create-admin'
+              message: 'Admin login failed. The admin account may not exist in the database. Please run the admin creation script: npm run create-admin or node scripts/setup-admin-now.js'
             } as AuthError 
+          };
+        }
+        if (error.message?.includes('Email not confirmed')) {
+          return {
+            error: {
+              ...error,
+              message: 'Admin account exists but email is not confirmed. Please check the admin setup process.'
+            } as AuthError
           };
         }
       }
