@@ -61,7 +61,7 @@ INSERT INTO public.profiles (
   now()
 )
 ON CONFLICT (user_id) DO UPDATE SET
-  role = 'admin',
+      role = 'admin',
       full_name = 'System Administrator';
 
 -- Improve the is_admin function with better error handling and logging
