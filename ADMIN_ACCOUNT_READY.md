@@ -3,8 +3,8 @@
 ✅ **Admin account has been set up in Supabase**
 
 ## Admin Credentials
-- **Email**: admin@plateau.edu.ng
-- **Password**: Admin123456
+- **Email**: djplayxsilas134@gmail.com
+- **Password**: Admin123
 
 ## How to Login
 1. Go to the login page (click "Admin/Teacher Login")
