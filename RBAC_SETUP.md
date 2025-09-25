@@ -235,6 +235,7 @@ node scripts/test-rbac.js
    - Should be blocked with proper error messages
 
 #### Student Login and Access
+
 1. **Student Login Test**:
    - Use a created student's matric number and PIN
    - Should log in successfully
