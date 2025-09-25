@@ -53,9 +53,44 @@ The project is organized into several directories and files, each serving a spec
 ## Setup Instructions
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
-3. Open the `public/index.html` file in a web browser to view the landing page.
-4. For testing functionality, open `test-functionality.html` to run comprehensive tests.
-5. Ensure all assets are correctly linked in the HTML files.
+3. Install dependencies: `npm install`
+4. Set up environment variables (copy `.env.example` to `.env` and fill in values)
+5. Run database migrations if using Supabase
+6. Create an admin account: `npm run create-admin`
+7. Start the development server: `npm run dev`
+8. Open `http://localhost:8080` in your web browser
+
+## Role-Based Access Control
+
+### User Roles
+
+The system implements secure role-based access control with the following roles:
+- **Admin**: Full system access, can create/manage students
+- **Student**: Can view their own results (if fees are paid)  
+- **Teacher**: Can manage courses and results (future)
+- **Parent**: Can view child's results (future)
+
+### Demo Credentials
+
+#### Admin Access
+- **Email**: admin@plateau.edu.ng
+- **Password**: Admin123456
+
+#### Sample Student Logins
+| Student | Matric Number | PIN | Level | Fee Status |
+|---------|---------------|-----|-------|------------|
+| John Doe | PLT/ND/2023/001 | 123456 | ND1 | Paid |
+| Jane Smith | PLT/ND/2023/002 | 234567 | ND1 | Unpaid |
+| Michael Johnson | PLT/ND/2022/001 | 345678 | ND2 | Paid |
+
+### Security Features
+- **Server-side role verification** using Supabase functions
+- **Row Level Security (RLS)** policies for data access control
+- **Secure PIN hashing** for student authentication
+- **Admin-only functions** for student creation and management
+- **Client-side role checks** for improved UX (with server-side enforcement)
+
+For detailed setup and testing instructions, see [RBAC_SETUP.md](RBAC_SETUP.md).
 
 ## Key Features
 
