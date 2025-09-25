@@ -292,6 +292,7 @@ node scripts/test-rbac.js
 - [ ] Server-side validation is authoritative
 
 ### Production Deployment
+
 - [ ] Change default admin password
 - [ ] Remove or secure demo accounts
 - [ ] Set up proper logging for role changes
