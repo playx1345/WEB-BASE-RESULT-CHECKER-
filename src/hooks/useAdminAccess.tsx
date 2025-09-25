@@ -100,7 +100,7 @@ export const withAdminAccess = <P extends object>(
             <h2 className="text-xl font-semibold mb-2">Access Verification Failed</h2>
             <p className="text-muted-foreground mb-4">{error}</p>
             <button 
-              onClick={() => window.location.reload()} 
+              onClick={() => { window.location.reload(); }} 
               className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
             >
               Try Again
