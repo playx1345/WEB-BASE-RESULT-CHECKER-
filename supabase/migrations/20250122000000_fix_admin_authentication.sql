@@ -62,7 +62,7 @@ INSERT INTO public.profiles (
 )
 ON CONFLICT (user_id) DO UPDATE SET
   role = 'admin',
-  full_name = 'System Administrator';
+      full_name = 'System Administrator';
 
 -- Improve the is_admin function with better error handling and logging
 CREATE OR REPLACE FUNCTION public.is_admin()
