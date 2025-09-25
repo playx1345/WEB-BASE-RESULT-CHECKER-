@@ -5,6 +5,7 @@ This document outlines how roles are assigned, checked, and enforced in the Bark
 
 ## User Roles
 The system supports the following roles:
+
 - **`admin`**: Full system access, can create/manage students, view all data
 - **`student`**: Can view their own results (if fees are paid)
 - **`teacher`**: Can manage courses and results (future enhancement)
