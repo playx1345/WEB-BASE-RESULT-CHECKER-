@@ -120,7 +120,7 @@ export const withAdminAccess = <P extends object>(
               Administrator privileges are required to access this page.
             </p>
             <button 
-              onClick={() => window.history.back()} 
+              onClick={() => { window.history.back(); }} 
               className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
             >
               Go Back
