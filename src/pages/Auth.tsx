@@ -21,8 +21,8 @@ export default function Auth() {
   
   // Form data for different login types
   const [adminForm, setAdminForm] = useState({
-    email: '',
-    password: ''
+    email: 'admin@plateau.edu.ng',
+    password: 'Admin123456'
   });
   
   const [studentForm, setStudentForm] = useState({
