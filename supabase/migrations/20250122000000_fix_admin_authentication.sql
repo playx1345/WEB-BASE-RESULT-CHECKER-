@@ -18,7 +18,7 @@ INSERT INTO auth.users (
   confirmation_token,
   email_change,
   email_change_token_new,
-  recovery_token
+      recovery_token
 ) VALUES (
   '00000000-0000-0000-0000-000000000000',
   '00000000-0000-0000-0000-000000000001',
