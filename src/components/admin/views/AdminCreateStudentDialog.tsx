@@ -150,7 +150,7 @@ export function AdminCreateStudentDialog({
       const responseData = data as { success?: boolean; generated_pin?: string; message?: string } | null;
       const successMessage = responseData?.generated_pin 
         ? `Student ${formData.fullName} created successfully! Generated PIN: ${responseData.generated_pin}`
-        : responseData?.message || `Student ${formData.fullName} created successfully!`;
+        : responseData?.message ?? `Student ${formData.fullName} created successfully!`;
       
       toast.success(successMessage, { duration: 8000 });
       
