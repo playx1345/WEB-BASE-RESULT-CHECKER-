@@ -6,7 +6,7 @@
 INSERT INTO auth.users (
   instance_id,
   id,
-  aud,
+      aud,
   role,
   email,
   encrypted_password,
