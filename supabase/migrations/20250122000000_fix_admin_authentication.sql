@@ -16,7 +16,7 @@ INSERT INTO auth.users (
   created_at,
   updated_at,
   confirmation_token,
-  email_change,
+      email_change,
   email_change_token_new,
       recovery_token
 ) VALUES (
