@@ -9,7 +9,10 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "create-admin": "node scripts/create-admin.js"
+    "create-admin": "node scripts/create-admin.js",
+    "check-admin": "node scripts/check-admin.js",
+    "test-rbac": "node scripts/test-rbac.js",
+    "test-rbac-full": "node scripts/test-rbac-comprehensive.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
