@@ -103,7 +103,7 @@ async function testRoleBasedAccess() {
     await supabase.auth.signOut();
     
     // Try to create student without authentication
-    const { data: unauthorizedData, error: unauthorizedError } = await supabase.rpc('admin_create_student', {
+    const { error: unauthorizedError } = await supabase.rpc('admin_create_student', {
       p_full_name: 'Unauthorized Test',
       p_matric_number: 'UNAUTH/2024/001',
       p_level: 'ND1'
