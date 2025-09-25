@@ -110,7 +110,7 @@ export async function getUserProfile(userId?: string): Promise<UserRole | null> 
  * @param requiredRole The role required for access
  * @param user Optional user object, defaults to current user
  */
-export async function hasRole(requiredRole: string, user?: User): Promise<boolean> {
+export async function hasRole(requiredRole: string): Promise<boolean> {
   try {
     const { data, error } = await supabase.rpc('check_user_role', {
       required_role: requiredRole
