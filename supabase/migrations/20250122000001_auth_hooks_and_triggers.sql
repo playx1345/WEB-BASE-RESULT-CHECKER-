@@ -174,7 +174,7 @@ CREATE TRIGGER on_auth_user_deleted
 -- Add helper function to assign roles programmatically
 CREATE OR REPLACE FUNCTION public.assign_user_role(
   target_user_id uuid,
-  new_role text
+      new_role text
 )
 RETURNS boolean
 LANGUAGE plpgsql
