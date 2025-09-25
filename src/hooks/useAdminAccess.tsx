@@ -66,7 +66,7 @@ export const useAdminAccess = (): AdminAccessState => {
       }
     };
 
-    checkAdminAccess();
+    void checkAdminAccess();
   }, [user, authLoading]);
 
   return state;
