@@ -1,164 +1,167 @@
-# Welcome to your Lovable project
+omputer Science Department Website
 
-## Project info
+## Overview
+The Computer Science Department website for Plateau State Polytechnic Barkin Ladi serves as a comprehensive, mobile-first platform for students and administrators. It provides essential information about the department, academic programs, faculty, and news updates, while also offering a secure login portal with enhanced mobile responsiveness and modern user experience features.
 
-**URL**: https://lovable.dev/projects/c322879f-df62-472c-8fd0-ae664960a6c2
+## Project Structure
+The project is organized into several directories and files, each serving a specific purpose:
 
-## How can I edit this code?
+- **public/**: Contains all the HTML files for the website.
+  - `index.html`: Mobile-responsive landing page with hamburger navigation.
+  - `admin.html`: Admin login interface with mobile sidebar support.
+  - `student-portal.html`: Mobile-optimized dashboard for students.
+  - `about.html`: Information about the department.
+  - `programs.html`: List of academic programs.
+  - `faculty.html`: Information about faculty members.
+  - `news.html`: Latest news and announcements.
+  - `contact.html`: Contact information for the department.
+  - `login.html`: Student login page with enhanced validation.
 
-There are several ways of editing your application.
+- **assets/**: Contains all the assets for the website.
+  - **css/**: Stylesheets for the website.
+    - `main.css`: Shared styles with mobile-first approach and responsive navigation.
+    - `admin.css`: Enhanced admin dashboard styles with mobile sidebar support.
+    - `student.css`: Mobile-optimized student dashboard styles.
+    - `responsive.css`: Comprehensive media queries for all device sizes.
+  - **js/**: JavaScript files for functionality.
+    - `main.js`: General functionality with mobile navigation support.
+    - `admin.js`: Enhanced admin dashboard logic with mobile sidebar toggle.
+    - `student.js`: Mobile-optimized student dashboard logic.
+    - `auth.js`: Authentication logic with real-time form validation.
+    - `utils.js`: Utility functions with notification system.
+  - **fonts/**: Font files used in the website.
+    - `inter.woff2`: Font for typography.
 
-**Use Lovable**
+- **components/**: Reusable components for the website.
+  - `header.js`: Mobile-responsive header component.
+  - `footer.js`: Footer component.
+  - `navigation.js`: Enhanced navigation component with mobile support.
+  - `modal.js`: Modal component for alerts/forms.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c322879f-df62-472c-8fd0-ae664960a6c2) and start prompting.
+- **data/**: JSON files containing data for the website.
+  - `courses.json`: Course data.
+  - `faculty.json`: Faculty data.
+  - `news.json`: News data.
+  - `students.json`: Student data.
 
-Changes made via Lovable will be committed automatically to this repo.
+- **docs/**: Documentation for the project.
+  - `project-plan.md`: Project plan and objectives.
+  - `features.md`: Key features of the website.
+  - `deployment.md`: Deployment instructions.
+  - `testing-guide.md`: Comprehensive testing documentation.
 
-**Use your preferred IDE**
+## Setup Instructions
+1. Clone the repository to your local machine.
+2. Navigate to the project directory.
+3. Open the `public/index.html` file in a web browser to view the landing page.
+4. For testing functionality, open `test-functionality.html` to run comprehensive tests.
+5. Ensure all assets are correctly linked in the HTML files.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Key Features
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🎯 Core Functionality
+- **User-friendly interface** for students and admins
+- **Secure login system** with enhanced validation
+- **Comprehensive department information**
+- **Dynamic content loading** using modern JavaScript
 
-Follow these steps:
+### 📱 Mobile-First Design
+- **Responsive design** optimized for all device sizes
+- **Mobile navigation** with hamburger menu and smooth animations
+- **Touch-friendly interfaces** with proper touch target sizes (44px+)
+- **Mobile sidebar toggles** for admin and student portals
+- **Optimized typography** with readable font sizes on mobile
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 🛡️ Enhanced Security & Validation
+- **Real-time form validation** with immediate feedback
+- **Enhanced password requirements** for admin accounts
+- **Input sanitization** and proper error handling
+- **Session management** with timeout protection
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 🔔 User Experience Enhancements
+- **Toast notification system** with mobile-optimized positioning
+- **Loading states** and progress indicators
+- **Smooth animations** and transitions
+- **Accessibility features** with proper ARIA labels and keyboard navigation
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 📊 Dashboard Features
+- **Student Portal**: Results viewing, GPA tracking, announcements, profile management
+- **Admin Portal**: Student management, result uploads, analytics, system administration
+- **Mobile-responsive tables** with horizontal scrolling
+- **Interactive charts** and statistics
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## Demo Credentials
 
-**Edit a file directly in GitHub**
+### Student Access
+- **Matric Number**: ND/CS/2023/001
+- **Password**: student123
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Admin Access
+- **Username**: admin
+- **Password**: admin123
 
-**Use GitHub Codespaces**
+## Testing
+The project includes comprehensive testing capabilities:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Functionality Tests**: Open `test-functionality.html` for automated testing
+2. **Mobile Responsiveness**: Test across different viewport sizes
+3. **Form Validation**: Real-time validation testing
+4. **Notification System**: Toast notification testing
+5. **Performance Testing**: Load time and accessibility checks
 
-## What technologies are used for this project?
+### Browser Compatibility
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+- ✅ Mobile browsers (iOS Safari, Chrome Mobile)
 
-This project is built with:
+### Device Testing
+- ✅ Desktop (1920px+)
+- ✅ Laptop (1024px - 1919px)
+- ✅ Tablet (768px - 1023px)
+- ✅ Mobile (320px - 767px)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Technical Implementation
 
-## Admin User Management
+### CSS Architecture
+- **Mobile-first approach** with progressive enhancement
+- **CSS Custom Properties** for consistent theming
+- **Flexbox and Grid** for modern layouts
+- **Media queries** for responsive breakpoints
 
-### Creating an Admin User
+### JavaScript Features
+- **ES6+ syntax** with modern browser features
+- **Class-based architecture** for maintainable code
+- **Event delegation** for efficient event handling
+- **LocalStorage** for session management
 
-This project includes a script to programmatically create admin users with full system privileges. This is useful for initial setup or creating additional administrators.
+### Performance Optimizations
+- **Optimized asset loading** with proper caching
+- **Efficient CSS** with minimal render blocking
+- **Compressed fonts** and optimized images
+- **Minimal JavaScript** footprint
 
-#### Prerequisites
+## Future Enhancements
+- **Progressive Web App (PWA)** features
+- **Dark mode** support
+- **Offline functionality** for student results
+- **Push notifications** for important announcements
+- **API integration** for real-time data
+- **Advanced analytics** dashboard
+- **Multi-language support**
 
-1. **Get your Supabase Service Role Key:**
-   - Go to your Supabase project dashboard
-   - Navigate to Settings > API
-   - Copy the `service_role` key (not the `anon` key)
-   - This key has admin privileges - keep it secure!
+## Deployment Options
+1. **Static hosting** (GitHub Pages, Netlify, Vercel)
+2. **Web server** deployment (Apache, Nginx)
+3. **Content Delivery Network (CDN)** integration
+4. **Mobile app** wrapper (Cordova, React Native)
 
-2. **Configure Environment Variables:**
-   ```bash
-   # Copy the example environment file
-   cp .env.example .env
-   
-   # Edit .env and add your service role key
-   SUPABASE_SERVICE_ROLE_KEY="your_actual_service_role_key_here"
-   ```
+## Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Test your changes on multiple devices
+4. Submit a pull request with detailed description
 
-#### Usage Options
-
-**Option 1: Command Line Arguments**
-```bash
-# Using npm script
-npm run create-admin -- --email admin@college.edu --password MySecurePass123
-
-# Or directly with node
-node scripts/create-admin.js --email admin@college.edu --password MySecurePass123
-```
-
-**Option 2: Environment Variables**
-```bash
-# Set environment variables and run
-ADMIN_EMAIL="admin@college.edu" ADMIN_PASSWORD="MySecurePass123" npm run create-admin
-```
-
-**Option 3: Add to .env file**
-```bash
-# Add these to your .env file (temporarily)
-ADMIN_EMAIL="admin@college.edu"
-ADMIN_PASSWORD="MySecurePass123"
-
-# Then run the script
-npm run create-admin
-
-# Remember to remove the credentials from .env after creation
-```
-
-#### Security Features
-
-- **Email validation**: Ensures proper email format
-- **Password strength**: Requires 8+ characters with letters and numbers
-- **Duplicate prevention**: Checks for existing users before creation
-- **Auto-confirmation**: Admin users are automatically email-verified
-- **Secure metadata**: Sets admin role in user metadata for proper profile creation
-
-#### What the Script Does
-
-1. Validates input parameters and environment variables
-2. Connects to Supabase using the service role key
-3. Checks if a user with the email already exists
-4. Creates the user with admin role metadata
-5. Verifies the admin profile was created correctly
-6. Provides detailed feedback on success/failure
-
-#### Troubleshooting
-
-**Error: "SUPABASE_SERVICE_ROLE_KEY environment variable is required"**
-- Make sure you've added the service role key to your `.env` file
-- Ensure the key is correct and has the proper format
-
-**Error: "A user with email X already exists"**
-- The email is already registered in your system
-- Use a different email address for the new admin
-
-**Error: "Password must be at least 8 characters and contain both letters and numbers"**
-- Use a stronger password that meets the requirements
-- Example: `AdminPass123` or `SecureAdmin2024`
-
-#### After Admin Creation
-
-Once created, the admin user can:
-- Log in through the standard authentication flow at `/auth`
-- Access all admin features in the system
-- Manage students, view all profiles, and create announcements
-- The admin role is automatically recognized by the system's Row Level Security policies
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/c322879f-df62-472c-8fd0-ae664960a6c2) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+This project is licensed under the MIT License.
