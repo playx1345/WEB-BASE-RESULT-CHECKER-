@@ -63,6 +63,7 @@ The project is organized into several directories and files, each serving a spec
 ## Role-Based Access Control
 
 ### User Roles
+
 The system implements secure role-based access control with the following roles:
 - **Admin**: Full system access, can create/manage students
 - **Student**: Can view their own results (if fees are paid)  
