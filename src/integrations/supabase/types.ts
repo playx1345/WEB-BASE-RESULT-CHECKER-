@@ -547,6 +547,10 @@ export type Database = {
         Args: { required_role: string }
         Returns: boolean
       }
+      create_admin_user: {
+        Args: { p_email: string; p_full_name: string; p_password: string }
+        Returns: Json
+      }
       generate_secure_pin: {
         Args: Record<PropertyKey, never>
         Returns: string
