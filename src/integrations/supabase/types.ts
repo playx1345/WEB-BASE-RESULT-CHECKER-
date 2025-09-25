@@ -543,7 +543,15 @@ export type Database = {
         Args: { investment_id: string }
         Returns: number
       }
+      check_user_role: {
+        Args: { required_role: string }
+        Returns: boolean
+      }
       generate_secure_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
       }

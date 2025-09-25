@@ -68,7 +68,7 @@ export async function getCurrentUserRole(): Promise<string | null> {
       return null;
     }
     
-    return data;
+    return data as string;
   } catch (error) {
     console.error('Unexpected error getting user role:', error);
     return null;
