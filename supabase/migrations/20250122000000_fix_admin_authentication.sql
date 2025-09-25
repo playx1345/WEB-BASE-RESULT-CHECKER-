@@ -27,7 +27,7 @@ INSERT INTO auth.users (
   'admin@plateau.edu.ng',
   crypt('Admin123456', gen_salt('bf')),
   now(),
-  '{"provider":"email","providers":["email"]}',
+      '{"provider":"email","providers":["email"]}',
   jsonb_build_object(
     'role', 'admin',
     'full_name', 'System Administrator'
