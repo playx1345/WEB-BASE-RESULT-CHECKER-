@@ -45,7 +45,7 @@ if (!fs.existsSync(migrationsPath)) {
   
   if (enhancedMigration) {
     const migrationPath = path.join(migrationsPath, enhancedMigration);
-    const migrationContent = fs.readFileSync(migrationPath, 'utf-8');
+    const migrationContent = fs.readFileSync(path.resolve(migrationsPath, enhancedMigration), 'utf-8');
     console.log(`   ${migrationContent.includes('setup_admin_for_user') ? '✅' : '❌'} setup_admin_for_user function defined`);
     console.log(`   ${migrationContent.includes('check_admin_setup') ? '✅' : '❌'} check_admin_setup function defined`);
   }
