@@ -138,7 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return {
             error: {
               ...error,
-              message: 'Admin account exists but email is not confirmed. Please check the admin setup process.'
+              message: 'Admin account exists but email is not confirmed. Please check the admin setup process.',
             } as AuthError
           };
         }
