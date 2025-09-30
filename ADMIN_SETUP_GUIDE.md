@@ -141,6 +141,7 @@ You can manually check admin setup using Supabase dashboard:
 
 ### setup-admin-now.js
 Quick setup script with hardcoded credentials. Automatically:
+
 - Creates admin user if not exists
 - Creates profile and admin record
 - Handles existing user scenarios
