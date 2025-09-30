@@ -68,31 +68,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (email: string, password: string, isStudent = false) => {
     if (isStudent) {
-      // For students, email is matric number, password is PIN
+      // For students, construct email from matric number
       const matricNumber = email;
-      const pin = password;
-      
-      // Authenticate student using custom function
-      const { data: studentData, error: studentError } = await supabase
-        .rpc('authenticate_student', {
-          p_matric_number: matricNumber,
-          p_pin: pin
-        });
-      
-      if (studentError || !studentData || studentData.length === 0) {
-        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
-      }
-      
-      // Sign in with constructed email
       const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
+      
+      // Simple auth with constructed email and PIN as password
       const { error } = await supabase.auth.signInWithPassword({
         email: studentEmail,
-        password: pin,
+        password: password,
       });
       
       return { error };
     } else {
-      // For admin/teacher login, try database authentication first
+      // For admin/teacher login
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
