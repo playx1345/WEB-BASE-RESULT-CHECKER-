@@ -133,7 +133,7 @@ npm run setup-admin
 
 You can manually check admin setup using Supabase dashboard:
 
-1. **Check auth.users**: Look for user with email 'admin@plateau.edu.ng'
+1. **Check auth.users**: Look for user with email '<admin@plateau.edu.ng>'
 2. **Check profiles**: Verify profile exists with role='admin'
 3. **Check admins**: Ensure admin record exists with proper permissions
 
