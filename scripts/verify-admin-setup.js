@@ -44,7 +44,7 @@ if (!fs.existsSync(migrationsPath)) {
   console.log(`   ${enhancedMigration ? '✅' : '❌'} Enhanced admin creation migration found`);
   
   if (enhancedMigration) {
-    const migrationPath = path.join(migrationsPath, enhancedMigration);
+    // const migrationPath = path.join(migrationsPath, enhancedMigration);
     const migrationContent = fs.readFileSync(path.resolve(migrationsPath, enhancedMigration), 'utf-8');
     console.log(`   ${migrationContent.includes('setup_admin_for_user') ? '✅' : '❌'} setup_admin_for_user function defined`);
     console.log(`   ${migrationContent.includes('check_admin_setup') ? '✅' : '❌'} check_admin_setup function defined`);
