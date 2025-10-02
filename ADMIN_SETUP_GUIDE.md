@@ -148,6 +148,7 @@ Quick setup script with hardcoded credentials. Automatically:
 - Provides detailed feedback
 
 ### create-admin.js
+
 Configurable script that accepts email/password parameters:
 ```bash
 node scripts/create-admin.js --email admin@example.com --password MyPassword123
