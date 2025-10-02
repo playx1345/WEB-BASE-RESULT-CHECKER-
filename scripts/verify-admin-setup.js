@@ -67,7 +67,7 @@ if (!fs.existsSync(scriptsPath)) {
   
   if (setupScript) {
     const scriptPath = path.join(scriptsPath, setupScript);
-    const scriptContent = fs.readFileSync(scriptPath, 'utf-8');
+    const scriptContent = fs.readFileSync(path.resolve(scriptPath), 'utf-8');
     console.log(`   ${scriptContent.includes('dotenv') ? '✅' : '❌'} Environment variables support`);
     console.log(`   ${scriptContent.includes('createAdminProfile') ? '✅' : '❌'} Profile creation function`);
     console.log(`   ${scriptContent.includes('createAdminRecord') ? '✅' : '❌'} Admin record creation function`);
