@@ -225,6 +225,7 @@ If you encounter issues:
 ---
 
 **Default Admin Credentials:**
+
 - Email: `admin@plateau.edu.ng`
 - Password: `Admin123456`
 
