@@ -156,6 +156,7 @@ node scripts/create-admin.js --email admin@example.com --password MyPassword123
 
 ### verify-admin-setup.js
 Verification script that checks:
+
 - Environment configuration
 - Migration files
 - Script files
