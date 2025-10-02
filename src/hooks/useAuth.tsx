@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return { 
             error: { 
               ...error,
-              message: 'Admin login failed. The admin account may not exist in the database. Please run the admin creation script: npm run create-admin or node scripts/setup-admin-now.js'
+              message: 'Admin login failed. The admin account may not exist in the database. Please run the admin creation script: npm run create-admin or node scripts/setup-admin-now.js',
             } as AuthError 
           };
         }
