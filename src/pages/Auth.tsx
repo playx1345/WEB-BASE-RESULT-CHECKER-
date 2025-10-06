@@ -21,8 +21,8 @@ export default function Auth() {
   
   // Form data for different login types
   const [adminForm, setAdminForm] = useState({
-    email: '',
-    password: ''
+    email: 'admin@plateau.edu.ng',
+    password: 'Admin123456'
   });
   
   const [studentForm, setStudentForm] = useState({
@@ -32,10 +32,13 @@ export default function Auth() {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signIn, user } = useAuth();
+  const { signIn, signOut, user } = useAuth();
 
   useEffect(() => {
     if (user) {
+      toast.info('You are already logged in', {
+        description: 'Redirecting to dashboard...'
+      });
       navigate('/');
     }
   }, [user, navigate]);
