@@ -10,7 +10,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: AuthError | null }>;
-  signOut: () => Promise<{ error: AuthError | null }>;
+  signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
 
@@ -68,19 +68,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (email: string, password: string, isStudent = false) => {
     if (isStudent) {
-      // For students, construct email from matric number
+      // For students, email is matric number, password is PIN
       const matricNumber = email;
-      const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
+      const pin = password;
       
-      // Simple auth with constructed email and PIN as password
+      // Authenticate student using custom function
+      const { data: studentData, error: studentError } = await supabase
+        .rpc('authenticate_student', {
+          p_matric_number: matricNumber,
+          p_pin: pin
+        });
+      
+      if (studentError || !studentData || studentData.length === 0) {
+        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
+      }
+      
+      // Sign in with constructed email
+      const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
       const { error } = await supabase.auth.signInWithPassword({
         email: studentEmail,
-        password: password,
+        password: pin,
       });
       
       return { error };
     } else {
-      // For admin/teacher login
+      // For admin/teacher login, try database authentication first
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -105,18 +117,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Remove signUp - only admins can create users now
 
   const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (!error) {
-        // Clear local state
-        setUser(null);
-        setSession(null);
-      }
-      return { error };
-    } catch (error) {
-      console.error('Sign out error:', error);
-      return { error: error as AuthError };
-    }
+    await supabase.auth.signOut();
   };
 
   const resetPassword = async (email: string) => {
