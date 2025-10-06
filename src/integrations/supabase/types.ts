@@ -349,6 +349,7 @@ export type Database = {
           id: string
           level: string
           matric_number: string
+          pin: string | null
           pin_hash: string | null
           profile_id: string
           total_gp: number | null
@@ -362,6 +363,7 @@ export type Database = {
           id?: string
           level: string
           matric_number: string
+          pin?: string | null
           pin_hash?: string | null
           profile_id: string
           total_gp?: number | null
@@ -375,6 +377,7 @@ export type Database = {
           id?: string
           level?: string
           matric_number?: string
+          pin?: string | null
           pin_hash?: string | null
           profile_id?: string
           total_gp?: number | null
