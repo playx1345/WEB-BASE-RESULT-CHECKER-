@@ -5,6 +5,7 @@
 This is a student grade access system for Plateau State Polytechnic Barkin Ladi Computer Science Department. It's a modern React/TypeScript web application with three main user types: students, teachers, and administrators.
 
 ## Tech Stack & Architecture
+
 - **Frontend**: React 18 + TypeScript + Vite (SWC)
 - **UI Framework**: Tailwind CSS + shadcn/ui (Radix UI components)
 - **Backend**: Supabase (PostgreSQL + Authentication + Real-time)
