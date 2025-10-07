@@ -42,6 +42,7 @@ This is a student grade access system for Plateau State Polytechnic Barkin Ladi 
 
 ### State Management
 
+
 - Use React Query for all server state (API calls, caching)
 - Use React's built-in state (useState, useReducer) for local component state
 - Context is used for authentication (`AuthProvider`)
