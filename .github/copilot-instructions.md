@@ -201,6 +201,7 @@ const { register, handleSubmit, formState: { errors } } = useForm({
 - Minimize bundle size with proper imports
 
 ## Accessibility
+
 - Use semantic HTML elements
 - Provide ARIA labels for interactive elements
 - Ensure keyboard navigation works
