@@ -176,6 +176,7 @@ const { register, handleSubmit, formState: { errors } } = useForm({
 ```
 
 ## Error Handling
+
 - Use try/catch blocks for async operations
 - Display user-friendly error messages
 - Log errors to console in development
