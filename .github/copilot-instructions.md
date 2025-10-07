@@ -47,6 +47,7 @@ This is a student grade access system for Plateau State Polytechnic Barkin Ladi 
 - Context is used for authentication (`AuthProvider`)
 
 ### Authentication & Authorization
+
 - Three user roles: `student`, `teacher`, `admin`
 - Use `useAuth` hook for authentication state
 - Protect routes with `ProtectedRoute` component
