@@ -127,6 +127,7 @@ npm run preview  # Preview production build
 ## Common Patterns & Examples
 
 ### Creating a New Component
+
 ```tsx
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
