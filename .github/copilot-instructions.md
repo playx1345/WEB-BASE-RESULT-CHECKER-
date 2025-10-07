@@ -1,6 +1,7 @@
 # Copilot Instructions for Barkin Grade Access System
 
 ## Project Overview
+
 This is a student grade access system for Plateau State Polytechnic Barkin Ladi Computer Science Department. It's a modern React/TypeScript web application with three main user types: students, teachers, and administrators.
 
 ## Tech Stack & Architecture
