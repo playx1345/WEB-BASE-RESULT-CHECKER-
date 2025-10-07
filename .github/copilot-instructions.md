@@ -154,6 +154,7 @@ export function MyComponent({ title, data, onAction }: MyComponentProps) {
 ```
 
 ### API Call with React Query
+
 ```tsx
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
