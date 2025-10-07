@@ -108,6 +108,7 @@ Key tables:
 - Test responsive design on different screen sizes
 
 ## Build & Deployment
+
 ```bash
 npm install      # Install dependencies
 npm run dev      # Development server
