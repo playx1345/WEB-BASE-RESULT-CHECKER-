@@ -10,7 +10,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: AuthError | null }>;
-  signOut: () => Promise<void>;
+  signOut: () => Promise<{ error: Error | null }>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
 
@@ -105,7 +105,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Remove signUp - only admins can create users now
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    
+    if (!error) {
+      setUser(null);
+      setSession(null);
+    }
+    
+    return { error };
   };
 
   const resetPassword = async (email: string) => {

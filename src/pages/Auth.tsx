@@ -36,6 +36,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
+      toast.info('You are already logged in');
       navigate('/');
     }
   }, [user, navigate]);

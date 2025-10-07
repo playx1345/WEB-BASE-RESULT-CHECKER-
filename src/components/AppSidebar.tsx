@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Home, FileText, Bell, User, LogOut, GraduationCap, Download, MessageSquare } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   Sidebar,
   SidebarContent,
@@ -33,10 +35,22 @@ interface AppSidebarProps {
 export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSidebarProps) {
   const { state } = useSidebar();
   const { signOut } = useAuth();
+  const navigate = useNavigate();
   const collapsed = state === 'collapsed';
 
   const handleViewChange = (view: string) => {
     onViewChange?.(view);
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    
+    if (error) {
+      toast.error('Failed to sign out');
+    } else {
+      toast.success('Signed out successfully');
+      navigate('/');
+    }
   };
 
   return (
@@ -82,7 +96,7 @@ export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSideba
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={signOut} className="w-full hover:bg-destructive/10 hover:text-destructive">
+            <SidebarMenuButton onClick={handleSignOut} className="w-full hover:bg-destructive/10 hover:text-destructive">
               <LogOut className="h-4 w-4" />
               {!collapsed && <span>Sign Out</span>}
             </SidebarMenuButton>
