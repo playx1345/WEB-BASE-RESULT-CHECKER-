@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import { Home, FileText, Bell, User, LogOut, GraduationCap, Download, MessageSquare } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import {
   Sidebar,
   SidebarContent,
@@ -43,14 +42,10 @@ export function AppSidebar({ activeView = 'dashboard', onViewChange }: AppSideba
   };
 
   const handleSignOut = async () => {
-    const { error } = await signOut();
-    
-    if (error) {
-      toast.error('Failed to sign out');
-    } else {
-      toast.success('Signed out successfully');
-      navigate('/');
-    }
+    toast.loading('Signing out...');
+    await signOut();
+    toast.success('Successfully signed out!');
+    navigate('/');
   };
 
   return (

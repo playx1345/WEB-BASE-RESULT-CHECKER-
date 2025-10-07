@@ -32,11 +32,13 @@ export default function Auth() {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signIn, user } = useAuth();
+  const { signIn, signOut, user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      toast.info('You are already logged in');
+      toast.info('You are already logged in', {
+        description: 'Redirecting to dashboard...'
+      });
       navigate('/');
     }
   }, [user, navigate]);
