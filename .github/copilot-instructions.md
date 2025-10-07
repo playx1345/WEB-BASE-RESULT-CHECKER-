@@ -26,6 +26,7 @@ This is a student grade access system for Plateau State Polytechnic Barkin Ladi 
 ## Coding Standards & Conventions
 
 ### File Naming
+
 - Components: PascalCase (e.g., `StudentDashboard.tsx`)
 - Hooks: camelCase with `use` prefix (e.g., `useAuth.tsx`)
 - Utilities: camelCase (e.g., `testingGuide.ts`)
