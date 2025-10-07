@@ -195,8 +195,9 @@ The project includes comprehensive testing capabilities:
 ## Contributing
 1. Fork the repository
 2. Create a feature branch
-3. Test your changes on multiple devices
-4. Submit a pull request with detailed description
+3. Review the [Copilot instructions](.github/copilot-instructions.md) for development guidelines and coding standards
+4. Test your changes on multiple devices
+5. Submit a pull request with detailed description
 
 ## License
 This project is licensed under the MIT License.
