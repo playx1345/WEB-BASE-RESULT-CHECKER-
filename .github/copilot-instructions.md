@@ -79,6 +79,7 @@ Key tables:
 6. Follow existing patterns for authentication checks
 
 ### API Integration
+
 - All API calls go through Supabase client (`src/integrations/supabase/client.ts`)
 - Use React Query hooks for data fetching
 - Handle loading, error, and success states consistently
