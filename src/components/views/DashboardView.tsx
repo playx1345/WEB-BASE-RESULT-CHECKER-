@@ -7,6 +7,7 @@ import { LoadingState } from '@/components/ui/loading-state';
 import { PerformanceCharts } from '@/components/charts/PerformanceCharts';
 import { QuickActions } from '@/components/QuickActions';
 import { ActivityTimeline } from '@/components/ActivityTimeline';
+import { AcademicStatsWidget } from '@/components/widgets/AcademicStatsWidget';
 import { GraduationCap, FileText, Bell, AlertTriangle, TrendingUp, Users, Calendar } from 'lucide-react';
 
 interface StudentData {
@@ -97,58 +98,77 @@ export function DashboardView() {
         </p>
       </div>
 
-      {/* Quick Stats Cards */}
+      {/* Enhanced Quick Stats Cards with Gradient Backgrounds */}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10"></div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
             <CardTitle className="text-sm font-medium">Current Level</CardTitle>
-            <GraduationCap className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 rounded-full bg-blue-500/20">
+              <GraduationCap className="h-4 w-4 text-blue-600" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{studentData?.level || profile?.level || 'N/A'}</div>
-            <p className="text-xs text-muted-foreground">Academic Year</p>
+          <CardContent className="relative z-10">
+            <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              {studentData?.level || profile?.level || 'N/A'}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Academic Year 2024/2025</p>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-600/10"></div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
             <CardTitle className="text-sm font-medium">CGPA</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 rounded-full bg-green-500/20">
+              <TrendingUp className="h-4 w-4 text-green-600" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="relative z-10">
+            <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
               {studentData?.cgp ? studentData.cgp.toFixed(2) : '0.00'}
             </div>
-            <p className="text-xs text-muted-foreground">Cumulative Grade Point</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {studentData?.cgp && studentData.cgp >= 3.5 ? 'Excellent Performance!' : 
+               studentData?.cgp && studentData.cgp >= 2.5 ? 'Good Performance' : 'Keep Going!'}
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0">
+          <div className={`absolute inset-0 ${studentData?.fee_status === 'paid' ? 'bg-gradient-to-br from-emerald-500/10 to-emerald-600/10' : 'bg-gradient-to-br from-red-500/10 to-red-600/10'}`}></div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
             <CardTitle className="text-sm font-medium">Fee Status</CardTitle>
-            <Bell className="h-4 w-4 text-muted-foreground" />
+            <div className={`p-2 rounded-full ${studentData?.fee_status === 'paid' ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
+              <Bell className={`h-4 w-4 ${studentData?.fee_status === 'paid' ? 'text-emerald-600' : 'text-red-600'}`} />
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative z-10">
             <Badge 
               variant={studentData?.fee_status === 'paid' ? 'default' : 'destructive'}
-              className="text-sm"
+              className="text-sm font-semibold"
             >
               {studentData?.fee_status ? studentData.fee_status.toUpperCase() : 'UNKNOWN'}
             </Badge>
-            <p className="text-xs text-muted-foreground mt-1">Current Session</p>
+            <p className="text-xs text-muted-foreground mt-2">Current Session</p>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0">
+          <div className={`absolute inset-0 ${(studentData?.carryovers || 0) === 0 ? 'bg-gradient-to-br from-purple-500/10 to-purple-600/10' : 'bg-gradient-to-br from-orange-500/10 to-orange-600/10'}`}></div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
             <CardTitle className="text-sm font-medium">Carryovers</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <div className={`p-2 rounded-full ${(studentData?.carryovers || 0) === 0 ? 'bg-purple-500/20' : 'bg-orange-500/20'}`}>
+              <AlertTriangle className={`h-4 w-4 ${(studentData?.carryovers || 0) === 0 ? 'text-purple-600' : 'text-orange-600'}`} />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
+          <CardContent className="relative z-10">
+            <div className={`text-3xl font-bold ${(studentData?.carryovers || 0) === 0 ? 'bg-gradient-to-r from-purple-600 to-purple-800' : 'bg-gradient-to-r from-orange-600 to-orange-800'} bg-clip-text text-transparent`}>
               {studentData?.carryovers || 0}
             </div>
-            <p className="text-xs text-muted-foreground">Outstanding Courses</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {(studentData?.carryovers || 0) === 0 ? 'Excellent! No carryovers' : 'Outstanding Courses'}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -167,6 +187,16 @@ export function DashboardView() {
             </CardDescription>
           </CardHeader>
         </Card>
+      )}
+
+      {/* Academic Stats Widget */}
+      {studentData && (
+        <AcademicStatsWidget 
+          cgpa={studentData.cgp || 0}
+          totalGP={studentData.total_gp || 0}
+          carryovers={studentData.carryovers || 0}
+          level={studentData.level}
+        />
       )}
 
       {/* Quick Actions */}
