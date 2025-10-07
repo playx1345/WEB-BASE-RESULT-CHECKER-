@@ -180,6 +180,7 @@ const { register, handleSubmit, formState: { errors } } = useForm({
 - Use toast notifications for user feedback (sonner library)
 
 ## Performance Considerations
+
 - Use React Query for efficient caching
 - Implement pagination for large data sets
 - Optimize images and assets
