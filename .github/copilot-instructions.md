@@ -16,6 +16,7 @@ This is a student grade access system for Plateau State Polytechnic Barkin Ladi 
 - **Linting**: ESLint with TypeScript rules
 
 ## Key Directories & Files
+
 - `src/components/` - Reusable UI components organized by feature
 - `src/pages/` - Route-level page components
 - `src/hooks/` - Custom React hooks (especially `useAuth.tsx`)
