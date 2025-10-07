@@ -55,6 +55,7 @@ This is a student grade access system for Plateau State Polytechnic Barkin Ladi 
 - Store auth state in Supabase session
 
 ## Database Schema (Supabase)
+
 Key tables:
 - `students` - Student information and academic records
 - `admin_users` - Admin user accounts
