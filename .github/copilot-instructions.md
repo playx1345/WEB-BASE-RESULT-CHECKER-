@@ -70,6 +70,7 @@ Key tables:
 
 ### When Adding New Features
 
+
 1. Create components in appropriate subdirectories
 2. Use TypeScript interfaces for all props and data structures
 3. Implement proper error handling with try/catch blocks
