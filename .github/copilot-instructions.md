@@ -80,6 +80,7 @@ Key tables:
 - Implement optimistic updates where appropriate
 
 ### UI/UX Standards
+
 - Mobile-first responsive design
 - Use Tailwind utility classes
 - Leverage shadcn/ui components (Card, Button, Input, etc.)
