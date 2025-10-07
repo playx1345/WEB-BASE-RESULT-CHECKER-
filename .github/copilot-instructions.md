@@ -36,6 +36,7 @@ This is a student grade access system for Plateau State Polytechnic Barkin Ladi 
 
 ### Component Patterns
 
+
 - Use functional components with TypeScript interfaces
 - Prefer composition over inheritance
 - Extract reusable logic into custom hooks
