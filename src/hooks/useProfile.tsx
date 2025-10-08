@@ -27,6 +27,23 @@ export const useProfile = () => {
         return;
       }
 
+      // Handle demo admin user
+      if (user.id === '00000000-0000-0000-0000-000000000001') {
+        setProfile({
+          id: '00000000-0000-0000-0000-000000000001',
+          user_id: '00000000-0000-0000-0000-000000000001',
+          role: 'admin',
+          full_name: 'System Administrator',
+          matric_number: null,
+          phone_number: null,
+          level: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('profiles')
