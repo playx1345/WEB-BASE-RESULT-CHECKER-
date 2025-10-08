@@ -349,7 +349,6 @@ export type Database = {
           id: string
           level: string
           matric_number: string
-          pin: string | null
           pin_hash: string | null
           profile_id: string
           total_gp: number | null
@@ -363,7 +362,6 @@ export type Database = {
           id?: string
           level: string
           matric_number: string
-          pin?: string | null
           pin_hash?: string | null
           profile_id: string
           total_gp?: number | null
@@ -377,7 +375,6 @@ export type Database = {
           id?: string
           level?: string
           matric_number?: string
-          pin?: string | null
           pin_hash?: string | null
           profile_id?: string
           total_gp?: number | null
@@ -543,7 +540,19 @@ export type Database = {
         Args: { investment_id: string }
         Returns: number
       }
+      check_user_role: {
+        Args: { required_role: string }
+        Returns: boolean
+      }
+      create_admin_user: {
+        Args: { p_email: string; p_full_name: string; p_password: string }
+        Returns: Json
+      }
       generate_secure_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
@@ -566,7 +575,7 @@ export type Database = {
       }
     }
     Enums: {
-      user_role: "student" | "admin"
+      user_role: "student" | "null"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -694,7 +703,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["student", "admin"],
+      user_role: ["student", "null"],
     },
   },
 } as const
