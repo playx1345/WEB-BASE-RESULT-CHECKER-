@@ -41,7 +41,7 @@ export class InputSanitizer {
       .trim()
       .toUpperCase()
       .replace(/[^A-Z0-9/]/g, '') // Only allow letters, numbers, and forward slash
-      .slice(0, 20);
+      .slice(0, 30); // Increased to accommodate new format: PSP/SICT/CSC/ND/24/001
   }
 
   /**
@@ -77,10 +77,10 @@ export class InputSanitizer {
   }
 
   /**
-   * Validate matric number format
+   * Validate matric number format (PSP/SICT/CSC/ND/YY/XXX)
    */
   static validateMatricNumber(matricNumber: string): boolean {
-    const matricRegex = /^[A-Z]{2,3}\/\d{4}\/\d{3}$/;
+    const matricRegex = /^PSP\/SICT\/CSC\/ND\/\d{2}\/\d{3}$/;
     return matricRegex.test(matricNumber);
   }
 

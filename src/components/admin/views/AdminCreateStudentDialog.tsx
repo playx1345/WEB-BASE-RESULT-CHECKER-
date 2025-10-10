@@ -46,7 +46,7 @@ export function AdminCreateStudentDialog({
     if (!sanitizedMatric) {
       newErrors.matricNumber = 'Matric number is required';
     } else if (!InputSanitizer.validateMatricNumber(sanitizedMatric)) {
-      newErrors.matricNumber = 'Invalid format. Use: CS/2021/001';
+      newErrors.matricNumber = 'Invalid format. Use: PSP/SICT/CSC/ND/24/001';
     }
     
     if (!formData.level) {
@@ -204,7 +204,7 @@ export function AdminCreateStudentDialog({
               id="matricNumber"
               value={formData.matricNumber}
               onChange={(e) => handleInputChange('matricNumber', e.target.value.toUpperCase())}
-              placeholder="e.g., CS/2021/001"
+              placeholder="e.g., PSP/SICT/CSC/ND/24/001"
               className={errors.matricNumber ? 'border-destructive' : ''}
               required
             />
