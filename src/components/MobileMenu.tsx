@@ -19,7 +19,7 @@ interface MobileMenuProps {
 export function MobileMenu({ menuItems, activeView, onViewChange }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const { signOut } = useAuth();
-  const { profile } = useProfile();
+  const { profile, role } = useProfile();
 
   const handleItemClick = (viewId: string) => {
     onViewChange(viewId);
@@ -43,7 +43,7 @@ export function MobileMenu({ menuItems, activeView, onViewChange }: MobileMenuPr
                 <div>
                   <p className="font-medium text-sm">{profile?.full_name || 'User'}</p>
                   <Badge variant="secondary" className="text-xs">
-                    {profile?.role?.toUpperCase() || 'STUDENT'}
+                    {role?.toUpperCase() || 'STUDENT'}
                   </Badge>
                 </div>
               </div>

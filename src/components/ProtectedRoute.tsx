@@ -33,13 +33,14 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     if (!user) return;
     
     try {
-      const { data: profile } = await supabase
-        .from('profiles')
+      // Query secure user_roles table instead of profiles
+      const { data: roleData } = await supabase
+        .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .single();
       
-      if (profile?.role === requiredRole) {
+      if (roleData?.role === requiredRole) {
         setHasAccess(true);
       } else {
         navigate('/');

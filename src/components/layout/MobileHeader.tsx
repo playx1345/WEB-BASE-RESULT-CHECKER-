@@ -32,13 +32,14 @@ export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
     if (!user) return;
     
     try {
-      const { data: profile } = await supabase
-        .from('profiles')
+      // Query secure user_roles table
+      const { data: roleData } = await supabase
+        .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .single();
       
-      setUserRole(profile?.role || null);
+      setUserRole(roleData?.role || null);
     } catch (error) {
       console.error('Error fetching user role:', error);
     }
