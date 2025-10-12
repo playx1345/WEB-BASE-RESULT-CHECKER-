@@ -24,14 +24,13 @@ export function SiteHeader() {
     if (!user) return;
     
     try {
-      // Query secure user_roles table
-      const { data: roleData } = await supabase
-        .from('user_roles')
+      const { data: profile } = await supabase
+        .from('profiles')
         .select('role')
         .eq('user_id', user.id)
         .single();
       
-      setUserRole(roleData?.role || null);
+      setUserRole(profile?.role || null);
     } catch (error) {
       console.error('Error fetching user role:', error);
     }

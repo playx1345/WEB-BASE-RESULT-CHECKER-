@@ -124,45 +124,6 @@ export type Database = {
         }
         Relationships: []
       }
-      investment_plans: {
-        Row: {
-          created_at: string
-          daily_roi_rate: number
-          description: string | null
-          duration_days: number
-          id: string
-          maximum_amount: number
-          minimum_amount: number
-          name: string
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          daily_roi_rate: number
-          description?: string | null
-          duration_days: number
-          id?: string
-          maximum_amount: number
-          minimum_amount: number
-          name: string
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          daily_roi_rate?: number
-          description?: string | null
-          duration_days?: number
-          id?: string
-          maximum_amount?: number
-          minimum_amount?: number
-          name?: string
-          status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       messages: {
         Row: {
           content: string
@@ -211,6 +172,7 @@ export type Database = {
           monthly_income_range: string | null
           phone_number: string | null
           risk_tolerance: string | null
+          role: Database["public"]["Enums"]["user_role"]
           total_invested: number | null
           total_withdrawn: number | null
           updated_at: string | null
@@ -228,6 +190,7 @@ export type Database = {
           monthly_income_range?: string | null
           phone_number?: string | null
           risk_tolerance?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           total_invested?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
@@ -245,6 +208,7 @@ export type Database = {
           monthly_income_range?: string | null
           phone_number?: string | null
           risk_tolerance?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           total_invested?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
@@ -465,30 +429,6 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          created_at: string | null
-          created_by: string | null
-          id: string
-          role: Database["public"]["Enums"]["user_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          created_by?: string | null
-          id?: string
-          role: Database["public"]["Enums"]["user_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["user_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
@@ -533,17 +473,6 @@ export type Database = {
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
-      }
-      get_user_role: {
-        Args: { _user_id: string }
-        Returns: Database["public"]["Enums"]["user_role"]
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["user_role"]
-          _user_id: string
-        }
-        Returns: boolean
       }
       hash_pin: {
         Args: { pin_text: string }

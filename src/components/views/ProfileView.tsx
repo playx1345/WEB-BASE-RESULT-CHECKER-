@@ -23,13 +23,10 @@ interface Profile {
   id: string;
   user_id: string;
   full_name: string;
+  role: string;
   matric_number: string;
   phone_number: string;
   level: string;
-}
-
-interface UserRole {
-  role: 'student' | 'admin' | 'teacher' | 'parent';
 }
 
 interface ValidationErrors {
@@ -40,7 +37,6 @@ interface ValidationErrors {
 export function ProfileView() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [role, setRole] = useState<UserRole['role'] | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -64,23 +60,14 @@ export function ProfileView() {
       if (!user) return;
 
       try {
-        // Fetch profile without role
         const { data } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
           .single();
 
-        // Fetch role from secure user_roles table
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
-
         if (data) {
           setProfile(data);
-          setRole(roleData?.role || null);
           setFormData({
             full_name: data.full_name || '',
             phone_number: data.phone_number || '',
@@ -327,7 +314,7 @@ export function ProfileView() {
                 <User className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Role</p>
-                  <Badge variant="secondary">{role?.toUpperCase()}</Badge>
+                  <Badge variant="secondary">{profile?.role?.toUpperCase()}</Badge>
                 </div>
               </div>
 
@@ -368,7 +355,7 @@ export function ProfileView() {
           </Card>
 
           {/* Password Change Section - Only for admin users */}
-          {role === 'admin' && (
+          {profile?.role === 'admin' && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
