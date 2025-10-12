@@ -21,8 +21,8 @@ export default function Auth() {
   
   // Form data for different login types
   const [adminForm, setAdminForm] = useState({
-    email: 'admin@plateau.edu.ng',
-    password: 'Admin123456'
+    email: '',
+    password: ''
   });
   
   const [studentForm, setStudentForm] = useState({
@@ -32,13 +32,10 @@ export default function Auth() {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signIn, signOut, user } = useAuth();
+  const { signIn, user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      toast.info('You are already logged in', {
-        description: 'Redirecting to dashboard...'
-      });
       navigate('/');
     }
   }, [user, navigate]);
@@ -74,8 +71,8 @@ export default function Auth() {
     
     if (!studentForm.matricNumber.trim()) {
       errors.matricNumber = 'Matric number is required';
-    } else if (!/^[A-Z]{2,4}\/([A-Z]{2,4}\/)?[0-9]{2,4}\/[0-9]{3}$/.test(studentForm.matricNumber)) {
-      errors.matricNumber = 'Invalid format. Use: ND/CSC/22/001 or PLT/ND/2023/001';
+    } else if (!/^PSP\/SICT\/CSC\/ND\/\d{2}\/\d{3}$/.test(studentForm.matricNumber)) {
+      errors.matricNumber = 'Invalid format. Use: PSP/SICT/CSC/ND/24/001';
     }
     
     if (!studentForm.pin) {
@@ -117,35 +114,21 @@ export default function Auth() {
       const { error } = await signIn(adminForm.email.trim(), adminForm.password, false);
       
       if (error) {
-        // Enhanced error handling for admin login
-        if (error.message.includes('admin account may not exist')) {
-          setError('Admin account not found. Please run the admin setup script first.');
-          toast.error('Admin account not found. Check console for setup instructions.');
-          console.log('🚀 To create admin account, run: npm run setup-admin');
-        } else if (error.message.includes('Invalid login credentials') || error.message.includes('Invalid email or password')) {
+        if (error.message.includes('Invalid login credentials')) {
           setError('Invalid email or password. Please check your credentials and try again.');
-          toast.error('Invalid credentials');
         } else if (error.message.includes('Email not confirmed')) {
-          setError('Admin account exists but email is not confirmed. Please check the admin setup process.');
-          toast.error('Email not confirmed');
+          setError('Please check your email and click the confirmation link before signing in.');
         } else {
           setError(error.message || 'Login failed');
-          toast.error('Login failed: ' + (error.message || 'Unknown error'));
         }
+        toast.error('Login failed: ' + (error.message || 'Unknown error'));
       } else {
-        // Success - check if admin login specifically
-        if (adminForm.email === 'admin@plateau.edu.ng') {
-          toast.success('Welcome, Administrator!');
-          console.log('✅ Admin login successful');
-        } else {
-          toast.success('Successfully logged in!');
-        }
+        toast.success('Successfully logged in!');
         navigate('/');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
       toast.error('An unexpected error occurred');
-      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
@@ -255,7 +238,7 @@ export default function Auth() {
                     <Input
                       id="matricNumber"
                       type="text"
-                      placeholder="Enter your matric number"
+                      placeholder="e.g., PSP/SICT/CSC/ND/24/001"
                       value={studentForm.matricNumber}
                       onChange={(e) => handleInputChange('student', 'matricNumber', e.target.value.toUpperCase())}
                       className={fieldErrors.matricNumber ? 'border-destructive' : 'w-full'}

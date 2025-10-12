@@ -3,9 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
-import { BarChart3, TrendingUp, Users, Award, AlertTriangle, Activity, BookOpen } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, Award, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { EnhancedAnalyticsCharts } from './EnhancedAnalyticsCharts';
 
 interface AnalyticsData {
   levelDistribution: Record<string, number>;
@@ -137,117 +136,15 @@ export function AdminAnalyticsView() {
 
   const totalStudents = Object.values(analytics.levelDistribution).reduce((sum, count) => sum + count, 0);
 
-  // Prepare chart data
-  const levelChartData = Object.entries(analytics.levelDistribution).map(([name, students]) => ({
-    name,
-    students
-  }));
-
-  const gradeChartData = Object.entries(analytics.gradeDistribution).map(([grade, count]) => ({
-    grade,
-    count
-  }));
-
-  const performanceChartData = [
-    { category: 'Excellent (3.5+ CGPA)', value: analytics.performanceStats.excellentPerformers },
-    { category: 'Average (2.0-3.4 CGPA)', value: analytics.performanceStats.averagePerformers },
-    { category: 'Needs Support (<2.0 CGPA)', value: analytics.performanceStats.struggling },
-  ];
-
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-6 space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-          <Activity className="h-8 w-8 text-primary" />
-          Analytics & Reports
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Analytics & Reports</h1>
         <p className="text-muted-foreground">
-          Comprehensive insights into student performance and system metrics with visual data representation.
+          Comprehensive insights into student performance and system metrics.
         </p>
       </div>
 
-      {/* Key Metrics Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="relative overflow-hidden border-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10"></div>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-            <div className="p-2 rounded-full bg-blue-500/20">
-              <Users className="h-4 w-4 text-blue-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">{totalStudents}</div>
-            <p className="text-xs text-muted-foreground mt-1">Registered students</p>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-600/10"></div>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-            <CardTitle className="text-sm font-medium">Fee Collection</CardTitle>
-            <div className="p-2 rounded-full bg-green-500/20">
-              <TrendingUp className="h-4 w-4 text-green-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
-              {((analytics.feeStatusStats.paid / totalStudents) * 100).toFixed(1)}%
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">{analytics.feeStatusStats.paid} of {totalStudents} paid</p>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/10"></div>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-            <CardTitle className="text-sm font-medium">Top Performers</CardTitle>
-            <div className="p-2 rounded-full bg-purple-500/20">
-              <Award className="h-4 w-4 text-purple-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
-              {analytics.performanceStats.excellentPerformers}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Students with 3.5+ CGPA</p>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-orange-600/10"></div>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-            <CardTitle className="text-sm font-medium">Total Results</CardTitle>
-            <div className="p-2 rounded-full bg-orange-500/20">
-              <BookOpen className="h-4 w-4 text-orange-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent">
-              {Object.values(analytics.gradeDistribution).reduce((sum, count) => sum + count, 0)}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Published results</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Enhanced Charts */}
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2 mb-2">
-            <BarChart3 className="h-6 w-6 text-primary" />
-            Visual Analytics
-          </h2>
-          <p className="text-sm text-muted-foreground">Interactive charts showing key performance indicators</p>
-        </div>
-        <EnhancedAnalyticsCharts 
-          levelData={levelChartData}
-          gradeData={gradeChartData}
-          performanceData={performanceChartData}
-        />
-      </div>
-
-      {/* Detailed Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Level Distribution */}
         <Card>

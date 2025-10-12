@@ -124,80 +124,6 @@ export type Database = {
         }
         Relationships: []
       }
-      investment_plans: {
-        Row: {
-          created_at: string
-          daily_roi_rate: number
-          description: string | null
-          duration_days: number
-          id: string
-          maximum_amount: number | null
-          minimum_amount: number
-          name: string
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          daily_roi_rate: number
-          description?: string | null
-          duration_days: number
-          id?: string
-          maximum_amount?: number | null
-          minimum_amount: number
-          name: string
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          daily_roi_rate?: number
-          description?: string | null
-          duration_days?: number
-          id?: string
-          maximum_amount?: number | null
-          minimum_amount?: number
-          name?: string
-          status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      message_summaries: {
-        Row: {
-          created_at: string | null
-          created_by: string
-          id: number
-          model: string
-          summary: string
-          thread_id: number
-        }
-        Insert: {
-          created_at?: string | null
-          created_by: string
-          id?: never
-          model: string
-          summary: string
-          thread_id: number
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string
-          id?: never
-          model?: string
-          summary?: string
-          thread_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "message_summaries_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       messages: {
         Row: {
           content: string
@@ -501,15 +427,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_investments_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "investment_plans"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
