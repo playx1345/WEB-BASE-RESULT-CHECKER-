@@ -127,6 +127,7 @@ npm run preview  # Preview production build
 ## Common Patterns & Examples
 
 ### Creating a New Component
+
 ```tsx
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -153,6 +154,7 @@ export function MyComponent({ title, data, onAction }: MyComponentProps) {
 ```
 
 ### API Call with React Query
+
 ```tsx
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';

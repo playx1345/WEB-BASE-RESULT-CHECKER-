@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield, User, Globe, Briefcase } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import buildingBg from '@/assets/building-bg.jpg';
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const isMobile = useIsMobile();
   if (showAdminSetup) {
     return <div className="min-h-screen bg-background">
@@ -56,7 +59,12 @@ const LandingPage = () => {
           <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-full">
           {/* Logo */}
           <div className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation">
-            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110" />
+            <OptimizedImage 
+              src="/assets/plasu-polytechnic-logo.jpg" 
+              alt="Plateau State Polytechnic Barkin Ladi Logo" 
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110"
+              skeletonClassName="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full"
+            />
           </div>
           
           {/* Time Ribbon */}
@@ -83,10 +91,10 @@ const LandingPage = () => {
           {/* CTA Buttons - Mobile Optimized */}
           <div className="flex flex-col gap-3 sm:gap-4 md:gap-6 justify-center w-full px-2 sm:px-4">
             <Button asChild size="lg" className="w-full px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold btn-gradient ripple shadow-2xl hover:shadow-primary/30 min-h-[52px] touch-target">
-              <a href="/auth" className="flex items-center justify-center">
+              <Link to="/auth" className="flex items-center justify-center">
                 Get Started Now
                 <ChevronRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+              </Link>
             </Button>
             {!isMobile && (
               <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-target text-white">
