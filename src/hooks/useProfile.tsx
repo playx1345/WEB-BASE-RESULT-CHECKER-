@@ -33,7 +33,7 @@ export const useProfile = () => {
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (profileError) {
           console.error('Error fetching profile:', profileError);
@@ -42,21 +42,19 @@ export const useProfile = () => {
           return;
         }
 
-        // Fetch role from user_roles table
-        const { data: roleData, error: roleError } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
-
-        if (roleError) {
-          console.error('Error fetching role:', roleError);
+        if (!profileData) {
+          setProfile(null);
+          setLoading(false);
+          return;
         }
+
+        // Fetch role from user_roles table using RPC function
+        const { data: roleData } = await supabase.rpc('get_current_user_role');
 
         // Combine profile and role data
         setProfile({
           ...profileData,
-          role: roleData?.role || null
+          role: (roleData as 'student' | 'admin' | 'teacher' | 'parent') || null
         });
       } catch (error) {
         console.error('Error:', error);
