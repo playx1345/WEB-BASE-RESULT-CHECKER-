@@ -257,7 +257,7 @@ In a real implementation, this would be a properly formatted PDF document.`
                   <div>
                     <CardTitle className="text-lg">{document.name}</CardTitle>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={getDocumentBadgeVariant(document.type) as any} className="text-xs">
+                      <Badge variant={getDocumentBadgeVariant(document.type) as "default" | "secondary" | "destructive" | "outline" | null | undefined} className="text-xs">
                         {document.type}
                       </Badge>
                       {document.requiresFee && (

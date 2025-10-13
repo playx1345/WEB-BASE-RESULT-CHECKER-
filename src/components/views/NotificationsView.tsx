@@ -231,7 +231,7 @@ export function NotificationsView() {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         {format(new Date(notification.created_at), 'PPp')}
-                        <Badge variant={getNotificationBadgeVariant(notification.type) as any} className="text-xs">
+                        <Badge variant={getNotificationBadgeVariant(notification.type) as "default" | "secondary" | "destructive" | "outline" | null | undefined} className="text-xs">
                           {notification.type}
                         </Badge>
                       </div>

@@ -169,9 +169,10 @@ export function ProfileView() {
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setPasswordErrors({});
       toast.success('Password changed successfully!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error changing password:', error);
-      toast.error(error.message || 'Failed to change password. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to change password. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setChangingPassword(false);
     }
