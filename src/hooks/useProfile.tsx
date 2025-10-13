@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent';
+  role: 'student' | 'admin' | 'teacher' | 'parent' | null;
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -27,20 +27,37 @@ export const useProfile = () => {
         return;
       }
 
-
       try {
-        const { data, error } = await supabase
+        // Fetch profile data
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
           .single();
 
-        if (error) {
-          console.error('Error fetching profile:', error);
+        if (profileError) {
+          console.error('Error fetching profile:', profileError);
           setProfile(null);
-        } else {
-          setProfile(data);
+          setLoading(false);
+          return;
         }
+
+        // Fetch role from user_roles table
+        const { data: roleData, error: roleError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+
+        if (roleError) {
+          console.error('Error fetching role:', roleError);
+        }
+
+        // Combine profile and role data
+        setProfile({
+          ...profileData,
+          role: roleData?.role || null
+        });
       } catch (error) {
         console.error('Error:', error);
         setProfile(null);
