@@ -37,6 +37,7 @@ interface CsvRowData {
   credit_units: string;
   grade: string;
   point: string;
+  grade_points: string;
   session: string;
   semester: string;
   level: string;
@@ -165,9 +166,9 @@ export function AdminResultsView() {
     
     return dataLines.map(line => {
       const values = line.split(',').map(v => v.trim());
-      const row: Record<string, string> = {};
+      const row: Partial<CsvRowData> = {};
       headers.forEach((header, index) => {
-        row[header.toLowerCase().replace(/\s+/g, '_')] = values[index] || '';
+        row[header.toLowerCase().replace(/\s+/g, '_') as keyof CsvRowData] = values[index] || '';
       });
       return row as CsvRowData;
     });
