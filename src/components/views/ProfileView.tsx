@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,11 +20,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-interface Profile {
+interface ProfileData {
   id: string;
   user_id: string;
   full_name: string;
-  role: string;
   matric_number: string;
   phone_number: string;
   level: string;
@@ -36,7 +36,8 @@ interface ValidationErrors {
 
 export function ProfileView() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const { profile } = useProfile();
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -56,7 +57,7 @@ export function ProfileView() {
   const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileData = async () => {
       if (!user) return;
 
       try {
@@ -67,7 +68,7 @@ export function ProfileView() {
           .single();
 
         if (data) {
-          setProfile(data);
+          setProfileData(data);
           setFormData({
             full_name: data.full_name || '',
             phone_number: data.phone_number || '',
@@ -80,7 +81,7 @@ export function ProfileView() {
       }
     };
 
-    fetchProfile();
+    fetchProfileData();
   }, [user]);
 
   const validateForm = (): boolean => {
@@ -123,7 +124,7 @@ export function ProfileView() {
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !profile || !validateForm()) return;
+    if (!user || !profileData || !validateForm()) return;
 
     setUpdating(true);
     try {
@@ -137,7 +138,7 @@ export function ProfileView() {
 
       if (error) throw error;
 
-      setProfile({ ...profile, ...formData });
+      setProfileData({ ...profileData, ...formData });
       toast.success('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -315,29 +316,29 @@ export function ProfileView() {
                 <User className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Role</p>
-                  <Badge variant="secondary">{profile?.role?.toUpperCase()}</Badge>
+                  <Badge variant="secondary">{profile?.role?.toUpperCase() || 'LOADING'}</Badge>
                 </div>
               </div>
 
-              {profile?.matric_number && (
+              {profileData?.matric_number && (
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <IdCard className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium">Matric Number</p>
                     <p className="text-sm text-muted-foreground">
-                      {profile.matric_number}
+                      {profileData.matric_number}
                     </p>
                   </div>
                 </div>
               )}
 
-              {profile?.level && (
+              {profileData?.level && (
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <GraduationCap className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium">Current Level</p>
                     <p className="text-sm text-muted-foreground">
-                      {profile.level}
+                      {profileData.level}
                     </p>
                   </div>
                 </div>
