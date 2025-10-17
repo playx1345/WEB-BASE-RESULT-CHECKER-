@@ -172,7 +172,6 @@ export type Database = {
           monthly_income_range: string | null
           phone_number: string | null
           risk_tolerance: string | null
-          role: Database["public"]["Enums"]["user_role"]
           total_invested: number | null
           total_withdrawn: number | null
           updated_at: string | null
@@ -190,7 +189,6 @@ export type Database = {
           monthly_income_range?: string | null
           phone_number?: string | null
           risk_tolerance?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           total_invested?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
@@ -208,7 +206,6 @@ export type Database = {
           monthly_income_range?: string | null
           phone_number?: string | null
           risk_tolerance?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           total_invested?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
@@ -337,94 +334,26 @@ export type Database = {
         }
         Relationships: []
       }
-      transactions: {
+      user_roles: {
         Row: {
-          amount: number
-          created_at: string
-          description: string | null
+          created_at: string | null
+          created_by: string | null
           id: string
-          investment_id: string | null
-          metadata: Json | null
-          reference_id: string | null
-          status: string
-          type: string
-          updated_at: string
+          role: Database["public"]["Enums"]["user_role"]
           user_id: string
         }
         Insert: {
-          amount: number
-          created_at?: string
-          description?: string | null
+          created_at?: string | null
+          created_by?: string | null
           id?: string
-          investment_id?: string | null
-          metadata?: Json | null
-          reference_id?: string | null
-          status?: string
-          type: string
-          updated_at?: string
+          role: Database["public"]["Enums"]["user_role"]
           user_id: string
         }
         Update: {
-          amount?: number
-          created_at?: string
-          description?: string | null
+          created_at?: string | null
+          created_by?: string | null
           id?: string
-          investment_id?: string | null
-          metadata?: Json | null
-          reference_id?: string | null
-          status?: string
-          type?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_investment_id_fkey"
-            columns: ["investment_id"]
-            isOneToOne: false
-            referencedRelation: "user_investments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_investments: {
-        Row: {
-          amount: number
-          created_at: string
-          end_date: string
-          id: string
-          last_profit_calculation: string | null
-          plan_id: string
-          start_date: string
-          status: string
-          total_profit: number | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          created_at?: string
-          end_date: string
-          id?: string
-          last_profit_calculation?: string | null
-          plan_id: string
-          start_date?: string
-          status?: string
-          total_profit?: number | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          end_date?: string
-          id?: string
-          last_profit_calculation?: string | null
-          plan_id?: string
-          start_date?: string
-          status?: string
-          total_profit?: number | null
-          updated_at?: string
+          role?: Database["public"]["Enums"]["user_role"]
           user_id?: string
         }
         Relationships: []
@@ -474,6 +403,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       hash_pin: {
         Args: { pin_text: string }
         Returns: string
@@ -490,6 +430,10 @@ export type Database = {
           p_table_name?: string
         }
         Returns: string
+      }
+      verify_student_login: {
+        Args: { matric: string; pin: string }
+        Returns: boolean
       }
     }
     Enums: {
