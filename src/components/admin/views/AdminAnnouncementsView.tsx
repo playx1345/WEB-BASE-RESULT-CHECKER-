@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,11 +35,7 @@ export function AdminAnnouncementsView() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchAnnouncements();
-  }, []);
-
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncements = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('announcements')
@@ -61,7 +57,11 @@ export function AdminAnnouncementsView() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, [fetchAnnouncements]);
 
   const createAnnouncement = async () => {
     if (!formData.title || !formData.content || !user) return;

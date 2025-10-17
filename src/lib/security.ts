@@ -95,7 +95,7 @@ export class InputSanitizer {
    * Validate phone number format
    */
   static validatePhoneNumber(phone: string): boolean {
-    const phoneRegex = /^[\+]?[\d\s\-()]{10,15}$/;
+    const phoneRegex = /^[+]?[\d\s\-()]{10,15}$/;
     return phoneRegex.test(phone);
   }
 

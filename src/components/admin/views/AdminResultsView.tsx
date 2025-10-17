@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +30,19 @@ interface Result {
   };
 }
 
+interface CsvRowData {
+  matric_number: string;
+  course_code: string;
+  course_title: string;
+  credit_units: string;
+  grade: string;
+  point: string;
+  grade_points: string;
+  session: string;
+  semester: string;
+  level: string;
+}
+
 export function AdminResultsView() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,11 +54,7 @@ export function AdminResultsView() {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchResults();
-  }, []);
-
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('results')
@@ -69,7 +78,11 @@ export function AdminResultsView() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchResults();
+  }, [fetchResults]);
 
   const filteredResults = results.filter(result => {
     const matchesSearch = 
@@ -141,7 +154,7 @@ export function AdminResultsView() {
     }
   };
 
-  const parseCsvData = (csvText: string): any[] => {
+  const parseCsvData = (csvText: string): CsvRowData[] => {
     const lines = csvText.split('\n').filter(line => line.trim());
     const headers = lines[0].split(',').map(h => h.trim());
     
@@ -153,15 +166,15 @@ export function AdminResultsView() {
     
     return dataLines.map(line => {
       const values = line.split(',').map(v => v.trim());
-      const row: any = {};
+      const row: Partial<CsvRowData> = {};
       headers.forEach((header, index) => {
-        row[header.toLowerCase().replace(/\s+/g, '_')] = values[index] || '';
+        row[header.toLowerCase().replace(/\s+/g, '_') as keyof CsvRowData] = values[index] || '';
       });
-      return row;
+      return row as CsvRowData;
     });
   };
 
-  const validateRowData = (row: any, rowIndex: number): string[] => {
+  const validateRowData = (row: CsvRowData, rowIndex: number): string[] => {
     const errors: string[] = [];
     
     if (!row.matric_number) errors.push(`Row ${rowIndex + 2}: Matric Number is required`);
