@@ -3,13 +3,38 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical, User, Shield, GraduationCap, LogOut, BookOpen, Users, Mail, Newspaper } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/hooks/useAuth';
-import { useProfile } from '@/hooks/useProfile';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
 
 export function SiteHeader() {
   const { user, signOut } = useAuth();
-  const { profile } = useProfile();
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserRole();
+    } else {
+      setUserRole(null);
+    }
+  }, [user]);
+
+  const fetchUserRole = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+      
+      setUserRole(profile?.role || null);
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -114,7 +139,7 @@ export function SiteHeader() {
                   </>
                 ) : (
                   <>
-                    {profile?.role === 'admin' && (
+                    {userRole === 'admin' && (
                       <>
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="w-full flex items-center space-x-2 text-primary hover:bg-primary/10 transition-colors">
