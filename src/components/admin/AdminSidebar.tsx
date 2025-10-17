@@ -12,6 +12,7 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface AdminSidebarProps {
   activeView: string;
@@ -29,6 +30,12 @@ const adminMenuItems = [
 
 export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <Sidebar className="border-r border-border/40">
@@ -69,7 +76,7 @@ export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
       <SidebarFooter className="border-t border-border/40 p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={signOut} className="w-full justify-start text-destructive hover:text-destructive">
+            <SidebarMenuButton onClick={handleSignOut} className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
               <LogOut className="h-4 w-4" />
               <span>Sign Out</span>
             </SidebarMenuButton>
