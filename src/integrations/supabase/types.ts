@@ -16,31 +16,31 @@ export type Database = {
     Tables: {
       admins: {
         Row: {
-          admin_level: string
-          created_at: string
-          department: string
+          admin_level: string | null
+          created_at: string | null
+          department: string | null
           id: string
           permissions: Json | null
           profile_id: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          admin_level?: string
-          created_at?: string
-          department?: string
+          admin_level?: string | null
+          created_at?: string | null
+          department?: string | null
           id?: string
           permissions?: Json | null
           profile_id: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          admin_level?: string
-          created_at?: string
-          department?: string
+          admin_level?: string | null
+          created_at?: string | null
+          department?: string | null
           id?: string
           permissions?: Json | null
           profile_id?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -58,6 +58,7 @@ export type Database = {
           created_at: string | null
           created_by: string
           id: string
+          priority: string | null
           target_level: string | null
           title: string
           updated_at: string | null
@@ -67,6 +68,7 @@ export type Database = {
           created_at?: string | null
           created_by: string
           id?: string
+          priority?: string | null
           target_level?: string | null
           title: string
           updated_at?: string | null
@@ -76,6 +78,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string
           id?: string
+          priority?: string | null
           target_level?: string | null
           title?: string
           updated_at?: string | null
@@ -85,94 +88,61 @@ export type Database = {
       audit_logs: {
         Row: {
           action: string
-          created_at: string
+          created_at: string | null
           id: string
-          ip_address: string | null
           metadata: Json | null
-          new_values: Json | null
-          old_values: Json | null
           record_id: string | null
           table_name: string | null
-          user_agent: string | null
           user_id: string | null
         }
         Insert: {
           action: string
-          created_at?: string
+          created_at?: string | null
           id?: string
-          ip_address?: string | null
           metadata?: Json | null
-          new_values?: Json | null
-          old_values?: Json | null
           record_id?: string | null
           table_name?: string | null
-          user_agent?: string | null
           user_id?: string | null
         }
         Update: {
           action?: string
-          created_at?: string
+          created_at?: string | null
           id?: string
-          ip_address?: string | null
           metadata?: Json | null
-          new_values?: Json | null
-          old_values?: Json | null
           record_id?: string | null
           table_name?: string | null
-          user_agent?: string | null
           user_id?: string | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
-          account_balance: number | null
           created_at: string | null
           full_name: string | null
           id: string
-          investment_experience: string | null
-          investment_goals: string[] | null
           level: string | null
           matric_number: string | null
-          monthly_income_range: string | null
           phone_number: string | null
-          risk_tolerance: string | null
-          total_invested: number | null
-          total_withdrawn: number | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
-          account_balance?: number | null
           created_at?: string | null
           full_name?: string | null
           id?: string
-          investment_experience?: string | null
-          investment_goals?: string[] | null
           level?: string | null
           matric_number?: string | null
-          monthly_income_range?: string | null
           phone_number?: string | null
-          risk_tolerance?: string | null
-          total_invested?: number | null
-          total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
-          account_balance?: number | null
           created_at?: string | null
           full_name?: string | null
           id?: string
-          investment_experience?: string | null
-          investment_goals?: string[] | null
           level?: string | null
           matric_number?: string | null
-          monthly_income_range?: string | null
           phone_number?: string | null
-          risk_tolerance?: string | null
-          total_invested?: number | null
-          total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
         }
@@ -191,6 +161,7 @@ export type Database = {
           semester: string
           session: string
           student_id: string
+          updated_at: string | null
         }
         Insert: {
           course_code: string
@@ -204,6 +175,7 @@ export type Database = {
           semester: string
           session: string
           student_id: string
+          updated_at?: string | null
         }
         Update: {
           course_code?: string
@@ -217,6 +189,7 @@ export type Database = {
           semester?: string
           session?: string
           student_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -237,7 +210,7 @@ export type Database = {
           id: string
           level: string
           matric_number: string
-          pin_hash: string | null
+          pin_hash: string
           profile_id: string
           total_gp: number | null
           updated_at: string | null
@@ -250,7 +223,7 @@ export type Database = {
           id?: string
           level: string
           matric_number: string
-          pin_hash?: string | null
+          pin_hash: string
           profile_id: string
           total_gp?: number | null
           updated_at?: string | null
@@ -263,7 +236,7 @@ export type Database = {
           id?: string
           level?: string
           matric_number?: string
-          pin_hash?: string | null
+          pin_hash?: string
           profile_id?: string
           total_gp?: number | null
           updated_at?: string | null
@@ -272,7 +245,7 @@ export type Database = {
           {
             foreignKeyName: "students_profile_id_fkey"
             columns: ["profile_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -281,21 +254,18 @@ export type Database = {
       user_roles: {
         Row: {
           created_at: string | null
-          created_by: string | null
           id: string
           role: Database["public"]["Enums"]["user_role"]
           user_id: string
         }
         Insert: {
           created_at?: string | null
-          created_by?: string | null
           id?: string
           role: Database["public"]["Enums"]["user_role"]
           user_id: string
         }
         Update: {
           created_at?: string | null
-          created_by?: string | null
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
           user_id?: string
@@ -347,10 +317,6 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
-      get_user_role: {
-        Args: { _user_id: string }
-        Returns: Database["public"]["Enums"]["user_role"]
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -381,7 +347,7 @@ export type Database = {
       }
     }
     Enums: {
-      user_role: "student" | "admin"
+      user_role: "user" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -509,7 +475,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["student", "admin"],
+      user_role: ["user", "admin"],
     },
   },
 } as const
