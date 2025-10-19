@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle, Search } from 'lucide-react';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface AdminResultsUploadDialogProps {
   open: boolean;
@@ -44,6 +47,83 @@ export function AdminResultsUploadDialog({
     level: ''
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [students, setStudents] = useState<Array<{ id: string; matric_number: string; full_name: string; level: string }>>([]);
+  const [studentSearchOpen, setStudentSearchOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<{ matric_number: string; full_name: string; level: string } | null>(null);
+  const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
+  const [checkingDuplicate, setCheckingDuplicate] = useState(false);
+
+  // Fetch students for autocomplete
+  useEffect(() => {
+    if (open && !studentId) {
+      fetchStudents();
+    }
+  }, [open, studentId]);
+
+  // Auto-populate current session
+  useEffect(() => {
+    if (open && !formData.session) {
+      const currentYear = new Date().getFullYear();
+      const nextYear = currentYear + 1;
+      setFormData(prev => ({ ...prev, session: `${currentYear}/${nextYear}` }));
+    }
+  }, [open]);
+
+  // Check for duplicates when key fields change
+  useEffect(() => {
+    if (formData.student_id && formData.course_code && formData.session && formData.semester) {
+      checkDuplicateResult();
+    } else {
+      setDuplicateWarning(null);
+    }
+  }, [formData.student_id, formData.course_code, formData.session, formData.semester]);
+
+  const fetchStudents = async () => {
+    const { data, error } = await supabase
+      .from('students')
+      .select(`
+        id,
+        matric_number,
+        level,
+        profile:profiles(full_name)
+      `)
+      .order('matric_number');
+
+    if (!error && data) {
+      setStudents(data.map(s => ({
+        id: s.id,
+        matric_number: s.matric_number,
+        full_name: s.profile?.full_name || 'Unknown',
+        level: s.level
+      })));
+    }
+  };
+
+  const checkDuplicateResult = async () => {
+    setCheckingDuplicate(true);
+    try {
+      const { data, error } = await supabase
+        .from('results')
+        .select('id, grade, course_title')
+        .eq('student_id', formData.student_id)
+        .eq('course_code', formData.course_code.toUpperCase())
+        .eq('session', formData.session)
+        .eq('semester', formData.semester)
+        .maybeSingle();
+
+      if (!error && data) {
+        setDuplicateWarning(
+          `A result for this course already exists (Grade: ${data.grade}). Uploading will create a duplicate.`
+        );
+      } else {
+        setDuplicateWarning(null);
+      }
+    } catch (error) {
+      console.error('Error checking duplicate:', error);
+    } finally {
+      setCheckingDuplicate(false);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -125,6 +205,16 @@ export function AdminResultsUploadDialog({
     }
   };
 
+  const selectStudent = (student: typeof students[0]) => {
+    setFormData(prev => ({ ...prev, student_id: student.id, level: student.level }));
+    setSelectedStudent({
+      matric_number: student.matric_number,
+      full_name: student.full_name,
+      level: student.level
+    });
+    setStudentSearchOpen(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -136,6 +226,61 @@ export function AdminResultsUploadDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Student Selection */}
+          {!studentId && (
+            <div className="space-y-2">
+              <Label>Student *</Label>
+              <Popover open={studentSearchOpen} onOpenChange={setStudentSearchOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className="w-full justify-between"
+                  >
+                    {selectedStudent ? (
+                      <span>{selectedStudent.matric_number} - {selectedStudent.full_name}</span>
+                    ) : (
+                      <span className="text-muted-foreground">Search student...</span>
+                    )}
+                    <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[400px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search by matric number or name..." />
+                    <CommandList>
+                      <CommandEmpty>No student found.</CommandEmpty>
+                      <CommandGroup>
+                        {students.map((student) => (
+                          <CommandItem
+                            key={student.id}
+                            onSelect={() => selectStudent(student)}
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-medium">{student.matric_number}</span>
+                              <span className="text-sm text-muted-foreground">{student.full_name} - {student.level}</span>
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              {errors.student_id && (
+                <p className="text-sm text-destructive">{errors.student_id}</p>
+              )}
+            </div>
+          )}
+
+          {/* Duplicate Warning */}
+          {duplicateWarning && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{duplicateWarning}</AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="course_code">Course Code *</Label>

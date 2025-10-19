@@ -204,9 +204,6 @@ export function AdminBulkResultsPreviewDialog({
     setUploadProgress(0);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const batchId = crypto.randomUUID();
-      
       const resultsToInsert = rowsToUpload.map(result => ({
         student_id: result.studentId!,
         course_code: result.row.course_code.toUpperCase(),
@@ -216,9 +213,7 @@ export function AdminBulkResultsPreviewDialog({
         point: parseFloat(result.row.grade_points),
         session: result.row.session,
         semester: result.row.semester.toLowerCase(),
-        level: result.row.level.toUpperCase(),
-        uploaded_by: user?.id,
-        upload_batch_id: batchId
+        level: result.row.level.toUpperCase()
       }));
 
       // Upload in batches
