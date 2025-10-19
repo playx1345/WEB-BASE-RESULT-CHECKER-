@@ -317,6 +317,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_student_safe_data: {
+        Args: { p_user_id: string }
+        Returns: {
+          carryovers: number
+          cgp: number
+          created_at: string
+          fee_status: string
+          id: string
+          level: string
+          matric_number: string
+          profile_id: string
+          total_gp: number
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
