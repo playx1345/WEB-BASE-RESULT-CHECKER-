@@ -51,8 +51,8 @@ const LandingPage = () => {
             minHeight: isMobile ? '70vh' : '80vh'
           }}
         >
-          {/* Enhanced background overlay with better transparency */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-background/80 to-accent/60 backdrop-blur-[2px]"></div>
+          {/* Optimized background overlay - clearer image visibility */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
           <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-full">
           {/* Logo */}
           <div className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation">
@@ -71,16 +71,16 @@ const LandingPage = () => {
           
           {/* School Information */}
           <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 px-2">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white text-shadow-bright leading-tight">
+            <h1 className="hero-heading text-white">
               Plateau State Polytechnic Barkin Ladi
             </h1>
-            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white text-shadow-bright max-w-4xl mx-auto">
+            <h2 className="hero-subheading text-white max-w-4xl mx-auto">
               School of Information and Communication Technology
             </h2>
-            <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-white text-shadow-bright max-w-4xl mx-auto">
+            <h3 className="hero-subtitle text-white max-w-4xl mx-auto">
               Department of Computer Science - Online Result Checker
             </h3>
-            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white text-shadow-bright max-w-3xl mx-auto leading-relaxed px-2">
+            <p className="hero-description text-white/95 max-w-3xl mx-auto leading-relaxed px-2">
               Experience the next generation of academic management with our secure, intelligent, and user-friendly platform designed for modern education.
             </p>
           </div>
@@ -114,8 +114,8 @@ const LandingPage = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in">
-              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-4 sm:mb-6">Why Choose Our Platform</h3>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
+              <h3 className="section-heading gradient-text mb-4 sm:mb-6">Why Choose Our Platform</h3>
+              <p className="section-description text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
                 Experience the next generation of academic management with cutting-edge features designed for modern education
               </p>
             </div>
@@ -207,8 +207,8 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30"></div>
           <div className="relative z-10 p-6 sm:p-8 md:p-10 lg:p-12">
           <div className="text-center mb-6 sm:mb-8 md:mb-10 animate-fade-in">
-            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 text-shadow-bright">System Features</h3>
-            <p className="text-sm sm:text-base md:text-lg text-white/95 max-w-3xl mx-auto leading-relaxed text-shadow-bright px-4">
+            <h3 className="section-heading text-white mb-3 sm:mb-4">System Features</h3>
+            <p className="section-description text-white/95 max-w-3xl mx-auto leading-relaxed px-4">
               A comprehensive platform designed for the future of academic excellence and administrative efficiency
             </p>
           </div>
