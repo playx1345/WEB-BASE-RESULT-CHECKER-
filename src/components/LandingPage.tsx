@@ -77,10 +77,6 @@ const LandingPage = () => {
                 <ChevronRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </Button>
-            {!isMobile && <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:flex-1 flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-target text-white md:text-lg">
-                <Settings className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 hover:rotate-45" />
-                Admin Setup
-              </Button>}
           </div>
           </div>
         </div>
