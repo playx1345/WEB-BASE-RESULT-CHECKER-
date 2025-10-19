@@ -8,9 +8,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Search, Upload, FileText, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
+import { Plus, Search, Upload, Download, FileSpreadsheet, AlertCircle, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
 
 interface Result {
   id: string;
@@ -52,6 +53,7 @@ export function AdminResultsView() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const fetchResults = useCallback(async () => {
@@ -396,7 +398,7 @@ export function AdminResultsView() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button>
+          <Button onClick={() => setUploadDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Result
           </Button>
@@ -512,6 +514,12 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
+
+      <AdminResultsUploadDialog
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        onResultUploaded={fetchResults}
+      />
     </div>
   );
 }
