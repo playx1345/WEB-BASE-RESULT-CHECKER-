@@ -191,20 +191,6 @@ const LandingPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Career Support */}
-              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.5s'}}>
-                <CardHeader className="text-center p-4 sm:p-6">
-                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Briefcase className="h-8 w-8 sm:h-10 sm:w-10 text-indigo-600" />
-                  </div>
-                  <CardTitle className="text-base sm:text-lg xl:text-xl font-bold text-primary">Career Support & Networking</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 sm:p-6">
-                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
-                    Leverage our comprehensive career services and strong alumni network to accelerate your professional journey.
-                  </CardDescription>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
