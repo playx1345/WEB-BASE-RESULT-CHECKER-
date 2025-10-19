@@ -51,12 +51,17 @@ const LandingPage = () => {
             minHeight: isMobile ? '70vh' : '80vh'
           }}
         >
-          {/* Enhanced background overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-background/70 to-accent/50"></div>
+          {/* Enhanced background overlay with better transparency */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-background/80 to-accent/60 backdrop-blur-[2px]"></div>
           <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-full">
           {/* Logo */}
           <div className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation">
-            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110" />
+            <img 
+              src="/assets/plasu-polytechnic-logo.jpg" 
+              alt="Plateau State Polytechnic Barkin Ladi Logo" 
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110"
+              loading="eager"
+            />
           </div>
           
           {/* Time Ribbon */}
@@ -81,15 +86,15 @@ const LandingPage = () => {
           </div>
 
           {/* CTA Buttons - Mobile Optimized */}
-          <div className="flex flex-col gap-3 sm:gap-4 md:gap-6 justify-center w-full px-2 sm:px-4">
-            <Button asChild size="lg" className="w-full px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold btn-gradient ripple shadow-2xl hover:shadow-primary/30 min-h-[52px] touch-target">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center w-full px-2 sm:px-4">
+            <Button asChild size="lg" className="w-full sm:flex-1 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold btn-gradient ripple shadow-2xl hover:shadow-primary/30 min-h-[52px] touch-target">
               <a href="/auth" className="flex items-center justify-center">
                 Get Started Now
                 <ChevronRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </Button>
             {!isMobile && (
-              <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-target text-white">
+              <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:flex-1 flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-target text-white">
                 <Settings className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 hover:rotate-45" />
                 Admin Setup
               </Button>
@@ -108,14 +113,14 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-primary/3 to-accent/3"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8 sm:mb-12 md:mb-16">
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-4 sm:mb-6">Why Choose Our Platform</h3>
-              <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
+            <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in">
+              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-4 sm:mb-6">Why Choose Our Platform</h3>
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
                 Experience the next generation of academic management with cutting-edge features designed for modern education
               </p>
             </div>
             
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {/* Academic Excellence */}
               <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group">
                 <CardHeader className="text-center p-4 sm:p-6">
@@ -197,18 +202,18 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-8 sm:py-12 md:py-16">
+      <section className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-20">
         <div className="max-w-6xl mx-auto relative rounded-2xl sm:rounded-3xl overflow-hidden modern-shadow bright-background">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30"></div>
-          <div className="relative z-10 p-6 sm:p-8">
-          <div className="text-center mb-6 sm:mb-8">
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4 text-shadow-bright">System Features</h3>
-            <p className="text-sm sm:text-base text-white/95 max-w-3xl mx-auto leading-relaxed text-shadow-bright px-4">
+          <div className="relative z-10 p-6 sm:p-8 md:p-10 lg:p-12">
+          <div className="text-center mb-6 sm:mb-8 md:mb-10 animate-fade-in">
+            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 text-shadow-bright">System Features</h3>
+            <p className="text-sm sm:text-base md:text-lg text-white/95 max-w-3xl mx-auto leading-relaxed text-shadow-bright px-4">
               A comprehensive platform designed for the future of academic excellence and administrative efficiency
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             <Card className="glass-enhanced border-white/20 modern-shadow stagger-in group">
               <CardHeader className="text-center p-4 sm:p-6">
                 <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full flex items-center justify-center mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">

@@ -124,41 +124,6 @@ export type Database = {
         }
         Relationships: []
       }
-      messages: {
-        Row: {
-          content: string
-          created_at: string | null
-          id: number
-          metadata: Json | null
-          sender_id: string
-          thread_id: number
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          id?: never
-          metadata?: Json | null
-          sender_id: string
-          thread_id: number
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          id?: never
-          metadata?: Json | null
-          sender_id?: string
-          thread_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           account_balance: number | null
@@ -312,27 +277,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      threads: {
-        Row: {
-          created_at: string | null
-          created_by: string
-          id: number
-          title: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          created_by: string
-          id?: never
-          title?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string
-          id?: never
-          title?: string | null
-        }
-        Relationships: []
       }
       user_roles: {
         Row: {
