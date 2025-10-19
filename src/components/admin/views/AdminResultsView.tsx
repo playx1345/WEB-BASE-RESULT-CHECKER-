@@ -12,6 +12,7 @@ import { Plus, Search, Upload, Download, FileSpreadsheet, AlertCircle, FileText 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
+import { AdminBulkResultsPreviewDialog } from './AdminBulkResultsPreviewDialog';
 
 interface Result {
   id: string;
@@ -54,6 +55,8 @@ export function AdminResultsView() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [parsedCsvData, setParsedCsvData] = useState<CsvRowData[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
   const fetchResults = useCallback(async () => {
@@ -141,18 +144,45 @@ export function AdminResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+    if (!file) return;
+
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a CSV file.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setUploadFile(file);
+    
+    try {
+      // Immediately parse and show preview
+      const csvText = await file.text();
+      const parsed = parseCsvData(csvText);
+      
+      if (parsed.length === 0) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload a CSV file.",
+          title: "No data found",
+          description: "The CSV file contains no valid data rows.",
           variant: "destructive"
         });
         return;
       }
-      setUploadFile(file);
+
+      setParsedCsvData(parsed);
+      setIsBulkUploadOpen(false);
+      setShowPreview(true);
+    } catch (error) {
+      console.error('Error parsing CSV:', error);
+      toast({
+        title: "Parse error",
+        description: "Failed to parse CSV file. Please check the format.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -519,6 +549,23 @@ export function AdminResultsView() {
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
         onResultUploaded={fetchResults}
+      />
+
+      <AdminBulkResultsPreviewDialog
+        open={showPreview}
+        onOpenChange={(open) => {
+          setShowPreview(open);
+          if (!open) {
+            setUploadFile(null);
+            setParsedCsvData([]);
+          }
+        }}
+        csvData={parsedCsvData}
+        onUploadComplete={() => {
+          fetchResults();
+          setUploadFile(null);
+          setParsedCsvData([]);
+        }}
       />
     </div>
   );
