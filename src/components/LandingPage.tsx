@@ -101,61 +101,6 @@ const LandingPage = () => {
 
       {/* Mission and Vision Section */}
       <section className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-20">
-        <div className="max-w-6xl mx-auto computer-lab-bg rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-10 lg:p-16 modern-shadow">
-          <div className="text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16">
-            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text mb-3 sm:mb-4 md:mb-6">Our Mission & Vision</h3>
-            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2 sm:px-4">
-              Pioneering the future of academic excellence through innovative technology solutions
-            </p>
-          </div>
-          
-          <div className="grid gap-4 sm:gap-6 md:gap-8 lg:gap-12 md:grid-cols-2">
-            {/* Vision Card */}
-            <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group">
-              <CardHeader className="text-center p-3 sm:p-4 md:p-6">
-                <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary" />
-                </div>
-                <CardTitle className="text-sm sm:text-base md:text-lg font-bold gradient-text">Our Vision</CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 sm:p-4 md:p-6">
-                <CardDescription className="text-center text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed text-foreground">
-                  To revolutionize academic transparency and efficiency through a secure, accessible, and intelligent result management system—empowering students and administrators of the Department of Computer Science with real-time academic insights and digital autonomy.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            {/* Mission Card */}
-            <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group">
-              <CardHeader className="text-center p-3 sm:p-4 md:p-6">
-                <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-accent/20 to-primary/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Shield className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-accent" />
-                </div>
-                <CardTitle className="text-sm sm:text-base md:text-lg font-bold gradient-text">Our Mission</CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 sm:p-4 md:p-6">
-                <div className="space-y-2 sm:space-y-3 md:space-y-4 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
-                  <div className="flex items-start">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
-                    <p>Develop a comprehensive platform for seamless academic data management</p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
-                    <p>Ensure data integrity and security for all academic records</p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
-                    <p>Drive digital transformation in academic administration</p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
-                    <p>Support academic excellence through innovative technology solutions</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
       </section>
 
       {/* Why Choose Us Section */}
