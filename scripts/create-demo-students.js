@@ -83,37 +83,34 @@ async function createDemoStudents() {
     for (const student of demoStudents) {
       console.log(`👤 Creating student: ${student.full_name} (${student.matric_number})`);
       
-      const studentEmail = `${student.matric_number}@student.plateau.edu.ng`;
-      
       // Check if student already exists
-      const { data: existingUsers } = await supabase.auth.admin.listUsers();
-      const existingUser = existingUsers.users.find(user => user.email === studentEmail);
+      const { data: existingStudent } = await supabase
+        .from('students')
+        .select('matric_number')
+        .eq('matric_number', student.matric_number)
+        .single();
       
-      if (existingUser) {
+      if (existingStudent) {
         console.log(`   ⚠️  Student already exists, skipping...`);
         continue;
       }
       
-      // Create auth user
-      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
-        email: studentEmail,
-        password: student.pin,
-        email_confirm: true,
-        user_metadata: {
-          full_name: student.full_name,
-          matric_number: student.matric_number,
-          level: student.level,
-          phone_number: student.phone_number,
-          role: 'student'
-        }
-      });
+      // Use admin_create_student RPC function
+      const { data: result, error: createError } = await supabase
+        .rpc('admin_create_student', {
+          p_full_name: student.full_name,
+          p_matric_number: student.matric_number,
+          p_level: student.level,
+          p_phone_number: student.phone_number,
+          p_pin: student.pin
+        });
       
       if (createError) {
-        console.error(`   ❌ Error creating user: ${createError.message}`);
+        console.error(`   ❌ Error creating student: ${createError.message}`);
         continue;
       }
       
-      // Update fee status using RPC function
+      // Update fee status
       const { error: updateError } = await supabase
         .from('students')
         .update({ fee_status: student.fee_status })
