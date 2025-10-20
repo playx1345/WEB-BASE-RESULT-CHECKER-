@@ -24,7 +24,7 @@ export function SiteHeader() {
           <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
             <div className="flex items-center space-x-3 sm:space-x-4">
               <img 
-                src="/assets/plasu-polytechnic-logo.webp" 
+                src="/assets/plasu-polytechnic-logo-optimized.webp" 
                 alt="Plateau State Polytechnic Barkin Ladi Logo" 
                 className="h-10 w-10 sm:h-12 sm:w-12 object-contain flex-shrink-0 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                 loading="eager"
