@@ -302,7 +302,7 @@ html, body {
   }
 
   .header-bright-bg {
-    background-image: url('/src/assets/university-header-bg.jpg');
+    background-image: url('/src/assets/university-header-bg.webp');
     background-size: cover;
     background-position: center;
   }
@@ -639,7 +639,7 @@ html, body {
 
 /* Computer Lab Background */
 .computer-lab-bg {
-  background-image: url('/assets/computer-lab.jpg');
+  background-image: url('/assets/computer-lab.webp');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
