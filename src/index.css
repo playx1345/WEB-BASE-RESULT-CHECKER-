@@ -127,6 +127,31 @@ All colors MUST be HSL.
   }
 }
 
+/* Mobile touch optimization and safe areas */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Touch target minimum size (WCAG) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
 @layer components {
   /* Mobile accessibility improvements */
   .touch-target {

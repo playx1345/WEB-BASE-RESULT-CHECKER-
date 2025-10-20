@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +32,7 @@ const adminMenuItems = [
 export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const { open } = useSidebar();
 
   const handleSignOut = async () => {
     await signOut();
@@ -62,9 +64,10 @@ export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
                     onClick={() => onViewChange(item.id)}
                     isActive={activeView === item.id}
                     className="w-full justify-start"
+                    tooltip={item.label}
                   >
                     <item.icon className="h-4 w-4" />
-                    <span>{item.label}</span>
+                    {open && <span>{item.label}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -76,9 +79,13 @@ export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
       <SidebarFooter className="border-t border-border/40 p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
+            <SidebarMenuButton 
+              onClick={handleSignOut} 
+              className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+              tooltip="Sign Out"
+            >
               <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
+              {open && <span>Sign Out</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
