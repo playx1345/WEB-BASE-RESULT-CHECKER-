@@ -174,7 +174,7 @@ export default function Auth() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
         <div className="text-center">
-          <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
+          <img src="/assets/plasu-polytechnic-logo-optimized.webp" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
           <p className="text-muted-foreground">Signing in...</p>
         </div>
       </div>
@@ -196,7 +196,7 @@ export default function Auth() {
         {/* School Branding */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
-            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 text-primary" />
+            <img src="/assets/plasu-polytechnic-logo-optimized.webp" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 text-primary" />
           </div>
           <h1 className="text-2xl font-bold">Plateau State Polytechnic Barkin Ladi</h1>
           <p className="text-sm text-muted-foreground">School of Information and Communication Technology</p>
