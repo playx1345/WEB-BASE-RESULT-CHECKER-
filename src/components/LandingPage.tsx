@@ -7,7 +7,7 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
 import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield, User, Globe, Briefcase } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import buildingBg from '@/assets/building-bg-optimized.webp';
+// Using public folder path for better LCP discovery
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   const isMobile = useIsMobile();
@@ -45,7 +45,7 @@ const LandingPage = () => {
         <div 
           className="flex flex-col items-center space-y-4 sm:space-y-8 md:space-y-10 lg:space-y-12 max-w-6xl mx-auto relative rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden modern-shadow p-4 sm:p-8 md:p-12 lg:p-16 touch-manipulation"
           style={{ 
-            backgroundImage: `url(${buildingBg})`, 
+            backgroundImage: 'url(/assets/building-bg-optimized.webp)', 
             backgroundSize: 'cover', 
             backgroundPosition: 'center',
             minHeight: isMobile ? '85vh' : '80vh'
