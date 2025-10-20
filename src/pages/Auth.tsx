@@ -359,9 +359,25 @@ export default function Auth() {
         </Card>
 
         {/* Help Text */}
-        <div className="text-center text-sm text-muted-foreground">
-          <p>Students: Use your matric number and 6-digit PIN</p>
-          <p>Admin: Use your email and password</p>
+        <div className="text-center space-y-3">
+          <div className="text-sm text-muted-foreground">
+            <p>Students: Use your matric number and 6-digit PIN</p>
+            <p>Admin: Use your email and password</p>
+          </div>
+          
+          {/* Admin Credentials Info */}
+          <div className="max-w-md mx-auto p-4 bg-primary/5 rounded-lg border border-primary/20">
+            <p className="text-xs font-semibold text-primary mb-2">
+              Default Admin Credentials:
+            </p>
+            <div className="text-xs font-mono bg-background/50 p-2 rounded">
+              <p><strong>Email:</strong> admin@plateau.edu.ng</p>
+              <p><strong>Password:</strong> Admin123456</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              If login fails, use "Forgot Password" to reset
+            </p>
+          </div>
         </div>
       </div>
     </div>
