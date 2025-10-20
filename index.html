@@ -18,7 +18,9 @@
     <!-- Preload critical hero image for LCP optimization -->
     <link rel="preload" as="image" href="/assets/building-bg-optimized.webp" fetchpriority="high" type="image/webp" />
     
-    <!-- Optimized Google Fonts with Preconnect for Performance -->
+    <!-- Optimized Google Fonts with DNS Prefetch and Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
