@@ -39,7 +39,7 @@ export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
           {/* Logo and Title */}
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             <img 
-              src="/assets/plasu-polytechnic-logo-optimized.webp" 
+              src="/assets/plasu-polytechnic-logo.jpg" 
               alt="Plateau State Polytechnic Logo" 
               className="h-10 w-10 object-contain flex-shrink-0 rounded-lg shadow-md"
             />

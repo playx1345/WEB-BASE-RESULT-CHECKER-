@@ -13,8 +13,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
 import { AdminBulkResultsPreviewDialog } from './AdminBulkResultsPreviewDialog';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Result {
   id: string;
@@ -60,7 +58,6 @@ export function AdminResultsView() {
   const [parsedCsvData, setParsedCsvData] = useState<CsvRowData[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
   const fetchResults = useCallback(async () => {
     try {
@@ -361,20 +358,20 @@ export function AdminResultsView() {
   const uniqueLevels = Array.from(new Set(results.map(r => r.level)));
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1 sm:space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Results Management</h1>
-          <p className="text-sm text-muted-foreground hidden sm:block">
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Results Management</h1>
+          <p className="text-muted-foreground">
             Manage student academic results and performance data.
           </p>
         </div>
         <div className="flex gap-2">
           <Dialog open={isBulkUploadOpen} onOpenChange={setIsBulkUploadOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size={isMobile ? "sm" : "default"}>
-                <Upload className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Bulk Upload</span>
+              <Button variant="outline">
+                <Upload className="h-4 w-4 mr-2" />
+                Bulk Upload
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">

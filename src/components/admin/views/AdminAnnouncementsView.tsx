@@ -12,7 +12,6 @@ import { Plus, Megaphone, Edit, Trash2, Calendar, MessageSquare } from 'lucide-r
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Announcement {
   id: string;
@@ -35,7 +34,6 @@ export function AdminAnnouncementsView() {
   const [sendingSMS, setSendingSMS] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
   const fetchAnnouncements = useCallback(async () => {
     try {

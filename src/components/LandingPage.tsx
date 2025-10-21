@@ -7,7 +7,7 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
 import { ChevronRight, Users, BookOpen, Award, Settings, GraduationCap, Shield, User, Globe, Briefcase } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-// Using public folder path for better LCP discovery
+import buildingBg from '@/assets/building-bg.jpg';
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   const isMobile = useIsMobile();
@@ -45,7 +45,7 @@ const LandingPage = () => {
         <div 
           className="flex flex-col items-center space-y-4 sm:space-y-8 md:space-y-10 lg:space-y-12 max-w-6xl mx-auto relative rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden modern-shadow p-4 sm:p-8 md:p-12 lg:p-16 touch-manipulation"
           style={{ 
-            backgroundImage: 'url(/assets/building-bg-optimized.webp)', 
+            backgroundImage: `url(${buildingBg})`, 
             backgroundSize: 'cover', 
             backgroundPosition: 'center',
             minHeight: isMobile ? '85vh' : '80vh'
@@ -57,7 +57,7 @@ const LandingPage = () => {
           {/* Logo */}
           <div className="flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation mt-2">
             <img 
-              src="/assets/plasu-polytechnic-logo-optimized.webp"
+              src="/assets/plasu-polytechnic-logo.jpg" 
               alt="Plateau State Polytechnic Barkin Ladi Logo" 
               className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110"
               loading="eager"
