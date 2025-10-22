@@ -346,8 +346,18 @@ export function ResultsView() {
                     </TableHeader>
                     <TableBody>
                       {semesterResults.map((result) => (
-                        <TableRow key={result.id}>
-                          <TableCell className="font-medium">{result.course_code}</TableCell>
+                        <TableRow 
+                          key={result.id}
+                          className={result.grade === 'F' ? 'bg-red-50 dark:bg-red-950/10' : ''}
+                        >
+                          <TableCell className="font-medium">
+                            {result.course_code}
+                            {result.grade === 'F' && (
+                              <Badge variant="outline" className="ml-2 text-xs border-red-500 text-red-600">
+                                Carryover
+                              </Badge>
+                            )}
+                          </TableCell>
                           <TableCell>{result.course_title}</TableCell>
                           <TableCell className="text-center">{result.credit_unit}</TableCell>
                           <TableCell className="text-center">
