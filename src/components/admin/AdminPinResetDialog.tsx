@@ -92,9 +92,10 @@ export function AdminPinResetDialog({
       setErrors({});
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error resetting PIN:', error);
-      toast.error(error.message || 'Failed to reset PIN. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to reset PIN. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setResetting(false);
     }

@@ -123,7 +123,9 @@ export const generateTranscript = (
       },
     });
     
-    currentY = (doc as any).lastAutoTable.finalY + 10;
+    // Get the final Y position from the last table
+    const docWithAutoTable = doc as typeof doc & { lastAutoTable?: { finalY: number } };
+    currentY = docWithAutoTable.lastAutoTable?.finalY ? docWithAutoTable.lastAutoTable.finalY + 10 : currentY + 10;
   });
   
   // Overall statistics
