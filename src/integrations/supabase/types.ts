@@ -282,41 +282,26 @@ export type Database = {
           p_full_name: string
           p_level: string
           p_matric_number: string
-          p_phone_number?: string
-          p_pin?: string
+          p_phone_number: string
+          p_pin: string
         }
-        Returns: Json
+        Returns: string
       }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }
-        Returns: {
-          full_name: string
-          level: string
-          profile_id: string
-          student_id: string
-          user_id: string
-        }[]
+        Returns: boolean
       }
       calculate_investment_profit: {
         Args: { investment_id: string }
         Returns: number
       }
-      check_user_role: {
-        Args: { required_role: string }
-        Returns: boolean
-      }
+      check_user_role: { Args: { required_role: string }; Returns: boolean }
       create_admin_user: {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: Json
       }
-      generate_secure_pin: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_secure_pin: { Args: never; Returns: string }
+      get_current_user_role: { Args: never; Returns: string }
       get_student_safe_data: {
         Args: { p_user_id: string }
         Returns: {
@@ -339,14 +324,8 @@ export type Database = {
         }
         Returns: boolean
       }
-      hash_pin: {
-        Args: { pin_text: string }
-        Returns: string
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      hash_pin: { Args: { pin_text: string }; Returns: string }
+      is_admin: { Args: never; Returns: boolean }
       log_user_activity: {
         Args: {
           p_action: string
