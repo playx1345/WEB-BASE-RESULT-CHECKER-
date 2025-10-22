@@ -291,6 +291,30 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 ```
 
+#### Deploy with Docker
+1. Build the Docker image:
+   ```bash
+   docker build -t cs-portal:latest .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -p 8080:8080 \
+     -e VITE_SUPABASE_URL=your_url \
+     -e VITE_SUPABASE_PUBLISHABLE_KEY=your_key \
+     cs-portal:latest
+   ```
+
+3. Or use docker-compose (copy `docker-compose.example.yml` first):
+   ```bash
+   cp docker-compose.example.yml docker-compose.yml
+   # Edit docker-compose.yml with your environment variables
+   docker-compose up -d
+   ```
+
+For comprehensive deployment instructions, database migrations, and production best practices, see **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)**.
+
+
 ## Development Guidelines
 
 ### Code Style
@@ -337,6 +361,7 @@ For detailed troubleshooting, see [Supabase Documentation](https://supabase.com/
 
 - **[Admin Setup Guide](create-admin-account.md)** - Creating first admin account
 - **[Demo Students Guide](RUN_DEMO_STUDENTS.md)** - Creating test student accounts
+- **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)** - Production deployment and database migration checklist
 - **[Copilot Instructions](.github/copilot-instructions.md)** - Development standards
 
 ## Contributing

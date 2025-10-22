@@ -14,6 +14,17 @@ dist-ssr
 
 # Environment variables with secrets
 .env
+.env.local
+.env.production
+
+# Docker production configurations
+docker-compose.yml
+docker-compose.override.yml
+
+# Database backups
+*.sql
+*.dump
+backup_*
 
 # Editor directories and files
 .vscode/*
