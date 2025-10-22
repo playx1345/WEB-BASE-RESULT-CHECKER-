@@ -64,14 +64,19 @@ export function AdminBulkCreateStudentsDialog({ open, onOpenChange, onStudentsCr
         if (error) {
           console.error(`Error creating student ${matricNumber}:`, error);
           errorCount++;
-        } else if (data && typeof data === 'object' && 'success' in data && data.success) {
-          const result = data as { success: boolean; generated_pin: string };
-          created.push({
-            matric_number: matricNumber,
-            pin: result.generated_pin,
-            full_name: fullName
-          });
-          successCount++;
+        } else if (data) {
+          const result = data as unknown;
+          if (result && typeof result === 'object' && 'success' in result) {
+            const studentData = result as { success: boolean; generated_pin: string };
+            if (studentData.success) {
+              created.push({
+                matric_number: matricNumber,
+                pin: studentData.generated_pin,
+                full_name: fullName
+              });
+              successCount++;
+            }
+          }
         }
       }
 
