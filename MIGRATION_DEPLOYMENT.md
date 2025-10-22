@@ -478,6 +478,63 @@ Before deploying to production:
 
 ---
 
+## CI/CD Pipeline
+
+This project includes GitHub Actions workflows for automated building and testing.
+
+### Available Workflows
+
+1. **npm-grunt.yml** - Basic CI workflow:
+   - Runs on push to main and pull requests
+   - Tests on Node.js 18.x, 20.x, 22.x
+   - Executes linting and build
+
+2. **ci-cd.yml** - Full CI/CD workflow:
+   - Build and lint on multiple Node versions
+   - Docker image building (on main branch)
+   - Example deployment configurations (commented)
+
+### Setting up Automated Deployment
+
+To enable automated deployment via GitHub Actions:
+
+1. **Choose your deployment platform** (Vercel, Netlify, or custom)
+
+2. **Add required secrets** to GitHub repository:
+   - Go to Settings → Secrets and variables → Actions
+   - Add platform-specific secrets:
+     ```
+     VERCEL_TOKEN
+     VERCEL_ORG_ID
+     VERCEL_PROJECT_ID
+     ```
+     or
+     ```
+     NETLIFY_AUTH_TOKEN
+     NETLIFY_SITE_ID
+     ```
+
+3. **Enable deployment job** in `.github/workflows/ci-cd.yml`:
+   - Uncomment the deployment section
+   - Configure for your platform
+
+4. **Set environment variables** in deployment platform:
+   - Add Supabase credentials
+   - Configure any other required env vars
+
+### Manual Workflow Triggers
+
+To manually trigger a deployment:
+```bash
+# Via GitHub Actions UI
+# Repository → Actions → Select workflow → Run workflow
+
+# Or via GitHub CLI
+gh workflow run ci-cd.yml
+```
+
+---
+
 ## Where to find more info
 
 - **Project Documentation:**
