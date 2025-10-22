@@ -5,11 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, FileText, Search, Download, Filter } from 'lucide-react';
+import { AlertTriangle, FileText, Search, Download, Filter, FileDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useActivityLogger } from '@/lib/auditLogger';
+import { generateTranscript } from '@/lib/transcriptGenerator';
+import { toast } from 'sonner';
 
 interface Result {
   id: string;
@@ -32,6 +34,12 @@ export function ResultsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sessionFilter, setSessionFilter] = useState('all');
   const [semesterFilter, setSemesterFilter] = useState('all');
+  const [studentInfo, setStudentInfo] = useState<{
+    full_name: string;
+    matric_number: string;
+    level: string;
+    cgpa?: number;
+  } | null>(null);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -47,28 +55,37 @@ export function ResultsView() {
           }
         });
 
-        // First check fee status
+        // First check fee status and get student info
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, full_name, matric_number, level')
           .eq('user_id', user.id)
           .single();
 
         if (profileData) {
           const { data: studentData } = await supabase
             .from('students')
-            .select('fee_status')
+            .select('fee_status, cgp, id')
             .eq('profile_id', profileData.id)
             .single();
 
           if (studentData) {
             setFeeStatus(studentData.fee_status);
+            
+            // Set student info for transcript generation
+            setStudentInfo({
+              full_name: profileData.full_name || 'Unknown',
+              matric_number: profileData.matric_number || 'N/A',
+              level: profileData.level || 'N/A',
+              cgpa: studentData.cgp || 0,
+            });
 
             if (studentData.fee_status === 'paid') {
               // Fetch results only if fees are paid
               const { data: resultsData } = await supabase
                 .from('results')
                 .select('*')
+                .eq('student_id', studentData.id)
                 .order('session', { ascending: false })
                 .order('semester', { ascending: false });
 
@@ -195,6 +212,38 @@ export function ResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
+  const downloadTranscript = async () => {
+    if (!studentInfo) {
+      toast.error('Student information not available');
+      return;
+    }
+
+    if (results.length === 0) {
+      toast.error('No results available to generate transcript');
+      return;
+    }
+
+    try {
+      toast.info('Generating transcript...');
+      generateTranscript(studentInfo, results);
+      
+      // Log the transcript download activity
+      await logActivity('download_transcript', {
+        tableName: 'results',
+        metadata: {
+          action: 'transcript_downloaded',
+          matricNumber: studentInfo.matric_number,
+          resultCount: results.length,
+        }
+      });
+      
+      toast.success('Transcript downloaded successfully!');
+    } catch (error) {
+      console.error('Error generating transcript:', error);
+      toast.error('Failed to generate transcript. Please try again.');
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="space-y-2">
@@ -241,6 +290,11 @@ export function ResultsView() {
         <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
+        </Button>
+
+        <Button onClick={downloadTranscript} className="whitespace-nowrap">
+          <FileDown className="h-4 w-4 mr-2" />
+          Download Transcript
         </Button>
       </div>
 
