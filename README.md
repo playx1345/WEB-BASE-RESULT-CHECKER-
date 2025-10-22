@@ -359,6 +359,7 @@ For detailed troubleshooting, see [Supabase Documentation](https://supabase.com/
 
 ## Additional Documentation
 
+- **[Quick Reference Guide](QUICK_REFERENCE.md)** - Common deployment commands and troubleshooting
 - **[Admin Setup Guide](create-admin-account.md)** - Creating first admin account
 - **[Demo Students Guide](RUN_DEMO_STUDENTS.md)** - Creating test student accounts
 - **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)** - Production deployment and database migration checklist

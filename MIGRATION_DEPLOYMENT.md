@@ -539,6 +539,7 @@ gh workflow run ci-cd.yml
 
 - **Project Documentation:**
   - [README.md](./README.md) - Project overview and setup
+  - [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Common deployment commands
   - [create-admin-account.md](./create-admin-account.md) - Admin setup guide
   - [RUN_DEMO_STUDENTS.md](./RUN_DEMO_STUDENTS.md) - Demo student creation
 
