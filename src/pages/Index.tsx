@@ -3,15 +3,13 @@ import { useProfile } from '@/hooks/useProfile';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Dashboard } from '@/components/Dashboard';
 import LandingPage from '@/components/LandingPage';
+import { useEffect } from 'react';
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
 
-  console.log('[Index] Auth loading:', authLoading, 'Profile loading:', profileLoading, 'User:', user?.id, 'Profile role:', profile?.role);
 
-  // Show loading state while checking authentication OR profile
-  if (authLoading || profileLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -24,10 +22,11 @@ const Index = () => {
 
   // If no user, show landing page
   if (!user) {
+    console.log('[Index] No user found, showing landing page');
     return <LandingPage />;
   }
 
-  // User is authenticated, show dashboard
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppSidebar } from './AppSidebar';
 import { AdminDashboard } from './admin/AdminDashboard';
 import { TeacherDashboard } from './teacher/TeacherDashboard';
@@ -15,7 +15,21 @@ export function Dashboard() {
   const [activeView, setActiveView] = useState('dashboard');
   const { profile, loading } = useProfile();
 
+  useEffect(() => {
+    console.log('[Dashboard] Profile state changed:', {
+      hasProfile: !!profile,
+      role: profile?.role,
+      fullName: profile?.full_name,
+      loading
+    });
+  }, [profile, loading]);
+
+  useEffect(() => {
+    console.log('[Dashboard] Active view changed to:', activeView);
+  }, [activeView]);
+
   if (loading) {
+    console.log('[Dashboard] Showing loading state while fetching profile');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -28,12 +42,16 @@ export function Dashboard() {
 
   // Show appropriate dashboard based on user role
   if (profile?.role === 'admin') {
+    console.log('[Dashboard] Routing to AdminDashboard');
     return <AdminDashboard />;
   }
 
   if (profile?.role === 'teacher') {
+    console.log('[Dashboard] Routing to TeacherDashboard');
     return <TeacherDashboard />;
   }
+
+  console.log('[Dashboard] Routing to student dashboard with view:', activeView);
 
   const renderView = () => {
     switch (activeView) {
