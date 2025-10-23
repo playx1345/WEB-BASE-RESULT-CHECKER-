@@ -41,60 +41,55 @@ const LandingPage = () => {
       )}
       
       {/* Hero Section */}
-      <section className="relative container mx-auto px-3 sm:px-4 py-6 sm:py-12 md:py-16 lg:py-24 text-center overflow-hidden">        
+      <section className="relative container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24 text-center overflow-hidden">        
         <div 
-          className="flex flex-col items-center space-y-4 sm:space-y-8 md:space-y-10 lg:space-y-12 max-w-6xl mx-auto relative rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden modern-shadow p-4 sm:p-8 md:p-12 lg:p-16 touch-manipulation"
+          className="flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 max-w-6xl mx-auto relative rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden modern-shadow p-6 sm:p-8 md:p-12 lg:p-16"
           style={{ 
             backgroundImage: `url(${buildingBg})`, 
             backgroundSize: 'cover', 
             backgroundPosition: 'center',
-            minHeight: isMobile ? '85vh' : '80vh'
+            minHeight: isMobile ? '70vh' : '80vh'
           }}
         >
-          {/* Optimized background overlay - clearer image visibility */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/10 to-black/30"></div>
-          <div className="relative z-10 flex flex-col items-center space-y-4 sm:space-y-8 md:space-y-10 lg:space-y-12 w-full pb-safe">
+          {/* Enhanced background overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-background/70 to-accent/50"></div>
+          <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-full">
           {/* Logo */}
-          <div className="flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation mt-2">
-            <img 
-              src="/assets/plasu-polytechnic-logo.jpg" 
-              alt="Plateau State Polytechnic Barkin Ladi Logo" 
-              className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110"
-              loading="eager"
-            />
+          <div className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation">
+            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110" />
           </div>
           
           {/* Time Ribbon */}
-          <div className="time-ribbon bg-primary/30 backdrop-blur-sm px-3 sm:px-6 md:px-8 py-1.5 sm:py-3 rounded-full">
-            <p className="text-[10px] sm:text-sm md:text-base font-medium text-white text-center leading-tight">🔔 Welcome to the Future of Academic Management</p>
+          <div className="time-ribbon bg-primary/20 px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-3 rounded-full">
+            <p className="text-xs sm:text-sm md:text-base font-medium text-primary text-center">🔔 Welcome to the Future of Academic Management</p>
           </div>
           
           {/* School Information */}
-          <div className="space-y-2 sm:space-y-4 md:space-y-5 lg:space-y-6 px-2">
-            <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg">
+          <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 px-2">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white text-shadow-bright leading-tight">
               Plateau State Polytechnic Barkin Ladi
             </h1>
-            <h2 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-semibold text-white max-w-4xl mx-auto drop-shadow-md">
+            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white text-shadow-bright max-w-4xl mx-auto">
               School of Information and Communication Technology
             </h2>
-            <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-medium text-white max-w-4xl mx-auto drop-shadow-md">
+            <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-white text-shadow-bright max-w-4xl mx-auto">
               Department of Computer Science - Online Result Checker
             </h3>
-            <p className="text-xs sm:text-base md:text-lg text-white/95 max-w-3xl mx-auto leading-relaxed px-2 drop-shadow">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white text-shadow-bright max-w-3xl mx-auto leading-relaxed px-2">
               Experience the next generation of academic management with our secure, intelligent, and user-friendly platform designed for modern education.
             </p>
           </div>
 
           {/* CTA Buttons - Mobile Optimized */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center w-full px-2 sm:px-4 mt-2">
-            <Button asChild size={isMobile ? "default" : "lg"} className="w-full sm:flex-1 px-6 sm:px-8 md:px-12 py-6 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold btn-gradient ripple shadow-2xl hover:shadow-primary/30 min-h-[48px] sm:min-h-[52px] touch-manipulation active:scale-95 transition-transform">
+          <div className="flex flex-col gap-3 sm:gap-4 md:gap-6 justify-center w-full px-2 sm:px-4">
+            <Button asChild size="lg" className="w-full px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold btn-gradient ripple shadow-2xl hover:shadow-primary/30 min-h-[52px] touch-target">
               <a href="/auth" className="flex items-center justify-center">
                 Get Started Now
                 <ChevronRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </Button>
             {!isMobile && (
-              <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:flex-1 flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-manipulation text-white">
+              <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-target text-white">
                 <Settings className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 hover:rotate-45" />
                 Admin Setup
               </Button>
@@ -106,31 +101,192 @@ const LandingPage = () => {
 
       {/* Mission and Vision Section */}
       <section className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-20">
+        <div className="max-w-6xl mx-auto computer-lab-bg rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-10 lg:p-16 modern-shadow">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16">
+            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text mb-3 sm:mb-4 md:mb-6">Our Mission & Vision</h3>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2 sm:px-4">
+              Pioneering the future of academic excellence through innovative technology solutions
+            </p>
+          </div>
+          
+          <div className="grid gap-4 sm:gap-6 md:gap-8 lg:gap-12 md:grid-cols-2">
+            {/* Vision Card */}
+            <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group">
+              <CardHeader className="text-center p-3 sm:p-4 md:p-6">
+                <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary" />
+                </div>
+                <CardTitle className="text-sm sm:text-base md:text-lg font-bold gradient-text">Our Vision</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 sm:p-4 md:p-6">
+                <CardDescription className="text-center text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed text-foreground">
+                  To revolutionize academic transparency and efficiency through a secure, accessible, and intelligent result management system—empowering students and administrators of the Department of Computer Science with real-time academic insights and digital autonomy.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            {/* Mission Card */}
+            <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group">
+              <CardHeader className="text-center p-3 sm:p-4 md:p-6">
+                <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-accent/20 to-primary/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Shield className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-accent" />
+                </div>
+                <CardTitle className="text-sm sm:text-base md:text-lg font-bold gradient-text">Our Mission</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 sm:p-4 md:p-6">
+                <div className="space-y-2 sm:space-y-3 md:space-y-4 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
+                  <div className="flex items-start">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
+                    <p>Develop a comprehensive platform for seamless academic data management</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
+                    <p>Ensure data integrity and security for all academic records</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
+                    <p>Drive digital transformation in academic administration</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-gradient-to-r from-primary to-accent rounded-full mt-1.5 sm:mt-2 mr-2 sm:mr-3 md:mr-4 flex-shrink-0"></div>
+                    <p>Support academic excellence through innovative technology solutions</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </section>
 
+      {/* Why Choose Us Section */}
+      <section className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 py-12 sm:py-16 md:py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/3 to-accent/3"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8 sm:mb-12 md:mb-16">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-4 sm:mb-6">Why Choose Our Platform</h3>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
+                Experience the next generation of academic management with cutting-edge features designed for modern education
+              </p>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+              {/* Academic Excellence */}
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group">
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-base sm:text-lg font-bold text-primary">Academic Excellence</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6">
+                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
+                    Our platform supports rigorous academic programs with comprehensive result tracking and expert-designed interfaces for seamless educational management.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Professional Development */}
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Award className="h-8 w-8 sm:h-10 sm:w-10 text-purple-600" />
+                  </div>
+                  <CardTitle className="text-base sm:text-lg xl:text-xl font-bold text-primary">Professional Development</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6">
+                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
+                    Build industry-recognized credentials with our comprehensive tracking system designed to showcase your academic achievements effectively.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Modern Technology */}
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Settings className="h-8 w-8 sm:h-10 sm:w-10 text-green-600" />
+                  </div>
+                  <CardTitle className="text-base sm:text-lg xl:text-xl font-bold text-primary">State-of-the-Art Technology</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6">
+                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
+                    Experience cutting-edge technology with secure data management, intuitive interfaces, and real-time performance analytics.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Student Life */}
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{animationDelay: '0.3s'}}>
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <User className="h-8 w-8 sm:h-10 sm:w-10 text-orange-600" />
+                  </div>
+                  <CardTitle className="text-base sm:text-lg xl:text-xl font-bold text-primary">Enhanced Student Experience</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6">
+                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
+                    Our inclusive digital environment fosters personal growth and academic success through innovative student-centered design.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Global Opportunities */}
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Globe className="h-8 w-8 sm:h-10 sm:w-10 text-cyan-600" />
+                  </div>
+                  <CardTitle className="text-base sm:text-lg xl:text-xl font-bold text-primary">Global Opportunities</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6">
+                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
+                    Connect with international standards through our platform's global compatibility and partnership integrations.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              {/* Career Support */}
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.5s'}}>
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Briefcase className="h-8 w-8 sm:h-10 sm:w-10 text-indigo-600" />
+                  </div>
+                  <CardTitle className="text-base sm:text-lg xl:text-xl font-bold text-primary">Career Support & Networking</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6">
+                  <CardDescription className="text-center text-sm sm:text-base md:text-lg leading-relaxed text-foreground">
+                    Leverage our comprehensive career services and strong alumni network to accelerate your professional journey.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 md:py-16 lg:py-20">
-        <div className="max-w-6xl mx-auto relative rounded-xl sm:rounded-3xl overflow-hidden modern-shadow bright-background">
+      <section className="container mx-auto px-4 py-8 sm:py-12 md:py-16">
+        <div className="max-w-6xl mx-auto relative rounded-2xl sm:rounded-3xl overflow-hidden modern-shadow bright-background">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30"></div>
-          <div className="relative z-10 p-4 sm:p-8 md:p-10 lg:p-12">
-          <div className="text-center mb-4 sm:mb-8 md:mb-10 animate-fade-in">
-            <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-4">System Features</h3>
-            <p className="text-xs sm:text-base md:text-lg text-white/95 max-w-3xl mx-auto leading-relaxed px-2 sm:px-4">
+          <div className="relative z-10 p-6 sm:p-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4 text-shadow-bright">System Features</h3>
+            <p className="text-sm sm:text-base text-white/95 max-w-3xl mx-auto leading-relaxed text-shadow-bright px-4">
               A comprehensive platform designed for the future of academic excellence and administrative efficiency
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
-            <Card className="glass-enhanced border-white/20 modern-shadow stagger-in group touch-manipulation min-h-[44px]">
-              <CardHeader className="text-center p-3 sm:p-6">
-                <div className="mx-auto w-10 h-10 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
-                  <Users className="h-5 w-5 sm:h-8 sm:w-8 text-white transition-colors duration-300 group-hover:text-primary-foreground" />
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            <Card className="glass-enhanced border-white/20 modern-shadow stagger-in group">
+              <CardHeader className="text-center p-4 sm:p-6">
+                <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full flex items-center justify-center mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-white transition-colors duration-300 group-hover:text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xs sm:text-base font-bold text-white text-shadow-bright group-hover:text-primary-foreground transition-colors duration-300">Student Management</CardTitle>
+                <CardTitle className="text-sm sm:text-base font-bold text-white text-shadow-bright group-hover:text-primary-foreground transition-colors duration-300">Student Management</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
-                <CardDescription className="text-center text-[10px] sm:text-sm leading-relaxed text-white/95 text-shadow-bright transition-colors duration-300 group-hover:text-white">
+              <CardContent className="p-4 sm:p-6">
+                <CardDescription className="text-center text-xs sm:text-sm leading-relaxed text-white/95 text-shadow-bright transition-colors duration-300 group-hover:text-white">
                   Advanced student records management with comprehensive progress tracking, secure access controls, and real-time updates.
                 </CardDescription>
               </CardContent>

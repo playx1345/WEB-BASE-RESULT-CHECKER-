@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent' | null;
+  role: 'student' | 'admin' | 'teacher' | 'parent';
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -21,40 +21,27 @@ export const useProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      console.log('[useProfile] Fetching profile for user:', user?.id || 'no user');
-      
-      if         console.log('[useProfile] No user found, clearing profile');
-=======
-        console.log('[useProfile] No user found');
+      if (!user) {
         setProfile(null);
         setLoading(false);
         return;
       }
 
-      console.log('[useProfile] Fetching profile for user:', user.id);
-
       try {
-        // Fetch profile data
-        const { data: profileData, error: profileError } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (profileError) {
-          console.error('[useProfile] Error fetching profile:', profileError);
+        if (error) {
+          console.error('Error fetching profile:', error);
           setProfile(null);
-          setLoading(false);
-          return;
+        } else {
+          setProfile(data);
         }
-
-        if (!profileData) {
-
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
-        
+      } catch (error) {
+        console.error('Error:', error);
         setProfile(null);
       } finally {
         setLoading(false);
