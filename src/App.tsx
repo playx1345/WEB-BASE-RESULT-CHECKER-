@@ -10,7 +10,6 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { AdminDashboard } from "./components/admin/AdminDashboard";
 import { TeacherDashboard } from "./components/teacher/TeacherDashboard";
 import About from "./pages/static/About";
@@ -33,7 +32,6 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <PWAInstallPrompt />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

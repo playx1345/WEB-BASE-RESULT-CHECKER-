@@ -9,10 +9,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Search, Edit, User, Trash2, UserCheck, UserX, Users, RefreshCw } from 'lucide-react';
+import { UserPlus, Search, Edit, User, Trash2, UserCheck, UserX, Users } from 'lucide-react';
 import { AdminCreateStudentDialog } from './AdminCreateStudentDialog';
 import { AdminBulkCreateStudentsDialog } from './AdminBulkCreateStudentsDialog';
-import { AdminPinResetDialog } from '../AdminPinResetDialog';
 import { StudentMobileCard } from '../StudentMobileCard';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -43,7 +42,6 @@ export function AdminStudentsView() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isBulkCreateDialogOpen, setIsBulkCreateDialogOpen] = useState(false);
-  const [isPinResetDialogOpen, setIsPinResetDialogOpen] = useState(false);
   const [levelFilter, setLevelFilter] = useState('all');
   const [feeStatusFilter, setFeeStatusFilter] = useState('all');
   const isMobile = useIsMobile();
@@ -216,10 +214,6 @@ export function AdminStudentsView() {
                   setSelectedStudent(s);
                   setIsEditDialogOpen(true);
                 }}
-                onResetPin={(s) => {
-                  setSelectedStudent(s);
-                  setIsPinResetDialogOpen(true);
-                }}
                 onDelete={(s) => {
                   setSelectedStudent(s);
                   setIsDeleteDialogOpen(true);
@@ -283,18 +277,6 @@ export function AdminStudentsView() {
                           >
                             <Edit className="h-3 w-3 mr-1" />
                             Edit
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => {
-                              setSelectedStudent(student);
-                              setIsPinResetDialogOpen(true);
-                            }}
-                            title="Reset PIN"
-                          >
-                            <RefreshCw className="h-3 w-3 mr-1" />
-                            Reset PIN
                           </Button>
                           <Button 
                             variant="outline" 
@@ -431,14 +413,6 @@ export function AdminStudentsView() {
         open={isBulkCreateDialogOpen}
         onOpenChange={setIsBulkCreateDialogOpen}
         onStudentsCreated={fetchStudents}
-      />
-
-      {/* PIN Reset Dialog */}
-      <AdminPinResetDialog
-        open={isPinResetDialogOpen}
-        onOpenChange={setIsPinResetDialogOpen}
-        student={selectedStudent}
-        onSuccess={fetchStudents}
       />
     </div>
   );

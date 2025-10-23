@@ -230,9 +230,9 @@ export function AdminBulkResultsPreviewDialog({
       toast.success(`Successfully uploaded ${resultsToInsert.length} results`);
       onUploadComplete();
       onOpenChange(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to upload results');
+      toast.error(error.message || 'Failed to upload results');
     } finally {
       setUploading(false);
       setUploadProgress(0);

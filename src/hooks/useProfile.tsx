@@ -43,21 +43,46 @@ export const useProfile = () => {
         }
 
         if (!profileData) {
+          console.warn('No profile data found for user:', user.id);
           setProfile(null);
           setLoading(false);
           return;
         }
 
-        // Fetch role from user_roles table using RPC function
-        const { data: roleData } = await supabase.rpc('get_current_user_role');
+        console.log('Profile data fetched:', profileData);
+
+        // Try RPC function first
+        const { data: roleData, error: roleError } = await supabase.rpc('get_current_user_role');
+        
+        console.log('RPC role data:', roleData, 'Error:', roleError);
+
+        let userRole = roleData as 'student' | 'admin' | 'teacher' | 'parent' | null;
+
+        // Fallback: Query user_roles directly if RPC fails or returns null
+        if (!userRole || roleError) {
+          console.warn('RPC failed or returned null, querying user_roles directly');
+          const { data: directRole, error: directError } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          console.log('Direct role query:', directRole, 'Error:', directError);
+          
+          if (directRole && !directError) {
+            userRole = directRole.role as 'student' | 'admin' | 'teacher' | 'parent';
+          }
+        }
+
+        console.log('Final role assigned:', userRole);
 
         // Combine profile and role data
         setProfile({
           ...profileData,
-          role: (roleData as 'student' | 'admin' | 'teacher' | 'parent') || null
+          role: userRole || null
         });
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error in fetchProfile:', error);
         setProfile(null);
       } finally {
         setLoading(false);

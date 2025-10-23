@@ -11,15 +11,6 @@ interface SMSRequest {
   targetLevel: string;
 }
 
-interface StudentProfile {
-  phone_number: string;
-  full_name: string;
-}
-
-interface StudentWithProfile {
-  profiles: StudentProfile;
-}
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -98,7 +89,7 @@ serve(async (req) => {
 
     // Send SMS to each student
     for (const student of students) {
-      const phoneNumber = student.profiles?.phone_number;
+      const phoneNumber = (student.profiles as any)?.phone_number;
       
       if (!phoneNumber) continue;
 

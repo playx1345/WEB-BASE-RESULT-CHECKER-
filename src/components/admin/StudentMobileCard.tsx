@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { UserCheck, UserX, Edit, Trash2, RefreshCw } from 'lucide-react';
+import { UserCheck, UserX, Edit, Trash2 } from 'lucide-react';
 
 interface Student {
   id: string;
@@ -22,10 +22,9 @@ interface StudentMobileCardProps {
   student: Student;
   onEdit: (student: Student) => void;
   onDelete: (student: Student) => void;
-  onResetPin?: (student: Student) => void;
 }
 
-export function StudentMobileCard({ student, onEdit, onDelete, onResetPin }: StudentMobileCardProps) {
+export function StudentMobileCard({ student, onEdit, onDelete }: StudentMobileCardProps) {
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-4 space-y-3">
@@ -72,27 +71,14 @@ export function StudentMobileCard({ student, onEdit, onDelete, onResetPin }: Stu
               size="sm"
               onClick={() => onEdit(student)}
               className="h-8 px-2"
-              title="Edit student"
             >
               <Edit className="h-3 w-3" />
             </Button>
-            {onResetPin && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onResetPin(student)}
-                className="h-8 px-2"
-                title="Reset PIN"
-              >
-                <RefreshCw className="h-3 w-3" />
-              </Button>
-            )}
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => onDelete(student)}
               className="h-8 px-2 text-destructive hover:bg-destructive/10"
-              title="Delete student"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
