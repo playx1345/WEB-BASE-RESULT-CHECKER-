@@ -30,15 +30,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('[useAuth] Setting up auth state listener');
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('[useAuth] Auth state change event:', event, {
+          hasSession: !!session,
+          userId: session?.user?.id,
+          userEmail: session?.user?.email
+        });
+        
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
         
         // Log authentication events
         if (event === 'SIGNED_IN' && session?.user) {
+          console.log('[useAuth] User signed in:', {
+            userId: session.user.id,
+            email: session.user.email
+          });
           await logUserActivity('user_login', {
             metadata: {
               email: session.user.email,
@@ -47,30 +59,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
           });
         } else if (event === 'SIGNED_OUT') {
+          console.log('[useAuth] User signed out');
           await logUserActivity('user_logout', {
             metadata: {
               logoutReason: 'user_initiated'
             }
           });
+        } else if (event === 'TOKEN_REFRESHED') {
+          console.log('[useAuth] Token refreshed for user:', session?.user?.id);
+        } else if (event === 'USER_UPDATED') {
+          console.log('[useAuth] User updated:', session?.user?.id);
         }
       }
     );
 
     // THEN check for existing session
+    console.log('[useAuth] Checking for existing session');
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[useAuth] Existing session found:', {
+        hasSession: !!session,
+        userId: session?.user?.id,
+        userEmail: session?.user?.email
+      });
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('[useAuth] Cleaning up auth listener');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string, isStudent = false) => {
+    console.log('[useAuth] Sign in attempt:', { isStudent, email: isStudent ? 'student' : email });
+    
     if (isStudent) {
       // For students, email is matric number, password is PIN
       const matricNumber = email;
       const pin = password;
+      
+      console.log('[useAuth] Authenticating student with matric number:', matricNumber);
       
       // First verify credentials using authenticate_student function
       const { data: studentData, error: studentError } = await supabase
@@ -80,6 +110,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       
       if (studentError || !studentData || (Array.isArray(studentData) && studentData.length === 0)) {
+        console.error('[useAuth] Student authentication failed:', studentError);
         return { 
           error: { 
             message: 'Invalid matric number or PIN', 
@@ -89,6 +120,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         };
       }
       
+      console.log('[useAuth] Student credentials verified, signing in');
+      
       // Sign in with constructed email
       const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
       const { error } = await supabase.auth.signInWithPassword({
@@ -97,16 +130,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) {
+        console.error('[useAuth] Student sign in error:', error);
         return { error };
       }
       
+      console.log('[useAuth] Student signed in successfully');
       return { error: null };
     } else {
+      console.log('[useAuth] Authenticating admin/teacher with email:', email);
+      
       // Regular admin/teacher login via Supabase auth
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
+      if (error) {
+        console.error('[useAuth] Admin/teacher sign in error:', error);
+      } else {
+        console.log('[useAuth] Admin/teacher signed in successfully');
+      }
       
       return { error };
     }
@@ -115,7 +158,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Remove signUp - only admins can create users now
 
   const signOut = async () => {
+    console.log('[useAuth] Signing out user');
     await supabase.auth.signOut();
+    console.log('[useAuth] Sign out complete');
   };
 
   const resetPassword = async (email: string) => {
