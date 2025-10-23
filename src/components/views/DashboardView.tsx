@@ -19,6 +19,10 @@ interface StudentData {
   carryovers: number;
 }
 
+interface CarryoverCount {
+  count: number;
+}
+
 interface Profile {
   full_name: string;
   level: string;
@@ -29,6 +33,7 @@ export function DashboardView() {
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [carryoverCount, setCarryoverCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +59,17 @@ export function DashboardView() {
 
           if (studentDataResult) {
             setStudentData(studentDataResult);
+            
+            // Fetch carryover count (F grades)
+            const { data: carryoverData, count } = await supabase
+              .from('results')
+              .select('id', { count: 'exact', head: false })
+              .eq('student_id', studentDataResult.id)
+              .eq('is_carryover', true);
+            
+            if (count !== null) {
+              setCarryoverCount(count);
+            }
           }
         }
       } catch (error) {
@@ -145,10 +161,12 @@ export function DashboardView() {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {studentData?.carryovers || 0}
+            <div className={`text-2xl font-bold ${carryoverCount > 0 ? 'text-destructive' : 'text-green-600'}`}>
+              {carryoverCount}
             </div>
-            <p className="text-xs text-muted-foreground">Outstanding Courses</p>
+            <p className="text-xs text-muted-foreground">
+              {carryoverCount > 0 ? 'Outstanding Courses' : 'No Carryovers'}
+            </p>
           </CardContent>
         </Card>
       </div>
