@@ -21,7 +21,7 @@ export const useProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) {
+
         setProfile(null);
         setLoading(false);
         return;
@@ -32,17 +32,12 @@ export const useProfile = () => {
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .single();
 
-        if (error) {
-          console.error('Error fetching profile:', error);
           setProfile(null);
         } else {
           setProfile(data);
         }
-      } catch (error) {
-        console.error('Error:', error);
-        setProfile(null);
+
       } finally {
         setLoading(false);
       }
