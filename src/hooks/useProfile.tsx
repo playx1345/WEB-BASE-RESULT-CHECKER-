@@ -23,9 +23,8 @@ export const useProfile = () => {
     const fetchProfile = async () => {
       console.log('[useProfile] Fetching profile for user:', user?.id || 'no user');
       
-      if         console.log('[useProfile] No user found, clearing profile');
-=======
-        console.log('[useProfile] No user found');
+      if (!user) {
+        console.log('[useProfile] No user found, clearing profile');
         setProfile(null);
         setLoading(false);
         return;
@@ -49,13 +48,14 @@ export const useProfile = () => {
         }
 
         if (!profileData) {
-
+          console.log('[useProfile] No profile data found for user');
           setProfile(null);
           setLoading(false);
           return;
         }
         
-        setProfile(null);
+        console.log('[useProfile] Profile data found:', profileData);
+        setProfile(profileData);
       } finally {
         setLoading(false);
       }
