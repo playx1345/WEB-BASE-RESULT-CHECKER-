@@ -22,10 +22,13 @@ export const useProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) {
+        console.log('[useProfile] No user found');
         setProfile(null);
         setLoading(false);
         return;
       }
+
+      console.log('[useProfile] Fetching profile for user:', user.id);
 
       try {
         // Fetch profile data
@@ -36,28 +39,40 @@ export const useProfile = () => {
           .maybeSingle();
 
         if (profileError) {
-          console.error('Error fetching profile:', profileError);
+          console.error('[useProfile] Error fetching profile:', profileError);
           setProfile(null);
           setLoading(false);
           return;
         }
 
         if (!profileData) {
+          console.log('[useProfile] No profile data found');
           setProfile(null);
           setLoading(false);
           return;
         }
 
+        console.log('[useProfile] Profile data fetched:', profileData);
+
         // Fetch role from user_roles table using RPC function
-        const { data: roleData } = await supabase.rpc('get_current_user_role');
+        const { data: roleData, error: roleError } = await supabase.rpc('get_current_user_role');
+
+        if (roleError) {
+          console.error('[useProfile] Error fetching role:', roleError);
+        }
+
+        console.log('[useProfile] Role fetched:', roleData);
 
         // Combine profile and role data
-        setProfile({
+        const combinedProfile = {
           ...profileData,
           role: (roleData as 'student' | 'admin' | 'teacher' | 'parent') || null
-        });
+        };
+
+        console.log('[useProfile] Setting combined profile:', combinedProfile);
+        setProfile(combinedProfile);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('[useProfile] Unexpected error:', error);
         setProfile(null);
       } finally {
         setLoading(false);
