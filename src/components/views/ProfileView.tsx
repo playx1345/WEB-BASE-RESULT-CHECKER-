@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useProfile as useUserProfile } from '@/hooks/useProfile';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,10 +19,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-interface ProfileData {
+interface Profile {
   id: string;
   user_id: string;
   full_name: string;
+  role: string;
   matric_number: string;
   phone_number: string;
   level: string;
@@ -36,8 +36,7 @@ interface ValidationErrors {
 
 export function ProfileView() {
   const { user } = useAuth();
-  const { profile } = useUserProfile();
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -68,7 +67,7 @@ export function ProfileView() {
           .single();
 
         if (data) {
-          setProfileData(data);
+          setProfile(data);
           setFormData({
             full_name: data.full_name || '',
             phone_number: data.phone_number || '',
@@ -124,7 +123,7 @@ export function ProfileView() {
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !profileData || !validateForm()) return;
+    if (!user || !profile || !validateForm()) return;
 
     setUpdating(true);
     try {
@@ -138,7 +137,7 @@ export function ProfileView() {
 
       if (error) throw error;
 
-      setProfileData({ ...profileData, ...formData });
+      setProfile({ ...profile, ...formData });
       toast.success('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -170,10 +169,9 @@ export function ProfileView() {
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setPasswordErrors({});
       toast.success('Password changed successfully!');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error changing password:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to change password. Please try again.';
-      toast.error(errorMessage);
+      toast.error(error.message || 'Failed to change password. Please try again.');
     } finally {
       setChangingPassword(false);
     }
@@ -320,25 +318,25 @@ export function ProfileView() {
                 </div>
               </div>
 
-              {profileData?.matric_number && (
+              {profile?.matric_number && (
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <IdCard className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium">Matric Number</p>
                     <p className="text-sm text-muted-foreground">
-                      {profileData.matric_number}
+                      {profile.matric_number}
                     </p>
                   </div>
                 </div>
               )}
 
-              {profileData?.level && (
+              {profile?.level && (
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <GraduationCap className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium">Current Level</p>
                     <p className="text-sm text-muted-foreground">
-                      {profileData.level}
+                      {profile.level}
                     </p>
                   </div>
                 </div>

@@ -9,7 +9,7 @@ import { useProfile } from '@/hooks/useProfile';
 interface MobileMenuProps {
   menuItems: Array<{
     title: string;
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    icon: React.ComponentType<any>;
     id: string;
   }>;
   activeView: string;

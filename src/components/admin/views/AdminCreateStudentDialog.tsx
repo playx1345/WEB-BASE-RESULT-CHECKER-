@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { InputSanitizer } from '@/lib/security';
+import { verifyAdminAccess } from '@/lib/roleUtils';
 
 interface AdminCreateStudentDialogProps {
   open: boolean;
@@ -46,7 +47,7 @@ export function AdminCreateStudentDialog({
     if (!sanitizedMatric) {
       newErrors.matricNumber = 'Matric number is required';
     } else if (!InputSanitizer.validateMatricNumber(sanitizedMatric)) {
-      newErrors.matricNumber = 'Invalid format. Use: PSP/SICT/CSC/ND/24/001';
+      newErrors.matricNumber = 'Invalid format. Use: CS/2021/001';
     }
     
     if (!formData.level) {
@@ -107,6 +108,14 @@ export function AdminCreateStudentDialog({
     setLoading(true);
 
     try {
+      // Verify admin access before proceeding
+      const adminCheck = await verifyAdminAccess();
+      if (!adminCheck.hasAccess) {
+        toast.error(adminCheck.message);
+        setLoading(false);
+        return;
+      }
+
       // Final sanitization before sending to backend
       const sanitizedData = {
         p_full_name: InputSanitizer.sanitizeText(formData.fullName),
@@ -120,9 +129,17 @@ export function AdminCreateStudentDialog({
 
       if (error) {
         console.error('Error creating student:', error);
+        
+        // More specific error handling
         if (error.message.includes('duplicate key') || error.message.includes('already exists')) {
           setErrors({ matricNumber: 'A student with this matric number already exists' });
           toast.error('A student with this matric number already exists');
+        } else if (error.message.includes('Authentication required')) {
+          toast.error('Please log in as an administrator to create students');
+        } else if (error.message.includes('Only administrators can create students')) {
+          toast.error('Only administrators can create students. Please verify your role.');
+        } else if (error.message.includes('User profile not found')) {
+          toast.error('User profile not found. Please contact support.');
         } else {
           toast.error('Failed to create student: ' + error.message);
         }
@@ -130,10 +147,10 @@ export function AdminCreateStudentDialog({
       }
 
       // Show success message with generated PIN if applicable
-      const responseData = data as { success?: boolean; generated_pin?: string } | null;
+      const responseData = data as { success?: boolean; generated_pin?: string; message?: string } | null;
       const successMessage = responseData?.generated_pin 
         ? `Student ${formData.fullName} created successfully! Generated PIN: ${responseData.generated_pin}`
-        : `Student ${formData.fullName} created successfully!`;
+        : responseData?.message ?? `Student ${formData.fullName} created successfully!`;
       
       toast.success(successMessage, { duration: 8000 });
       
@@ -152,7 +169,7 @@ export function AdminCreateStudentDialog({
       onOpenChange(false);
     } catch (error) {
       console.error('Unexpected error:', error);
-      toast.error('An unexpected error occurred');
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -204,7 +221,7 @@ export function AdminCreateStudentDialog({
               id="matricNumber"
               value={formData.matricNumber}
               onChange={(e) => handleInputChange('matricNumber', e.target.value.toUpperCase())}
-              placeholder="e.g., PSP/SICT/CSC/ND/24/001"
+              placeholder="e.g., CS/2021/001"
               className={errors.matricNumber ? 'border-destructive' : ''}
               required
             />

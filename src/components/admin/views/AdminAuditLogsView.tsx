@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,8 +21,8 @@ export function AdminAuditLogsView() {
     actionBreakdown: Record<string, number>;
   } | null>(null);
   const [filters, setFilters] = useState({
-    action: 'all',
-    tableName: 'all',
+    action: '',
+    tableName: '',
     userId: '',
     fromDate: '',
     toDate: '',
@@ -33,15 +33,15 @@ export function AdminAuditLogsView() {
 
   const pageSize = 50;
 
-  const loadAuditLogs = useCallback(async (page = 0, resetData = false) => {
+  const loadAuditLogs = async (page = 0, resetData = false) => {
     try {
       setLoading(true);
       
       const { data, error } = await fetchAuditLogs({
         limit: pageSize,
         offset: page * pageSize,
-        action: filters.action !== 'all' ? filters.action : undefined,
-        tableName: filters.tableName !== 'all' ? filters.tableName : undefined,
+        action: filters.action || undefined,
+        tableName: filters.tableName || undefined,
         userId: filters.userId || undefined,
         fromDate: filters.fromDate || undefined,
         toDate: filters.toDate || undefined,
@@ -66,21 +66,21 @@ export function AdminAuditLogsView() {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  };
 
-  const loadStats = useCallback(async () => {
+  const loadStats = async () => {
     try {
       const statsData = await getAuditLogStats();
       setStats(statsData);
     } catch (error) {
       console.error('Error loading audit stats:', error);
     }
-  }, []);
+  };
 
   useEffect(() => {
     loadAuditLogs(0, true);
     loadStats();
-  }, [loadAuditLogs, loadStats]);
+  }, [filters]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -210,7 +210,7 @@ export function AdminAuditLogsView() {
                   <SelectValue placeholder="All actions" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All actions</SelectItem>
+                  <SelectItem value="">All actions</SelectItem>
                   <SelectItem value="login">Login/Logout</SelectItem>
                   <SelectItem value="insert">Create/Insert</SelectItem>
                   <SelectItem value="update">Update/Modify</SelectItem>
@@ -227,7 +227,7 @@ export function AdminAuditLogsView() {
                   <SelectValue placeholder="All tables" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All tables</SelectItem>
+                  <SelectItem value="">All tables</SelectItem>
                   <SelectItem value="results">Results</SelectItem>
                   <SelectItem value="students">Students</SelectItem>
                   <SelectItem value="profiles">Profiles</SelectItem>
