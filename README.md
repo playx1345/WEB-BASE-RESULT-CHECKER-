@@ -1,61 +1,125 @@
-omputer Science Department Website
+# Computer Science Department Portal
 
 ## Overview
-The Computer Science Department website for Plateau State Polytechnic Barkin Ladi serves as a comprehensive, mobile-first platform for students and administrators. It provides essential information about the department, academic programs, faculty, and news updates, while also offering a secure login portal with enhanced mobile responsiveness and modern user experience features.
+A comprehensive full-stack web application for the Computer Science Department at Plateau State Polytechnic Barkin Ladi. Built with React, TypeScript, and Supabase, this platform provides secure authentication, student result management, and administrative tools with a mobile-first responsive design.
+
+## Tech Stack
+
+### Frontend
+- **React 18** - Modern UI library with hooks
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first styling with custom design tokens
+- **Shadcn/ui** - Accessible component library
+- **React Router** - Client-side routing
+- **TanStack Query** - Server state management
+
+### Backend
+- **Supabase** - PostgreSQL database, authentication, and serverless functions
+- **Row-Level Security (RLS)** - Database-level access control
+- **Edge Functions** - Serverless API endpoints
 
 ## Project Structure
-The project is organized into several directories and files, each serving a specific purpose:
 
-- **public/**: Contains all the HTML files for the website.
-  - `index.html`: Mobile-responsive landing page with hamburger navigation.
-  - `admin.html`: Admin login interface with mobile sidebar support.
-  - `student-portal.html`: Mobile-optimized dashboard for students.
-  - `about.html`: Information about the department.
-  - `programs.html`: List of academic programs.
-  - `faculty.html`: Information about faculty members.
-  - `news.html`: Latest news and announcements.
-  - `contact.html`: Contact information for the department.
-  - `login.html`: Student login page with enhanced validation.
+```
+├── src/
+│   ├── components/          # React components
+│   │   ├── admin/          # Admin dashboard components
+│   │   ├── auth/           # Authentication components
+│   │   ├── layout/         # Layout components (header, footer)
+│   │   ├── ui/             # Reusable UI components (shadcn)
+│   │   └── views/          # Page view components
+│   ├── hooks/              # Custom React hooks
+│   │   ├── useAuth.tsx     # Authentication state management
+│   │   └── useProfile.tsx  # User profile data
+│   ├── lib/                # Utility libraries
+│   │   ├── security.ts     # Security utilities
+│   │   └── utils.ts        # Helper functions
+│   ├── pages/              # Route pages
+│   │   ├── Index.tsx       # Landing page
+│   │   ├── Auth.tsx        # Login/signup page
+│   │   └── static/         # Static pages (about, faculty, etc.)
+│   ├── data/               # Static data files
+│   └── integrations/       # API integrations
+│       └── supabase/       # Supabase client & types
+├── supabase/
+│   ├── functions/          # Edge functions
+│   ├── migrations/         # Database migrations
+│   └── config.toml         # Supabase configuration
+└── scripts/                # Utility scripts
+    ├── create-admin.js     # Admin account creation
+    └── create-demo-students.js
 
-- **assets/**: Contains all the assets for the website.
-  - **css/**: Stylesheets for the website.
-    - `main.css`: Shared styles with mobile-first approach and responsive navigation.
-    - `admin.css`: Enhanced admin dashboard styles with mobile sidebar support.
-    - `student.css`: Mobile-optimized student dashboard styles.
-    - `responsive.css`: Comprehensive media queries for all device sizes.
-  - **js/**: JavaScript files for functionality.
-    - `main.js`: General functionality with mobile navigation support.
-    - `admin.js`: Enhanced admin dashboard logic with mobile sidebar toggle.
-    - `student.js`: Mobile-optimized student dashboard logic.
-    - `auth.js`: Authentication logic with real-time form validation.
-    - `utils.js`: Utility functions with notification system.
-  - **fonts/**: Font files used in the website.
-    - `inter.woff2`: Font for typography.
+```
 
-- **components/**: Reusable components for the website.
-  - `header.js`: Mobile-responsive header component.
-  - `footer.js`: Footer component.
-  - `navigation.js`: Enhanced navigation component with mobile support.
-  - `modal.js`: Modal component for alerts/forms.
+## Database Schema
 
-- **data/**: JSON files containing data for the website.
-  - `courses.json`: Course data.
-  - `faculty.json`: Faculty data.
-  - `news.json`: News data.
-  - `students.json`: Student data.
+### Core Tables
+- **profiles** - User profile information
+- **user_roles** - Role-based access control (admin, student, teacher, parent)
+- **students** - Student-specific data (matric number, PIN, GPA, fee status)
+- **results** - Student academic results
+- **announcements** - Department announcements
+- **admins** - Admin-specific data
+- **audit_logs** - System activity logging
 
-- **docs/**: Documentation for the project.
-  - `project-plan.md`: Project plan and objectives.
-  - `features.md`: Key features of the website.
-  - `deployment.md`: Deployment instructions.
-  - `testing-guide.md`: Comprehensive testing documentation.
+### Security Features
+- Row-Level Security (RLS) on all tables
+- Secure PIN hashing with bcrypt
+- Role-based access policies
+- Audit logging for admin actions
 
 ## Setup Instructions
-1. Clone the repository to your local machine.
-2. Navigate to the project directory.
-3. Open the `public/index.html` file in a web browser to view the landing page.
-4. For testing functionality, open `test-functionality.html` to run comprehensive tests.
-5. Ensure all assets are correctly linked in the HTML files.
+
+### Prerequisites
+- Node.js 18+ and npm/bun
+- Supabase account (for database)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd cs-department-portal
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   - Copy `.env.example` to `.env`
+   - Add your Supabase credentials:
+     ```
+     SUPABASE_URL=your_project_url
+     SUPABASE_ANON_KEY=your_anon_key
+     ```
+
+4. **Run database migrations**
+   - Migrations are in `supabase/migrations/`
+   - Apply via Supabase dashboard or CLI
+
+5. **Create admin account**
+   ```bash
+   cd scripts
+   npm install
+   node create-admin.js
+   ```
+   Follow prompts to create your first admin user
+
+6. **Start development server**
+   ```bash
+   npm run dev
+   ```
+   App will be available at `http://localhost:8080`
+
+### Creating Demo Students
+```bash
+cd scripts
+node create-demo-students.js
+```
+This creates sample student accounts for testing
 
 ## Key Features
 
@@ -92,77 +156,236 @@ The project is organized into several directories and files, each serving a spec
 
 ## Demo Credentials
 
-### Student Access
-- **Matric Number**: ND/CS/2023/001
-- **Password**: student123
-
 ### Admin Access
-- **Username**: admin
-- **Password**: admin123
+- **Email**: admin@plateau.edu.ng
+- **Password**: Admin123456
 
-## Testing
-The project includes comprehensive testing capabilities:
+### Demo Student (after creating with script)
+See `RUN_DEMO_STUDENTS.md` for instructions on creating demo student accounts.
 
-1. **Functionality Tests**: Open `test-functionality.html` for automated testing
-2. **Mobile Responsiveness**: Test across different viewport sizes
-3. **Form Validation**: Real-time validation testing
-4. **Notification System**: Toast notification testing
-5. **Performance Testing**: Load time and accessibility checks
+## Authentication System
 
-### Browser Compatibility
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
-- ✅ Mobile browsers (iOS Safari, Chrome Mobile)
+### Admin Login
+- Email/password authentication via Supabase Auth
+- Role-based access control with user_roles table
+- Secure password requirements enforced
 
-### Device Testing
-- ✅ Desktop (1920px+)
-- ✅ Laptop (1024px - 1919px)
-- ✅ Tablet (768px - 1023px)
-- ✅ Mobile (320px - 767px)
+### Student Login
+- Matric number + PIN authentication
+- PIN stored as bcrypt hash in database
+- Fee status validation (must have "paid" status to view results)
 
-## Technical Implementation
+## Key Features
 
-### CSS Architecture
-- **Mobile-first approach** with progressive enhancement
-- **CSS Custom Properties** for consistent theming
-- **Flexbox and Grid** for modern layouts
-- **Media queries** for responsive breakpoints
+### 🎯 Core Functionality
+- **Supabase Authentication** - Secure user management
+- **Role-Based Access Control** - Admin, Student, Teacher, Parent roles
+- **Student Result Management** - Upload, view, and manage academic results
+- **GPA Calculation** - Automatic CGPA and semester GPA computation
+- **Announcements System** - Target announcements by level or all students
+- **Audit Logging** - Track all administrative actions
 
-### JavaScript Features
-- **ES6+ syntax** with modern browser features
-- **Class-based architecture** for maintainable code
-- **Event delegation** for efficient event handling
-- **LocalStorage** for session management
+### 📱 Mobile-First Responsive Design
+- **Responsive layouts** - Optimized for mobile, tablet, and desktop
+- **Mobile navigation** - Collapsible sidebar and hamburger menu
+- **Touch-friendly UI** - Proper touch target sizing
+- **Adaptive tables** - Horizontal scroll on mobile devices
 
-### Performance Optimizations
-- **Optimized asset loading** with proper caching
-- **Efficient CSS** with minimal render blocking
-- **Compressed fonts** and optimized images
-- **Minimal JavaScript** footprint
+### 🛡️ Security Features
+- **Row-Level Security (RLS)** - Database-level access control
+- **Secure PIN hashing** - bcrypt with salt for student PINs
+- **Role verification** - Server-side role checks via security definer functions
+- **Input validation** - Client and server-side validation
+- **Audit trails** - Comprehensive activity logging
 
-## Future Enhancements
-- **Progressive Web App (PWA)** features
-- **Dark mode** support
-- **Offline functionality** for student results
-- **Push notifications** for important announcements
-- **API integration** for real-time data
-- **Advanced analytics** dashboard
-- **Multi-language support**
+### 📊 Admin Dashboard
+- **Student Management** - Create, update, view student records
+- **Bulk Operations** - Upload multiple students via CSV
+- **Result Upload** - Individual and bulk result entry
+- **Analytics** - Student performance statistics
+- **Announcements** - Create and manage department notices
+- **Audit Logs** - View system activity history
 
-## Deployment Options
-1. **Static hosting** (GitHub Pages, Netlify, Vercel)
-2. **Web server** deployment (Apache, Nginx)
-3. **Content Delivery Network (CDN)** integration
-4. **Mobile app** wrapper (Cordova, React Native)
+### 🎓 Student Portal
+- **Results Viewing** - Semester and cumulative results (requires paid fee status)
+- **GPA Tracking** - Current semester and cumulative GPA
+- **Announcements** - View department and level-specific notices
+- **Profile Management** - View and update personal information
+
+## Technical Architecture
+
+### Frontend Stack
+- **React 18** with TypeScript for type safety
+- **Vite** for fast development and optimized builds
+- **Tailwind CSS** with semantic design tokens
+- **Shadcn/ui** for accessible, customizable components
+- **TanStack Query** for efficient data fetching and caching
+- **React Hook Form** + Zod for form validation
+
+### Backend Stack
+- **Supabase PostgreSQL** - Production-ready database
+- **Supabase Auth** - User authentication and session management
+- **Supabase Edge Functions** - Serverless API endpoints (e.g., SMS notifications)
+- **Row-Level Security** - Declarative access control policies
+- **Database Functions** - Stored procedures for complex operations
+
+### Security Architecture
+```sql
+-- Role-based access example
+user_roles table → has_role() function → RLS policies
+
+-- Data access flow
+User request → Supabase Auth → RLS evaluation → Data response
+```
+
+## API Documentation
+
+### Key Database Functions
+
+#### `admin_create_student()`
+Creates a new student account with profile, auth user, and student record.
+```sql
+SELECT admin_create_student(
+  'John Doe',           -- full_name
+  'ND/CS/2024/001',    -- matric_number
+  'ND1',               -- level
+  '08012345678',       -- phone_number
+  '123456'             -- pin (or null for auto-generated)
+);
+```
+
+#### `authenticate_student()`
+Verifies student matric number and PIN for login.
+
+#### `get_current_user_role()`
+Returns the current authenticated user's role.
+
+## Deployment
+
+### Via Lovable Platform
+1. Click **Publish** in the Lovable editor
+2. Your app is deployed to `<project-name>.lovable.app`
+3. Configure custom domain in Project Settings (requires paid plan)
+
+### Self-Hosted Deployment
+
+#### Prerequisites
+- Node.js 18+
+- Supabase project
+
+#### Build for Production
+```bash
+npm run build
+```
+Outputs to `dist/` directory
+
+#### Deploy to Vercel/Netlify
+1. Connect your GitHub repository
+2. Set build command: `npm run build`
+3. Set output directory: `dist`
+4. Add environment variables (Supabase URL and keys)
+
+#### Environment Variables Required
+```
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+```
+
+#### Deploy with Docker
+1. Build the Docker image:
+   ```bash
+   docker build -t cs-portal:latest .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -p 8080:8080 \
+     -e VITE_SUPABASE_URL=your_url \
+     -e VITE_SUPABASE_PUBLISHABLE_KEY=your_key \
+     cs-portal:latest
+   ```
+
+3. Or use docker-compose (copy `docker-compose.example.yml` first):
+   ```bash
+   cp docker-compose.example.yml docker-compose.yml
+   # Edit docker-compose.yml with your environment variables
+   docker-compose up -d
+   ```
+
+For comprehensive deployment instructions, database migrations, and production best practices, see **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)**.
+
+
+## Development Guidelines
+
+### Code Style
+- TypeScript strict mode enabled
+- ESLint + Prettier for code formatting
+- Semantic commit messages
+- Component-based architecture
+
+### Best Practices
+- Use semantic design tokens (no hardcoded colors)
+- Implement proper error boundaries
+- Add loading states for async operations
+- Follow mobile-first responsive design
+- Write accessible HTML with ARIA labels
+
+### Testing
+- Manual testing across devices
+- Console error monitoring
+- Network request inspection
+- RLS policy verification
+
+## Troubleshooting
+
+### Common Issues
+
+**Students can't see results**
+- Check fee_status is set to "paid" in students table
+- Verify RLS policies on results table
+- Confirm student is logged in with correct credentials
+
+**Admin can't create students**
+- Verify user has "admin" role in user_roles table
+- Check audit_logs for error details
+- Ensure pgcrypto extension is enabled
+
+**Authentication errors**
+- Check Supabase URL Configuration in dashboard
+- Verify Site URL and Redirect URLs are set correctly
+- Ensure email confirmation is disabled (for testing)
+
+For detailed troubleshooting, see [Supabase Documentation](https://supabase.com/docs).
+
+## Additional Documentation
+
+- **[Quick Reference Guide](QUICK_REFERENCE.md)** - Common deployment commands and troubleshooting
+- **[Admin Setup Guide](create-admin-account.md)** - Creating first admin account
+- **[Demo Students Guide](RUN_DEMO_STUDENTS.md)** - Creating test student accounts
+- **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)** - Production deployment and database migration checklist
+- **[Copilot Instructions](.github/copilot-instructions.md)** - Development standards
 
 ## Contributing
+
 1. Fork the repository
-2. Create a feature branch
-3. Review the [Copilot instructions](.github/copilot-instructions.md) for development guidelines and coding standards
-4. Test your changes on multiple devices
-5. Submit a pull request with detailed description
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Follow the coding standards in `.github/copilot-instructions.md`
+4. Test thoroughly on multiple devices
+5. Commit changes (`git commit -m 'Add amazing feature'`)
+6. Push to branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
 ## License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT License - see LICENSE file for details.
+
+## Support
+
+For issues and questions:
+- Check existing issues on GitHub
+- Review Supabase documentation
+- Contact department IT support
+
+---
+
+Built with ❤️ for Plateau State Polytechnic Barkin Ladi Computer Science Department

@@ -5,7 +5,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { BarChart3, TrendingUp, Users, Award, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AnalyticsData {
   levelDistribution: Record<string, number>;
@@ -22,7 +21,6 @@ interface AnalyticsData {
 export function AdminAnalyticsView() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetchAnalytics();
@@ -102,20 +100,20 @@ export function AdminAnalyticsView() {
 
   if (loading) {
     return (
-      <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="p-6 space-y-6">
         <div className="space-y-2">
-          <Skeleton className="h-6 sm:h-8 w-48 sm:w-64" />
-          <Skeleton className="h-3 sm:h-4 w-64 sm:w-96" />
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-96" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(6)].map((_, i) => (
             <Card key={i}>
               <CardHeader>
-                <Skeleton className="h-5 sm:h-6 w-32 sm:w-48" />
-                <Skeleton className="h-3 sm:h-4 w-24 sm:w-32" />
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-4 w-32" />
               </CardHeader>
               <CardContent>
-                <Skeleton className="h-24 sm:h-32 w-full" />
+                <Skeleton className="h-32 w-full" />
               </CardContent>
             </Card>
           ))}
@@ -126,11 +124,11 @@ export function AdminAnalyticsView() {
 
   if (!analytics) {
     return (
-      <div className="p-3 sm:p-6">
+      <div className="p-6">
         <div className="text-center py-8">
-          <BarChart3 className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">No data available</h3>
-          <p className="text-sm text-muted-foreground">Analytics will appear once students and results are added.</p>
+          <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No data available</h3>
+          <p className="text-muted-foreground">Analytics will appear once students and results are added.</p>
         </div>
       </div>
     );
@@ -139,15 +137,15 @@ export function AdminAnalyticsView() {
   const totalStudents = Object.values(analytics.levelDistribution).reduce((sum, count) => sum + count, 0);
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <div className="space-y-1 sm:space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Analytics & Reports</h1>
-        <p className="text-sm text-muted-foreground hidden sm:block">
+    <div className="p-6 space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Analytics & Reports</h1>
+        <p className="text-muted-foreground">
           Comprehensive insights into student performance and system metrics.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Level Distribution */}
         <Card>
           <CardHeader>

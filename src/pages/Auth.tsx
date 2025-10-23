@@ -174,7 +174,7 @@ export default function Auth() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
         <div className="text-center">
-          <img src="/assets/plasu-polytechnic-logo-optimized.webp" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
+          <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 mx-auto mb-4 text-primary animate-pulse" />
           <p className="text-muted-foreground">Signing in...</p>
         </div>
       </div>
@@ -196,7 +196,7 @@ export default function Auth() {
         {/* School Branding */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
-            <img src="/assets/plasu-polytechnic-logo-optimized.webp" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 text-primary" />
+            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="h-12 w-12 text-primary" />
           </div>
           <h1 className="text-2xl font-bold">Plateau State Polytechnic Barkin Ladi</h1>
           <p className="text-sm text-muted-foreground">School of Information and Communication Technology</p>
@@ -359,25 +359,9 @@ export default function Auth() {
         </Card>
 
         {/* Help Text */}
-        <div className="text-center space-y-3">
-          <div className="text-sm text-muted-foreground">
-            <p>Students: Use your matric number and 6-digit PIN</p>
-            <p>Admin: Use your email and password</p>
-          </div>
-          
-          {/* Admin Credentials Info */}
-          <div className="max-w-md mx-auto p-4 bg-primary/5 rounded-lg border border-primary/20">
-            <p className="text-xs font-semibold text-primary mb-2">
-              Default Admin Credentials:
-            </p>
-            <div className="text-xs font-mono bg-background/50 p-2 rounded">
-              <p><strong>Email:</strong> admin@plateau.edu.ng</p>
-              <p><strong>Password:</strong> Admin123456</p>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              If login fails, use "Forgot Password" to reset
-            </p>
-          </div>
+        <div className="text-center text-sm text-muted-foreground">
+          <p>Students: Use your matric number and 6-digit PIN</p>
+          <p>Admin: Use your email and password</p>
         </div>
       </div>
     </div>

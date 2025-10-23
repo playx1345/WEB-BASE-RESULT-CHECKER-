@@ -175,9 +175,9 @@ export function AdminResultsUploadDialog({
       toast.success('Result uploaded successfully');
       handleClose();
       onResultUploaded();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error uploading result:', error);
-      toast.error(error.message || 'Failed to upload result');
+      toast.error(error instanceof Error ? error.message : 'Failed to upload result');
     } finally {
       setLoading(false);
     }
