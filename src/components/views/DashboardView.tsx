@@ -61,11 +61,11 @@ export function DashboardView() {
             setStudentData(studentDataResult);
             
             // Fetch carryover count (F grades)
-            const { data: carryoverData, count } = await supabase
+            const { count } = await supabase
               .from('results')
-              .select('id', { count: 'exact', head: false })
+              .select('*', { count: 'exact', head: true })
               .eq('student_id', studentDataResult.id)
-              .eq('is_carryover', true);
+              .eq('grade', 'F');
             
             if (count !== null) {
               setCarryoverCount(count);
