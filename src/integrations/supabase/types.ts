@@ -287,6 +287,10 @@ export type Database = {
         }
         Returns: string
       }
+      admin_reset_student_pin: {
+        Args: { new_pin: string; student_id: string }
+        Returns: boolean
+      }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }
         Returns: boolean

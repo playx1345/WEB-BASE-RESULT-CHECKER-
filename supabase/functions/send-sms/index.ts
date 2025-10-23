@@ -17,7 +17,7 @@ interface StudentProfile {
 }
 
 interface StudentWithProfile {
-  profiles: StudentProfile;
+  profiles: StudentProfile[];
 }
 
 serve(async (req) => {
@@ -97,8 +97,8 @@ serve(async (req) => {
     let failureCount = 0;
 
     // Send SMS to each student
-    for (const student of students) {
-      const phoneNumber = student.profiles?.phone_number;
+    for (const student of students as any[]) {
+      const phoneNumber = student.profiles?.[0]?.phone_number;
       
       if (!phoneNumber) continue;
 

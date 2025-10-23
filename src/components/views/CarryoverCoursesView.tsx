@@ -51,9 +51,9 @@ export function CarryoverCoursesView() {
         // Fetch carryover courses (F grades)
         const { data: resultsData } = await supabase
           .from('results')
-          .select('*')
+          .select('id, course_code, course_title, credit_unit, grade, level, session, semester')
           .eq('student_id', studentData.id)
-          .eq('is_carryover', true)
+          .eq('grade', 'F')
           .order('session', { ascending: false })
           .order('semester', { ascending: false });
 
