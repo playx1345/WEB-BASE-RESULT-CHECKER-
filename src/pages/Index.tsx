@@ -3,13 +3,13 @@ import { useProfile } from '@/hooks/useProfile';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Dashboard } from '@/components/Dashboard';
 import LandingPage from '@/components/LandingPage';
-import { useEffect } from 'react';
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
 
-
+  // Show loading state while checking authentication
+  if (authLoading || profileLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
