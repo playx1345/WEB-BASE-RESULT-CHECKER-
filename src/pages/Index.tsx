@@ -5,9 +5,7 @@ import { Dashboard } from '@/components/Dashboard';
 import LandingPage from '@/components/LandingPage';
 
 const Index = () => {
-  const { user, loading } = useAuth();
 
-  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
