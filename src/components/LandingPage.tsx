@@ -13,7 +13,11 @@ const LandingPage = () => {
   const isMobile = useIsMobile();
   if (showAdminSetup) {
     return <div className="min-h-screen bg-background">
-        {isMobile ? <MobileHeader /> : <SiteHeader />}
+        {isMobile ? (
+          <MobileHeader />
+        ) : (
+          <SiteHeader />
+        )}
         <div className="container mx-auto py-4 px-4">
           <Button variant="outline" onClick={() => setShowAdminSetup(false)} className="mb-4 w-full sm:w-auto">
             ← Back to Home
@@ -30,22 +34,34 @@ const LandingPage = () => {
       <div className="absolute bottom-20 right-20 w-80 h-80 bg-accent/10 rounded-full blur-3xl -z-10"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-r from-primary/3 to-accent/3 rounded-full blur-3xl -z-10"></div>
       
-      {isMobile ? <MobileHeader onAdminSetup={() => setShowAdminSetup(true)} /> : <SiteHeader />}
+      {isMobile ? (
+        <MobileHeader onAdminSetup={() => setShowAdminSetup(true)} />
+      ) : (
+        <SiteHeader />
+      )}
       
       {/* Hero Section */}
       <section className="relative container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24 text-center overflow-hidden">        
-        <div className="flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 max-w-6xl mx-auto relative rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden modern-shadow p-6 sm:p-8 md:p-12 lg:p-16" style={{
-        backgroundImage: `url(${buildingBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: isMobile ? '70vh' : '80vh'
-      }}>
+        <div 
+          className="flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 max-w-6xl mx-auto relative rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden modern-shadow p-6 sm:p-8 md:p-12 lg:p-16"
+          style={{ 
+            backgroundImage: `url(${buildingBg})`, 
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center',
+            minHeight: isMobile ? '70vh' : '80vh'
+          }}
+        >
           {/* Enhanced background overlay with better transparency */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-background/80 to-accent/60 backdrop-blur-[2px]"></div>
           <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-full">
           {/* Logo */}
           <div className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 glass-enhanced rounded-full shadow-2xl float-animation">
-            <img src="/assets/plasu-polytechnic-logo.jpg" alt="Plateau State Polytechnic Barkin Ladi Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110" loading="eager" />
+            <img 
+              src="/assets/plasu-polytechnic-logo.jpg" 
+              alt="Plateau State Polytechnic Barkin Ladi Logo" 
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain rounded-full transition-transform duration-500 hover:scale-110"
+              loading="eager"
+            />
           </div>
           
           {/* Time Ribbon */}
@@ -77,6 +93,12 @@ const LandingPage = () => {
                 <ChevronRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </Button>
+            {!isMobile && (
+              <Button size="lg" variant="outline" onClick={() => setShowAdminSetup(true)} className="w-full sm:flex-1 flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 lg:py-8 text-sm sm:text-base md:text-lg font-bold glass-enhanced border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-500 min-h-[52px] touch-target text-white">
+                <Settings className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 hover:rotate-45" />
+                Admin Setup
+              </Button>
+            )}
           </div>
           </div>
         </div>
@@ -115,9 +137,7 @@ const LandingPage = () => {
               </Card>
 
               {/* Professional Development */}
-              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{
-              animationDelay: '0.1s'
-            }}>
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{animationDelay: '0.1s'}}>
                 <CardHeader className="text-center p-4 sm:p-6">
                   <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Award className="h-8 w-8 sm:h-10 sm:w-10 text-purple-600" />
@@ -132,9 +152,7 @@ const LandingPage = () => {
               </Card>
 
               {/* Modern Technology */}
-              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up sm:col-span-2 lg:col-span-1" style={{
-              animationDelay: '0.2s'
-            }}>
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
                 <CardHeader className="text-center p-4 sm:p-6">
                   <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Settings className="h-8 w-8 sm:h-10 sm:w-10 text-green-600" />
@@ -149,9 +167,7 @@ const LandingPage = () => {
               </Card>
 
               {/* Student Life */}
-              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{
-              animationDelay: '0.3s'
-            }}>
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{animationDelay: '0.3s'}}>
                 <CardHeader className="text-center p-4 sm:p-6">
                   <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
                     <User className="h-8 w-8 sm:h-10 sm:w-10 text-orange-600" />
@@ -166,9 +182,7 @@ const LandingPage = () => {
               </Card>
 
               {/* Global Opportunities */}
-              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{
-              animationDelay: '0.4s'
-            }}>
+              <Card className="glass-morphism-card border-primary/20 modern-shadow hover-lift group animate-fade-in-up" style={{animationDelay: '0.4s'}}>
                 <CardHeader className="text-center p-4 sm:p-6">
                   <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 rounded-full flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Globe className="h-8 w-8 sm:h-10 sm:w-10 text-cyan-600" />
