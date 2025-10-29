@@ -5,13 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, FileText, Search, Download, Filter, BarChart3 } from 'lucide-react';
+import { AlertTriangle, FileText, Search, Download, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useActivityLogger } from '@/lib/auditLogger';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { StudentPerformanceCharts } from '@/components/student/StudentPerformanceCharts';
 
 interface Result {
   id: string;
@@ -206,133 +204,114 @@ export function ResultsView() {
         </p>
       </div>
 
-      <Tabs defaultValue="results" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="results">
-            <FileText className="mr-2 h-4 w-4" />
-            Results
-          </TabsTrigger>
-          <TabsTrigger value="analytics">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Performance Analytics
-          </TabsTrigger>
-        </TabsList>
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by course code or title..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        
+        <Select value={sessionFilter} onValueChange={setSessionFilter}>
+          <SelectTrigger className="w-full sm:w-40">
+            <SelectValue placeholder="Session" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Sessions</SelectItem>
+            {Array.from(new Set(results.map(r => r.session))).map(session => (
+              <SelectItem key={session} value={session}>{session}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <TabsContent value="results" className="space-y-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by course code or title..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <Select value={sessionFilter} onValueChange={setSessionFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Session" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Sessions</SelectItem>
-                {Array.from(new Set(results.map(r => r.session))).map(session => (
-                  <SelectItem key={session} value={session}>{session}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+          <SelectTrigger className="w-full sm:w-36">
+            <SelectValue placeholder="Semester" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Semesters</SelectItem>
+            <SelectItem value="first">First Semester</SelectItem>
+            <SelectItem value="second">Second Semester</SelectItem>
+          </SelectContent>
+        </Select>
 
-            <Select value={semesterFilter} onValueChange={setSemesterFilter}>
-              <SelectTrigger className="w-full sm:w-36">
-                <SelectValue placeholder="Semester" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Semesters</SelectItem>
-                <SelectItem value="first">First Semester</SelectItem>
-                <SelectItem value="second">Second Semester</SelectItem>
-              </SelectContent>
-            </Select>
+        <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
+          <Download className="h-4 w-4 mr-2" />
+          Export CSV
+        </Button>
+      </div>
 
-            <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
-              <Download className="h-4 w-4 mr-2" />
-              Export CSV
-            </Button>
-          </div>
+      {Object.keys(groupedResults).length === 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              No Results Available
+            </CardTitle>
+            <CardDescription>
+              No academic results have been published yet. Check back later for updates.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          {Object.entries(groupedResults).map(([sessionSemester, semesterResults]) => {
+            const totalCredits = semesterResults.reduce((sum, result) => sum + result.credit_unit, 0);
+            const totalGradePoints = semesterResults.reduce((sum, result) => sum + (result.point * result.credit_unit), 0);
+            const gpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : '0.00';
 
-          {Object.keys(groupedResults).length === 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  No Results Available
-                </CardTitle>
-                <CardDescription>
-                  No academic results have been published yet. Check back later for updates.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              {Object.entries(groupedResults).map(([sessionSemester, semesterResults]) => {
-                const totalCredits = semesterResults.reduce((sum, result) => sum + result.credit_unit, 0);
-                const totalGradePoints = semesterResults.reduce((sum, result) => sum + (result.point * result.credit_unit), 0);
-                const gpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : '0.00';
-
-                return (
-                  <Card key={sessionSemester}>
-                    <CardHeader>
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <CardTitle>{sessionSemester}</CardTitle>
-                          <CardDescription>
-                            {semesterResults.length} courses • {totalCredits} credit units
-                          </CardDescription>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm text-muted-foreground">Semester GPA</p>
-                          <p className="text-2xl font-bold">{gpa}</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Course Code</TableHead>
-                            <TableHead>Course Title</TableHead>
-                            <TableHead className="text-center">Credit Units</TableHead>
-                            <TableHead className="text-center">Grade</TableHead>
-                            <TableHead className="text-center">Grade Points</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {semesterResults.map((result) => (
-                            <TableRow key={result.id}>
-                              <TableCell className="font-medium">{result.course_code}</TableCell>
-                              <TableCell>{result.course_title}</TableCell>
-                              <TableCell className="text-center">{result.credit_unit}</TableCell>
-                              <TableCell className="text-center">
-                                <Badge className={getGradeColor(result.grade)}>
-                                  {result.grade}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="text-center">{result.point.toFixed(1)}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="analytics">
-          <StudentPerformanceCharts />
-        </TabsContent>
-      </Tabs>
+            return (
+              <Card key={sessionSemester}>
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <CardTitle>{sessionSemester}</CardTitle>
+                      <CardDescription>
+                        {semesterResults.length} courses • {totalCredits} credit units
+                      </CardDescription>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground">Semester GPA</p>
+                      <p className="text-2xl font-bold">{gpa}</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Course Code</TableHead>
+                        <TableHead>Course Title</TableHead>
+                        <TableHead className="text-center">Credit Units</TableHead>
+                        <TableHead className="text-center">Grade</TableHead>
+                        <TableHead className="text-center">Grade Points</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {semesterResults.map((result) => (
+                        <TableRow key={result.id}>
+                          <TableCell className="font-medium">{result.course_code}</TableCell>
+                          <TableCell>{result.course_title}</TableCell>
+                          <TableCell className="text-center">{result.credit_unit}</TableCell>
+                          <TableCell className="text-center">
+                            <Badge className={getGradeColor(result.grade)}>
+                              {result.grade}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">{result.point.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

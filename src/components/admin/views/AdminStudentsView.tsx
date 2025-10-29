@@ -9,9 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Search, Edit, User, Trash2, UserCheck, UserX, Users } from 'lucide-react';
+import { UserPlus, Search, Edit, User, Trash2, UserCheck, UserX } from 'lucide-react';
 import { AdminCreateStudentDialog } from './AdminCreateStudentDialog';
-import { AdminBulkCreateStudentsDialog } from './AdminBulkCreateStudentsDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -37,7 +36,6 @@ export function AdminStudentsView() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isBulkCreateDialogOpen, setIsBulkCreateDialogOpen] = useState(false);
   const [levelFilter, setLevelFilter] = useState('all');
   const [feeStatusFilter, setFeeStatusFilter] = useState('all');
 
@@ -143,16 +141,10 @@ export function AdminStudentsView() {
             Manage student records, fees, and academic information.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setIsBulkCreateDialogOpen(true)} variant="outline">
-            <Users className="h-4 w-4 mr-2" />
-            Bulk Create
-          </Button>
-          <Button onClick={() => setIsCreateDialogOpen(true)}>
-            <UserPlus className="h-4 w-4 mr-2" />
-            Add Student
-          </Button>
-        </div>
+        <Button onClick={() => setIsCreateDialogOpen(true)}>
+          <UserPlus className="h-4 w-4 mr-2" />
+          Add Student
+        </Button>
       </div>
 
       <Card>
@@ -360,13 +352,6 @@ export function AdminStudentsView() {
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         onStudentCreated={fetchStudents}
-      />
-
-      {/* Bulk Create Students Dialog */}
-      <AdminBulkCreateStudentsDialog
-        open={isBulkCreateDialogOpen}
-        onOpenChange={setIsBulkCreateDialogOpen}
-        onStudentsCreated={fetchStudents}
       />
     </div>
   );

@@ -8,11 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Search, Upload, Download, FileSpreadsheet, AlertCircle, FileText } from 'lucide-react';
+import { Plus, Search, Upload, FileText, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
-import { AdminBulkResultsPreviewDialog } from './AdminBulkResultsPreviewDialog';
 
 interface Result {
   id: string;
@@ -54,9 +52,6 @@ export function AdminResultsView() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [parsedCsvData, setParsedCsvData] = useState<CsvRowData[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
   const fetchResults = useCallback(async () => {
@@ -144,45 +139,18 @@ export function AdminResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a CSV file.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setUploadFile(file);
-    
-    try {
-      // Immediately parse and show preview
-      const csvText = await file.text();
-      const parsed = parseCsvData(csvText);
-      
-      if (parsed.length === 0) {
+    if (file) {
+      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
         toast({
-          title: "No data found",
-          description: "The CSV file contains no valid data rows.",
+          title: "Invalid file type",
+          description: "Please upload a CSV file.",
           variant: "destructive"
         });
         return;
       }
-
-      setParsedCsvData(parsed);
-      setIsBulkUploadOpen(false);
-      setShowPreview(true);
-    } catch (error) {
-      console.error('Error parsing CSV:', error);
-      toast({
-        title: "Parse error",
-        description: "Failed to parse CSV file. Please check the format.",
-        variant: "destructive"
-      });
+      setUploadFile(file);
     }
   };
 
@@ -428,7 +396,7 @@ export function AdminResultsView() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button onClick={() => setUploadDialogOpen(true)}>
+          <Button>
             <Plus className="h-4 w-4 mr-2" />
             Add Result
           </Button>
@@ -544,29 +512,6 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
-
-      <AdminResultsUploadDialog
-        open={uploadDialogOpen}
-        onOpenChange={setUploadDialogOpen}
-        onResultUploaded={fetchResults}
-      />
-
-      <AdminBulkResultsPreviewDialog
-        open={showPreview}
-        onOpenChange={(open) => {
-          setShowPreview(open);
-          if (!open) {
-            setUploadFile(null);
-            setParsedCsvData([]);
-          }
-        }}
-        csvData={parsedCsvData}
-        onUploadComplete={() => {
-          fetchResults();
-          setUploadFile(null);
-          setParsedCsvData([]);
-        }}
-      />
     </div>
   );
 }
