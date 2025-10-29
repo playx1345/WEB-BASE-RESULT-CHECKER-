@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent';
+  role: 'student' | 'admin' | 'teacher' | 'parent' | null;
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -21,23 +21,41 @@ export const useProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-
+      console.log('[useProfile] Fetching profile for user:', user?.id || 'no user');
+      
+      if (!user) {
+        console.log('[useProfile] No user found, clearing profile');
         setProfile(null);
         setLoading(false);
         return;
       }
 
+      console.log('[useProfile] Fetching profile for user:', user.id);
+
       try {
-        const { data, error } = await supabase
+        // Fetch profile data
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
+          .maybeSingle();
 
+        if (profileError) {
+          console.error('[useProfile] Error fetching profile:', profileError);
           setProfile(null);
-        } else {
-          setProfile(data);
+          setLoading(false);
+          return;
         }
 
+        if (!profileData) {
+          console.log('[useProfile] No profile data found for user');
+          setProfile(null);
+          setLoading(false);
+          return;
+        }
+        
+        console.log('[useProfile] Profile data found:', profileData);
+        setProfile(profileData);
       } finally {
         setLoading(false);
       }
