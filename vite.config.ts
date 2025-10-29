@@ -20,18 +20,4 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom"],
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-        },
-      },
-    },
-    // Optimize asset handling
-    assetsInlineLimit: 4096,
-    // Improve chunking
-    chunkSizeWarningLimit: 1000,
-  },
 }));

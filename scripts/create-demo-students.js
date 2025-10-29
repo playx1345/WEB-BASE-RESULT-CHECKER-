@@ -83,34 +83,37 @@ async function createDemoStudents() {
     for (const student of demoStudents) {
       console.log(`👤 Creating student: ${student.full_name} (${student.matric_number})`);
       
-      // Check if student already exists
-      const { data: existingStudent } = await supabase
-        .from('students')
-        .select('matric_number')
-        .eq('matric_number', student.matric_number)
-        .single();
+      const studentEmail = `${student.matric_number}@student.plateau.edu.ng`;
       
-      if (existingStudent) {
+      // Check if student already exists
+      const { data: existingUsers } = await supabase.auth.admin.listUsers();
+      const existingUser = existingUsers.users.find(user => user.email === studentEmail);
+      
+      if (existingUser) {
         console.log(`   ⚠️  Student already exists, skipping...`);
         continue;
       }
       
-      // Use admin_create_student RPC function
-      const { data: result, error: createError } = await supabase
-        .rpc('admin_create_student', {
-          p_full_name: student.full_name,
-          p_matric_number: student.matric_number,
-          p_level: student.level,
-          p_phone_number: student.phone_number,
-          p_pin: student.pin
-        });
+      // Create auth user
+      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+        email: studentEmail,
+        password: student.pin,
+        email_confirm: true,
+        user_metadata: {
+          full_name: student.full_name,
+          matric_number: student.matric_number,
+          level: student.level,
+          phone_number: student.phone_number,
+          role: 'student'
+        }
+      });
       
       if (createError) {
-        console.error(`   ❌ Error creating student: ${createError.message}`);
+        console.error(`   ❌ Error creating user: ${createError.message}`);
         continue;
       }
       
-      // Update fee status
+      // Update fee status using RPC function
       const { error: updateError } = await supabase
         .from('students')
         .update({ fee_status: student.fee_status })
