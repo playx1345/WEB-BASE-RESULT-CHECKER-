@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logUserActivity } from '@/lib/auditLogger';
-
+import { useNavigate } from 'react-router-dom';
 import { AuthError } from '@supabase/supabase-js';
 
 interface AuthContextType {
@@ -72,15 +72,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const matricNumber = email;
       const pin = password;
       
-      // Authenticate student using custom function
+      // First verify credentials using authenticate_student function
       const { data: studentData, error: studentError } = await supabase
         .rpc('authenticate_student', {
           p_matric_number: matricNumber,
           p_pin: pin
         });
       
-      if (studentError || !studentData || studentData.length === 0) {
-        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
+      if (studentError || !studentData || (Array.isArray(studentData) && studentData.length === 0)) {
+        return { 
+          error: { 
+            message: 'Invalid matric number or PIN', 
+            status: 400, 
+            name: 'AuthApiError' 
+          } as AuthError 
+        };
       }
       
       // Sign in with constructed email
@@ -90,7 +96,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password: pin,
       });
       
-      return { error };
+      if (error) {
+        return { error };
+      }
+      
+      return { error: null };
     } else {
       // Regular admin/teacher login via Supabase auth
       const { error } = await supabase.auth.signInWithPassword({

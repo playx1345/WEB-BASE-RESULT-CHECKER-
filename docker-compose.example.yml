@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # CS Department Portal Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # Supabase Configuration
+      # IMPORTANT: Replace these with your actual values or use .env file
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL:-https://your-project.supabase.co}
+      - VITE_SUPABASE_PUBLISHABLE_KEY=${VITE_SUPABASE_PUBLISHABLE_KEY:-your_publishable_key}
+      - VITE_SUPABASE_PROJECT_ID=${VITE_SUPABASE_PROJECT_ID:-your_project_id}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - app-network
+    # Uncomment to add logging configuration
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
+
+  # Optional: Add a reverse proxy (Nginx/Traefik) for SSL termination
+  # Uncomment if you need SSL/TLS in development
+  # reverse-proxy:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "443:443"
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+  #     - ./certs:/etc/nginx/certs:ro
+  #   depends_on:
+  #     - web
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+# Note: This is an EXAMPLE configuration for development/staging
+# DO NOT use this directly in production with hardcoded secrets
+# 
+# For production:
+# 1. Use environment variables from a .env file (not committed to git)
+# 2. Use a secret manager (AWS Secrets Manager, HashiCorp Vault, etc.)
+# 3. Configure proper SSL/TLS certificates
+# 4. Add monitoring and logging solutions
+# 5. Configure resource limits (cpu, memory)
+# 6. Use production-grade database (Supabase is already cloud-hosted)
+#
+# Example .env file (create this locally, DO NOT commit):
+# VITE_SUPABASE_URL=https://your-project.supabase.co
+# VITE_SUPABASE_PUBLISHABLE_KEY=your_actual_publishable_key
+# VITE_SUPABASE_PROJECT_ID=your_actual_project_id
