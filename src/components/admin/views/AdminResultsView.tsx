@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,13 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Search, Upload, Download, FileSpreadsheet, AlertCircle, FileText } from 'lucide-react';
+import { Plus, Search, Upload, FileText, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
-import { AdminBulkResultsPreviewDialog } from './AdminBulkResultsPreviewDialog';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Result {
   id: string;
@@ -34,19 +30,6 @@ interface Result {
   };
 }
 
-interface CsvRowData {
-  matric_number: string;
-  course_code: string;
-  course_title: string;
-  credit_units: string;
-  grade: string;
-  point: string;
-  grade_points: string;
-  session: string;
-  semester: string;
-  level: string;
-}
-
 export function AdminResultsView() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,13 +39,13 @@ export function AdminResultsView() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [parsedCsvData, setParsedCsvData] = useState<CsvRowData[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
-  const fetchResults = useCallback(async () => {
+  useEffect(() => {
+    fetchResults();
+  }, []);
+
+  const fetchResults = async () => {
     try {
       const { data, error } = await supabase
         .from('results')
@@ -86,11 +69,7 @@ export function AdminResultsView() {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    fetchResults();
-  }, [fetchResults]);
+  };
 
   const filteredResults = results.filter(result => {
     const matchesSearch = 
@@ -147,49 +126,22 @@ export function AdminResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a CSV file.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setUploadFile(file);
-    
-    try {
-      // Immediately parse and show preview
-      const csvText = await file.text();
-      const parsed = parseCsvData(csvText);
-      
-      if (parsed.length === 0) {
+    if (file) {
+      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
         toast({
-          title: "No data found",
-          description: "The CSV file contains no valid data rows.",
+          title: "Invalid file type",
+          description: "Please upload a CSV file.",
           variant: "destructive"
         });
         return;
       }
-
-      setParsedCsvData(parsed);
-      setIsBulkUploadOpen(false);
-      setShowPreview(true);
-    } catch (error) {
-      console.error('Error parsing CSV:', error);
-      toast({
-        title: "Parse error",
-        description: "Failed to parse CSV file. Please check the format.",
-        variant: "destructive"
-      });
+      setUploadFile(file);
     }
   };
 
-  const parseCsvData = (csvText: string): CsvRowData[] => {
+  const parseCsvData = (csvText: string): any[] => {
     const lines = csvText.split('\n').filter(line => line.trim());
     const headers = lines[0].split(',').map(h => h.trim());
     
@@ -201,15 +153,15 @@ export function AdminResultsView() {
     
     return dataLines.map(line => {
       const values = line.split(',').map(v => v.trim());
-      const row: Partial<CsvRowData> = {};
+      const row: any = {};
       headers.forEach((header, index) => {
-        row[header.toLowerCase().replace(/\s+/g, '_') as keyof CsvRowData] = values[index] || '';
+        row[header.toLowerCase().replace(/\s+/g, '_')] = values[index] || '';
       });
-      return row as CsvRowData;
+      return row;
     });
   };
 
-  const validateRowData = (row: CsvRowData, rowIndex: number): string[] => {
+  const validateRowData = (row: any, rowIndex: number): string[] => {
     const errors: string[] = [];
     
     if (!row.matric_number) errors.push(`Row ${rowIndex + 2}: Matric Number is required`);
@@ -361,20 +313,20 @@ export function AdminResultsView() {
   const uniqueLevels = Array.from(new Set(results.map(r => r.level)));
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1 sm:space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Results Management</h1>
-          <p className="text-sm text-muted-foreground hidden sm:block">
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Results Management</h1>
+          <p className="text-muted-foreground">
             Manage student academic results and performance data.
           </p>
         </div>
         <div className="flex gap-2">
           <Dialog open={isBulkUploadOpen} onOpenChange={setIsBulkUploadOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size={isMobile ? "sm" : "default"}>
-                <Upload className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Bulk Upload</span>
+              <Button variant="outline">
+                <Upload className="h-4 w-4 mr-2" />
+                Bulk Upload
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
@@ -431,7 +383,7 @@ export function AdminResultsView() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button onClick={() => setUploadDialogOpen(true)}>
+          <Button>
             <Plus className="h-4 w-4 mr-2" />
             Add Result
           </Button>
@@ -547,29 +499,6 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
-
-      <AdminResultsUploadDialog
-        open={uploadDialogOpen}
-        onOpenChange={setUploadDialogOpen}
-        onResultUploaded={fetchResults}
-      />
-
-      <AdminBulkResultsPreviewDialog
-        open={showPreview}
-        onOpenChange={(open) => {
-          setShowPreview(open);
-          if (!open) {
-            setUploadFile(null);
-            setParsedCsvData([]);
-          }
-        }}
-        csvData={parsedCsvData}
-        onUploadComplete={() => {
-          fetchResults();
-          setUploadFile(null);
-          setParsedCsvData([]);
-        }}
-      />
     </div>
   );
 }

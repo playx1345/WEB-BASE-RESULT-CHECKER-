@@ -77,10 +77,10 @@ export class InputSanitizer {
   }
 
   /**
-   * Validate matric number format (PSP/SICT/CSC/ND/YY/XXX or PSP/SICT/CSC/HND/YY/XXX)
+   * Validate matric number format (PSP/SICT/CSC/ND/YY/XXX)
    */
   static validateMatricNumber(matricNumber: string): boolean {
-    const matricRegex = /^PSP\/SICT\/CSC\/(ND|HND)\/\d{2}\/\d{3}$/;
+    const matricRegex = /^PSP\/SICT\/CSC\/ND\/\d{2}\/\d{3}$/;
     return matricRegex.test(matricNumber);
   }
 
@@ -95,7 +95,7 @@ export class InputSanitizer {
    * Validate phone number format
    */
   static validatePhoneNumber(phone: string): boolean {
-    const phoneRegex = /^[+]?[\d\s\-()]{10,15}$/;
+    const phoneRegex = /^[\+]?[\d\s\-()]{10,15}$/;
     return phoneRegex.test(phone);
   }
 

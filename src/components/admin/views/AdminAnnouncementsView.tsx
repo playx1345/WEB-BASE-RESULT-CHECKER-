@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,6 @@ import { Plus, Megaphone, Edit, Trash2, Calendar, MessageSquare } from 'lucide-r
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Announcement {
   id: string;
@@ -35,9 +34,12 @@ export function AdminAnnouncementsView() {
   const [sendingSMS, setSendingSMS] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
-  const fetchAnnouncements = useCallback(async () => {
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  const fetchAnnouncements = async () => {
     try {
       const { data, error } = await supabase
         .from('announcements')
@@ -59,11 +61,7 @@ export function AdminAnnouncementsView() {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
-
-  useEffect(() => {
-    fetchAnnouncements();
-  }, [fetchAnnouncements]);
+  };
 
   const createAnnouncement = async () => {
     if (!formData.title || !formData.content || !user) return;

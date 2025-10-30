@@ -3,13 +3,38 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical, User, Shield, GraduationCap, LogOut, BookOpen, Users, Mail, Newspaper } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/hooks/useAuth';
-import { useProfile } from '@/hooks/useProfile';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
 
 export function SiteHeader() {
   const { user, signOut } = useAuth();
-  const { profile } = useProfile();
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserRole();
+    } else {
+      setUserRole(null);
+    }
+  }, [user]);
+
+  const fetchUserRole = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+      
+      setUserRole(profile?.role || null);
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -24,10 +49,9 @@ export function SiteHeader() {
           <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
             <div className="flex items-center space-x-3 sm:space-x-4">
               <img 
-                src="/assets/plasu-polytechnic-logo-optimized.webp" 
+                src="/assets/plasu-polytechnic-logo.jpg" 
                 alt="Plateau State Polytechnic Barkin Ladi Logo" 
                 className="h-10 w-10 sm:h-12 sm:w-12 object-contain flex-shrink-0 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                loading="eager"
               />
               <div className="min-w-0">
                 <h1 className="text-base sm:text-lg lg:text-xl font-bold gradient-text leading-tight truncate">
@@ -115,7 +139,7 @@ export function SiteHeader() {
                   </>
                 ) : (
                   <>
-                    {profile?.role === 'admin' && (
+                    {userRole === 'admin' && (
                       <>
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="w-full flex items-center space-x-2 text-primary hover:bg-primary/10 transition-colors">
