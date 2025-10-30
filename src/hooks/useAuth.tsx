@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const matricNumber = email;
       const pin = password;
       
-      // Authenticate student using custom function
+      // Authenticate student using custom function that returns user data
       const { data: studentData, error: studentError } = await supabase
         .rpc('authenticate_student', {
           p_matric_number: matricNumber,
@@ -80,8 +80,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       
       if (studentError || !studentData || studentData.length === 0) {
+        console.error('[Auth] Student authentication failed:', studentError);
         return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
       }
+      
+      console.log('[Auth] Student authenticated successfully:', studentData[0]);
       
       // Sign in with constructed email
       const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
@@ -90,13 +93,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password: pin,
       });
       
+      if (error) {
+        console.error('[Auth] Supabase auth sign in failed:', error);
+      } else {
+        console.log('[Auth] Student signed in successfully');
+      }
+      
       return { error };
     } else {
       // Regular admin/teacher login via Supabase auth
+      console.log('[Auth] Admin/Teacher login attempt:', email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
+      if (error) {
+        console.error('[Auth] Admin/Teacher login failed:', error);
+      } else {
+        console.log('[Auth] Admin/Teacher logged in successfully');
+      }
       
       return { error };
     }
