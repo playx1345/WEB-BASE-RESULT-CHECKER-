@@ -77,10 +77,10 @@ export class InputSanitizer {
   }
 
   /**
-   * Validate matric number format (PSP/SICT/CSC/ND/YY/XXX)
+   * Validate matric number format (PSP/SICT/CSC/ND/YY/XXX or PSP/SICT/CSC/HND/YY/XXX)
    */
   static validateMatricNumber(matricNumber: string): boolean {
-    const matricRegex = /^PSP\/SICT\/CSC\/ND\/\d{2}\/\d{3}$/;
+    const matricRegex = /^PSP\/SICT\/CSC\/(ND|HND)\/\d{2}\/\d{3}$/;
     return matricRegex.test(matricNumber);
   }
 

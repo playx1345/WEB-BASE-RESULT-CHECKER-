@@ -4,10 +4,9 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/co
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Menu, X, User, Shield, GraduationCap, LogOut, Home, Settings, BookOpen, Users, Mail, Newspaper } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { Link, useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { supabase } from '@/integrations/supabase/client';
-import { useEffect } from 'react';
 
 interface MobileHeaderProps {
   onAdminSetup?: () => void;
@@ -15,34 +14,10 @@ interface MobileHeaderProps {
 
 export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
   const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user) {
-      fetchUserRole();
-    } else {
-      setUserRole(null);
-    }
-  }, [user]);
-
-  const fetchUserRole = async () => {
-    if (!user) return;
-    
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-      
-      setUserRole(profile?.role || null);
-    } catch (error) {
-      console.error('Error fetching user role:', error);
-    }
-  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -64,7 +39,7 @@ export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
           {/* Logo and Title */}
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             <img 
-              src="/assets/plasu-polytechnic-logo.jpg" 
+              src="/assets/plasu-polytechnic-logo-optimized.webp" 
               alt="Plateau State Polytechnic Logo" 
               className="h-10 w-10 object-contain flex-shrink-0 rounded-lg shadow-md"
             />
@@ -236,7 +211,7 @@ export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
                               <span>Dashboard</span>
                             </Link>
                           </Button>
-                          {userRole === 'admin' && (
+                          {profile?.role === 'admin' && (
                             <Button 
                               asChild 
                               variant="ghost" 
@@ -249,7 +224,7 @@ export function MobileHeader({ onAdminSetup }: MobileHeaderProps) {
                               </Link>
                             </Button>
                           )}
-                          {userRole === 'teacher' && (
+                          {profile?.role === 'teacher' && (
                             <Button 
                               asChild 
                               variant="ghost" 

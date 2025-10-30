@@ -115,33 +115,6 @@ export type Database = {
         }
         Relationships: []
       }
-      courses: {
-        Row: {
-          course_code: string
-          course_title: string
-          credit_unit: number
-          id: number
-          level: string | null
-          semester: string | null
-        }
-        Insert: {
-          course_code: string
-          course_title: string
-          credit_unit: number
-          id?: number
-          level?: string | null
-          semester?: string | null
-        }
-        Update: {
-          course_code?: string
-          course_title?: string
-          credit_unit?: number
-          id?: number
-          level?: string | null
-          semester?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string | null
@@ -233,14 +206,12 @@ export type Database = {
           carryovers: number | null
           cgp: number | null
           created_at: string | null
-          email: string
           fee_status: string | null
-          full_name: string | null
           id: string
           level: string
           matric_number: string
           pin_hash: string
-          profile_id: string | null
+          profile_id: string
           total_gp: number | null
           updated_at: string | null
         }
@@ -248,14 +219,12 @@ export type Database = {
           carryovers?: number | null
           cgp?: number | null
           created_at?: string | null
-          email: string
           fee_status?: string | null
-          full_name?: string | null
           id?: string
           level: string
           matric_number: string
           pin_hash: string
-          profile_id?: string | null
+          profile_id: string
           total_gp?: number | null
           updated_at?: string | null
         }
@@ -263,14 +232,12 @@ export type Database = {
           carryovers?: number | null
           cgp?: number | null
           created_at?: string | null
-          email?: string
           fee_status?: string | null
-          full_name?: string | null
           id?: string
           level?: string
           matric_number?: string
           pin_hash?: string
-          profile_id?: string | null
+          profile_id?: string
           total_gp?: number | null
           updated_at?: string | null
         }
@@ -320,25 +287,36 @@ export type Database = {
         }
         Returns: Json
       }
-      admin_reset_student_pin: {
-        Args: { new_pin: string; student_id: string }
-        Returns: boolean
-      }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }
-        Returns: boolean
+        Returns: {
+          full_name: string
+          level: string
+          profile_id: string
+          student_id: string
+          user_id: string
+        }[]
       }
       calculate_investment_profit: {
         Args: { investment_id: string }
         Returns: number
       }
-      check_user_role: { Args: { required_role: string }; Returns: boolean }
+      check_user_role: {
+        Args: { required_role: string }
+        Returns: boolean
+      }
       create_admin_user: {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: Json
       }
-      generate_secure_pin: { Args: never; Returns: string }
-      get_current_user_role: { Args: never; Returns: string }
+      generate_secure_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_student_safe_data: {
         Args: { p_user_id: string }
         Returns: {
@@ -361,8 +339,14 @@ export type Database = {
         }
         Returns: boolean
       }
-      hash_pin: { Args: { pin_text: string }; Returns: string }
-      is_admin: { Args: never; Returns: boolean }
+      hash_pin: {
+        Args: { pin_text: string }
+        Returns: string
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       log_user_activity: {
         Args: {
           p_action: string
@@ -378,7 +362,7 @@ export type Database = {
       }
     }
     Enums: {
-      user_role: "user" | "admin" | "student" | "teacher" | "parent"
+      user_role: "user" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -506,7 +490,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["user", "admin", "student", "teacher", "parent"],
+      user_role: ["user", "admin"],
     },
   },
 } as const

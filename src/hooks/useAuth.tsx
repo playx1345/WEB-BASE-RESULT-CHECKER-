@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logUserActivity } from '@/lib/auditLogger';
-
+import { useNavigate } from 'react-router-dom';
 import { AuthError } from '@supabase/supabase-js';
 
 interface AuthContextType {
@@ -72,19 +72,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const matricNumber = email;
       const pin = password;
       
-      // Authenticate student using custom function that returns user data
+      // First verify credentials using authenticate_student function
       const { data: studentData, error: studentError } = await supabase
         .rpc('authenticate_student', {
           p_matric_number: matricNumber,
           p_pin: pin
         });
       
-      if (studentError || !studentData || studentData.length === 0) {
-        console.error('[Auth] Student authentication failed:', studentError);
-        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
+      if (studentError || !studentData || (Array.isArray(studentData) && studentData.length === 0)) {
+        return { 
+          error: { 
+            message: 'Invalid matric number or PIN', 
+            status: 400, 
+            name: 'AuthApiError' 
+          } as AuthError 
+        };
       }
-      
-      console.log('[Auth] Student authenticated successfully:', studentData[0]);
       
       // Sign in with constructed email
       const studentEmail = `${matricNumber}@student.plateau.edu.ng`;
@@ -94,25 +97,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) {
-        console.error('[Auth] Supabase auth sign in failed:', error);
-      } else {
-        console.log('[Auth] Student signed in successfully');
+        return { error };
       }
       
-      return { error };
+      return { error: null };
     } else {
       // Regular admin/teacher login via Supabase auth
-      console.log('[Auth] Admin/Teacher login attempt:', email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
-      if (error) {
-        console.error('[Auth] Admin/Teacher login failed:', error);
-      } else {
-        console.log('[Auth] Admin/Teacher logged in successfully');
-      }
       
       return { error };
     }

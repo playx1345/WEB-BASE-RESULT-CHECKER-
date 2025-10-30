@@ -8,9 +8,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Search, Upload, FileText, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
+import { Plus, Search, Upload, Download, FileSpreadsheet, AlertCircle, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
+import { AdminBulkResultsPreviewDialog } from './AdminBulkResultsPreviewDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Result {
   id: string;
@@ -52,7 +56,11 @@ export function AdminResultsView() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [parsedCsvData, setParsedCsvData] = useState<CsvRowData[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const fetchResults = useCallback(async () => {
     try {
@@ -139,18 +147,45 @@ export function AdminResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+    if (!file) return;
+
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a CSV file.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setUploadFile(file);
+    
+    try {
+      // Immediately parse and show preview
+      const csvText = await file.text();
+      const parsed = parseCsvData(csvText);
+      
+      if (parsed.length === 0) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload a CSV file.",
+          title: "No data found",
+          description: "The CSV file contains no valid data rows.",
           variant: "destructive"
         });
         return;
       }
-      setUploadFile(file);
+
+      setParsedCsvData(parsed);
+      setIsBulkUploadOpen(false);
+      setShowPreview(true);
+    } catch (error) {
+      console.error('Error parsing CSV:', error);
+      toast({
+        title: "Parse error",
+        description: "Failed to parse CSV file. Please check the format.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -326,20 +361,20 @@ export function AdminResultsView() {
   const uniqueLevels = Array.from(new Set(results.map(r => r.level)));
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Results Management</h1>
-          <p className="text-muted-foreground">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-1 sm:space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Results Management</h1>
+          <p className="text-sm text-muted-foreground hidden sm:block">
             Manage student academic results and performance data.
           </p>
         </div>
         <div className="flex gap-2">
           <Dialog open={isBulkUploadOpen} onOpenChange={setIsBulkUploadOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline">
-                <Upload className="h-4 w-4 mr-2" />
-                Bulk Upload
+              <Button variant="outline" size={isMobile ? "sm" : "default"}>
+                <Upload className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Bulk Upload</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
@@ -396,7 +431,7 @@ export function AdminResultsView() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button>
+          <Button onClick={() => setUploadDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Result
           </Button>
@@ -512,6 +547,29 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
+
+      <AdminResultsUploadDialog
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        onResultUploaded={fetchResults}
+      />
+
+      <AdminBulkResultsPreviewDialog
+        open={showPreview}
+        onOpenChange={(open) => {
+          setShowPreview(open);
+          if (!open) {
+            setUploadFile(null);
+            setParsedCsvData([]);
+          }
+        }}
+        csvData={parsedCsvData}
+        onUploadComplete={() => {
+          fetchResults();
+          setUploadFile(null);
+          setParsedCsvData([]);
+        }}
+      />
     </div>
   );
 }

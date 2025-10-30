@@ -16,10 +16,6 @@ export interface AuditLogEntry {
   action: string;
   table_name: string | null;
   record_id: string | null;
-  old_values: Json | null;
-  new_values: Json | null;
-  ip_address: string | null;
-  user_agent: string | null;
   metadata: Json | null;
   created_at: string;
 }

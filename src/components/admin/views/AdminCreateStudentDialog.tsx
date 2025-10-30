@@ -129,27 +129,13 @@ export function AdminCreateStudentDialog({
         return;
       }
 
-      // The function now returns a JSONB object with student info and PIN
-      const responseData = data as { 
-        success?: boolean; 
-        pin?: string; 
-        matric_number?: string;
-        email?: string;
-        message?: string;
-      } | null;
+      // Show success message with generated PIN if applicable
+      const responseData = data as { success?: boolean; generated_pin?: string } | null;
+      const successMessage = responseData?.generated_pin 
+        ? `Student ${formData.fullName} created successfully! Generated PIN: ${responseData.generated_pin}`
+        : `Student ${formData.fullName} created successfully!`;
       
-      if (responseData?.success) {
-        const pinMessage = responseData.pin 
-          ? `\n\n🔐 Generated PIN: ${responseData.pin}\n📧 Email: ${responseData.email}\n\n⚠️ Save this PIN - it will only be shown once!`
-          : '';
-        
-        toast.success(
-          `✅ Student created successfully!${pinMessage}`, 
-          { duration: 15000 }
-        );
-      } else {
-        toast.success(`Student ${formData.fullName} created successfully!`);
-      }
+      toast.success(successMessage, { duration: 8000 });
       
       // Reset form
       setFormData({
