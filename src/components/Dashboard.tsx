@@ -8,7 +8,6 @@ import { AnnouncementsView } from './views/AnnouncementsView';
 import { ProfileView } from './views/ProfileView';
 import { NotificationsView } from './views/NotificationsView';
 import { DocumentsView } from './views/DocumentsView';
-import { CarryoverCoursesView } from './views/CarryoverCoursesView';
 import { useProfile } from '@/hooks/useProfile';
 
 export function Dashboard() {
@@ -39,8 +38,6 @@ export function Dashboard() {
     switch (activeView) {
       case 'results':
         return <ResultsView />;
-      case 'carryovers':
-        return <CarryoverCoursesView />;
       case 'announcements':
         return <AnnouncementsView />;
       case 'notifications':

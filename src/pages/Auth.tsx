@@ -71,8 +71,8 @@ export default function Auth() {
     
     if (!studentForm.matricNumber.trim()) {
       errors.matricNumber = 'Matric number is required';
-    } else if (!/^PSP\/SICT\/CSC\/ND\/\d{2}\/\d{3}$/.test(studentForm.matricNumber)) {
-      errors.matricNumber = 'Invalid format. Use: PSP/SICT/CSC/ND/24/001';
+    } else if (!/^[A-Z]{2,4}\/([A-Z]{2,4}\/)?[0-9]{2,4}\/[0-9]{3}$/.test(studentForm.matricNumber)) {
+      errors.matricNumber = 'Invalid format. Use: ND/CSC/22/001 or PLT/ND/2023/001';
     }
     
     if (!studentForm.pin) {
@@ -238,7 +238,7 @@ export default function Auth() {
                     <Input
                       id="matricNumber"
                       type="text"
-                      placeholder="e.g., PSP/SICT/CSC/ND/24/001"
+                      placeholder="Enter your matric number"
                       value={studentForm.matricNumber}
                       onChange={(e) => handleInputChange('student', 'matricNumber', e.target.value.toUpperCase())}
                       className={fieldErrors.matricNumber ? 'border-destructive' : 'w-full'}

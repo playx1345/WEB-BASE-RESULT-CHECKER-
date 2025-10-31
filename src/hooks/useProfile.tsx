@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent' | null;
+  role: 'student' | 'admin' | 'teacher' | 'parent';
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -27,35 +27,36 @@ export const useProfile = () => {
         return;
       }
 
+      // Handle demo admin user
+      if (user.id === '00000000-0000-0000-0000-000000000001') {
+        setProfile({
+          id: '00000000-0000-0000-0000-000000000001',
+          user_id: '00000000-0000-0000-0000-000000000001',
+          role: 'admin',
+          full_name: 'System Administrator',
+          matric_number: null,
+          phone_number: null,
+          level: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Fetch profile data
-        const { data: profileData, error: profileError } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (profileError) {
-          console.error('Error fetching profile:', profileError);
+        if (error) {
+          console.error('Error fetching profile:', error);
           setProfile(null);
-          setLoading(false);
-          return;
+        } else {
+          setProfile(data);
         }
-
-        if (!profileData) {
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
-
-        // Fetch role from user_roles table using RPC function
-        const { data: roleData } = await supabase.rpc('get_current_user_role');
-
-        // Combine profile and role data
-        setProfile({
-          ...profileData,
-          role: (roleData as 'student' | 'admin' | 'teacher' | 'parent') || null
-        });
       } catch (error) {
         console.error('Error:', error);
         setProfile(null);

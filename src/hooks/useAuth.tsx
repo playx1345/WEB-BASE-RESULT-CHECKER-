@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logUserActivity } from '@/lib/auditLogger';
-import { useNavigate } from 'react-router-dom';
+
 import { AuthError } from '@supabase/supabase-js';
 
 interface AuthContextType {
@@ -72,21 +72,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const matricNumber = email;
       const pin = password;
       
-      // First verify credentials using authenticate_student function
+      // Authenticate student using custom function
       const { data: studentData, error: studentError } = await supabase
         .rpc('authenticate_student', {
           p_matric_number: matricNumber,
           p_pin: pin
         });
       
-      if (studentError || !studentData || (Array.isArray(studentData) && studentData.length === 0)) {
-        return { 
-          error: { 
-            message: 'Invalid matric number or PIN', 
-            status: 400, 
-            name: 'AuthApiError' 
-          } as AuthError 
-        };
+      if (studentError || !studentData || studentData.length === 0) {
+        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
       }
       
       // Sign in with constructed email
@@ -96,13 +90,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password: pin,
       });
       
-      if (error) {
-        return { error };
+      return { error };
+    } else {
+      // Special handling for demo admin login
+      if (email === 'admin@plateau.edu.ng' && password === 'Admin123456') {
+        // Create a mock session for the demo admin
+        const mockUser = {
+          id: '00000000-0000-0000-0000-000000000001',
+          email: 'admin@plateau.edu.ng',
+          user_metadata: { role: 'admin', full_name: 'System Administrator' },
+          app_metadata: {},
+          aud: 'authenticated',
+          created_at: new Date().toISOString()
+        } as User;
+        
+        const mockSession = {
+          user: mockUser,
+          access_token: 'demo-admin-token',
+          token_type: 'bearer',
+          expires_in: 3600,
+          refresh_token: 'demo-refresh-token',
+          expires_at: Date.now() + 3600000
+        } as Session;
+        
+        setSession(mockSession);
+        setUser(mockUser);
+        
+        return { error: null };
       }
       
-      return { error: null };
-    } else {
-      // Regular admin/teacher login via Supabase auth
+      // Regular admin/teacher login
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
