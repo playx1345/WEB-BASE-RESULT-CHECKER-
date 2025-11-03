@@ -43,7 +43,7 @@ export function MobileMenu({ menuItems, activeView, onViewChange }: MobileMenuPr
                 <div>
                   <p className="font-medium text-sm">{profile?.full_name || 'User'}</p>
                   <Badge variant="secondary" className="text-xs">
-                    {profile?.role?.toUpperCase() || 'STUDENT'}
+                    {profile?.user_roles?.[0]?.role?.toUpperCase() || 'STUDENT'}
                   </Badge>
                 </div>
               </div>

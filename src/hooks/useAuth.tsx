@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           p_pin: pin
         });
       
-      if (studentError || !studentData || studentData.length === 0) {
+      if (studentError || !studentData) {
         return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
       }
       

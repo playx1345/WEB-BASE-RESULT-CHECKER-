@@ -23,10 +23,12 @@ interface Profile {
   id: string;
   user_id: string;
   full_name: string;
-  role: string;
   matric_number: string;
   phone_number: string;
   level: string;
+  user_roles?: {
+    role: string;
+  }[];
 }
 
 interface ValidationErrors {
@@ -60,17 +62,26 @@ export function ProfileView() {
       if (!user) return;
 
       try {
-        const { data } = await supabase
+        // First get the profile
+        const { data: profileData } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
           .single();
 
-        if (data) {
-          setProfile(data);
+        if (profileData) {
+          // Then get the user role using RPC
+          const { data: roleData } = await supabase.rpc('get_current_user_role');
+
+          const fullProfile = {
+            ...profileData,
+            user_roles: roleData ? [{ role: roleData }] : []
+          };
+          
+          setProfile(fullProfile);
           setFormData({
-            full_name: data.full_name || '',
-            phone_number: data.phone_number || '',
+            full_name: profileData.full_name || '',
+            phone_number: profileData.phone_number || '',
           });
         }
       } catch (error) {
@@ -314,7 +325,7 @@ export function ProfileView() {
                 <User className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Role</p>
-                  <Badge variant="secondary">{profile?.role?.toUpperCase()}</Badge>
+                  <Badge variant="secondary">{profile?.user_roles?.[0]?.role?.toUpperCase()}</Badge>
                 </div>
               </div>
 
@@ -355,7 +366,7 @@ export function ProfileView() {
           </Card>
 
           {/* Password Change Section - Only for admin users */}
-          {profile?.role === 'admin' && (
+          {profile?.user_roles?.[0]?.role === 'admin' && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

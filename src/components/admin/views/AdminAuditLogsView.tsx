@@ -53,9 +53,9 @@ export function AdminAuditLogsView() {
       }
 
       if (resetData || page === 0) {
-        setAuditLogs(data);
+        setAuditLogs(data as AuditLogEntry[]);
       } else {
-        setAuditLogs(prev => [...prev, ...data]);
+        setAuditLogs(prev => [...prev, ...(data as AuditLogEntry[])]);
       }
 
       setHasMore(data.length === pageSize);

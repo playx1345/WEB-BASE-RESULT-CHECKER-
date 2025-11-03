@@ -26,11 +26,11 @@ export function Dashboard() {
   }
 
   // Show appropriate dashboard based on user role
-  if (profile?.role === 'admin') {
+  if (profile?.user_roles?.[0]?.role === 'admin') {
     return <AdminDashboard />;
   }
 
-  if (profile?.role === 'teacher') {
+  if (profile?.user_roles?.[0]?.role === 'teacher') {
     return <TeacherDashboard />;
   }
 
