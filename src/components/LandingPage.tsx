@@ -43,16 +43,16 @@ const LandingPage = () => {
           
           {/* School Information */}
           <div className="space-y-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-poppins font-bold gradient-text leading-tight">
               Plateau State Polytechnic Barkin Ladi
             </h1>
-            <h2 className="text-lg md:text-xl font-bold text-primary max-w-4xl">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-poppins font-bold text-primary max-w-4xl">
               School of Information and Communication Technology
             </h2>
-            <h3 className="text-base md:text-lg font-semibold text-accent max-w-4xl">
+            <h3 className="text-lg md:text-xl lg:text-2xl font-poppins font-semibold text-accent max-w-4xl">
               Department of Computer Science - Online Result Checker
             </h3>
-            <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg font-inter text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Experience the next generation of academic management with our secure, intelligent, and user-friendly platform designed for modern education.
             </p>
           </div>
@@ -77,8 +77,8 @@ const LandingPage = () => {
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h3 className="text-2xl md:text-3xl font-bold gradient-text mb-6">Our Mission & Vision</h3>
-            <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <h3 className="text-3xl md:text-4xl font-poppins font-bold gradient-text mb-6">Our Mission & Vision</h3>
+            <p className="text-base md:text-lg font-inter text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Pioneering the future of academic excellence through innovative technology solutions
             </p>
           </div>
@@ -138,10 +138,10 @@ const LandingPage = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h3 className="text-2xl md:text-3xl font-bold gradient-text mb-6">Why Choose Our Platform</h3>
-              <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Experience the next generation of academic management with cutting-edge features designed for modern education
-              </p>
+            <h3 className="text-3xl md:text-4xl font-poppins font-bold gradient-text mb-6">Why Choose Our Platform</h3>
+            <p className="text-base md:text-lg font-inter text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Experience the next generation of academic management with cutting-edge features designed for modern education
+            </p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -241,12 +241,12 @@ const LandingPage = () => {
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto relative rounded-3xl overflow-hidden modern-shadow" style={{ backgroundImage: 'url(/src/assets/university-building.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-accent/60"></div>
+        <div className="max-w-6xl mx-auto relative rounded-3xl overflow-hidden modern-shadow" style={{ backgroundImage: 'url(/assets/university-header-bg.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/30"></div>
           <div className="relative z-10 p-8">
           <div className="text-center mb-8">
-            <h3 className="text-xl md:text-2xl font-bold text-white mb-4">System Features</h3>
-            <p className="text-sm text-white/90 max-w-3xl mx-auto leading-relaxed">
+            <h3 className="text-2xl md:text-3xl font-poppins font-bold text-white mb-4">System Features</h3>
+            <p className="text-base md:text-lg font-inter text-white/95 max-w-3xl mx-auto leading-relaxed">
               A comprehensive platform designed for the future of academic excellence and administrative efficiency
             </p>
           </div>
@@ -257,7 +257,7 @@ const LandingPage = () => {
                 <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Users className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-base font-bold text-white">Student Management</CardTitle>
+                <CardTitle className="text-lg font-poppins font-bold text-white">Student Management</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-center text-sm leading-relaxed text-white/90">
@@ -271,7 +271,7 @@ const LandingPage = () => {
                 <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <BookOpen className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-base font-bold text-white">Results Portal</CardTitle>
+                <CardTitle className="text-lg font-poppins font-bold text-white">Results Portal</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-center text-sm leading-relaxed text-white/90">
@@ -285,7 +285,7 @@ const LandingPage = () => {
                 <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Award className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-base font-bold text-white">Admin Dashboard</CardTitle>
+                <CardTitle className="text-lg font-poppins font-bold text-white">Admin Dashboard</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-center text-sm leading-relaxed text-white/90">
