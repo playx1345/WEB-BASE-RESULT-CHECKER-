@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logUserActivity } from '@/lib/auditLogger';
@@ -9,7 +9,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string, isStudent?: boolean) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
@@ -79,8 +79,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           p_pin: pin
         });
       
-      if (studentError || !studentData) {
-        return { error: (studentError as unknown as AuthError) || ({ message: 'Invalid matric number or PIN', __isAuthError: true, status: 400, name: 'AuthError', code: 'invalid_credentials' } as unknown as AuthError) };
+      if (studentError || !studentData || studentData.length === 0) {
+        return { error: studentError || { message: 'Invalid matric number or PIN' } };
       }
       
       // Sign in with constructed email
@@ -98,11 +98,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const mockUser = {
           id: '00000000-0000-0000-0000-000000000001',
           email: 'admin@plateau.edu.ng',
-          user_metadata: { role: 'admin', full_name: 'System Administrator' },
-          app_metadata: {},
-          aud: 'authenticated',
-          created_at: new Date().toISOString()
-        } as User;
+          user_metadata: { role: 'admin', full_name: 'System Administrator' }
+        } as any;
         
         const mockSession = {
           user: mockUser,
@@ -111,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           expires_in: 3600,
           refresh_token: 'demo-refresh-token',
           expires_at: Date.now() + 3600000
-        } as Session;
+        } as any;
         
         setSession(mockSession);
         setUser(mockUser);

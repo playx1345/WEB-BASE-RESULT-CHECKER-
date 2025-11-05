@@ -14,44 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admins: {
-        Row: {
-          admin_level: string
-          created_at: string
-          department: string
-          id: string
-          permissions: Json | null
-          profile_id: string
-          updated_at: string
-        }
-        Insert: {
-          admin_level?: string
-          created_at?: string
-          department?: string
-          id?: string
-          permissions?: Json | null
-          profile_id: string
-          updated_at?: string
-        }
-        Update: {
-          admin_level?: string
-          created_at?: string
-          department?: string
-          id?: string
-          permissions?: Json | null
-          profile_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "admins_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       announcements: {
         Row: {
           content: string
@@ -124,93 +86,37 @@ export type Database = {
         }
         Relationships: []
       }
-      messages: {
-        Row: {
-          content: string
-          created_at: string | null
-          id: number
-          metadata: Json | null
-          sender_id: string
-          thread_id: number
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          id?: never
-          metadata?: Json | null
-          sender_id: string
-          thread_id: number
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          id?: never
-          metadata?: Json | null
-          sender_id?: string
-          thread_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
-          account_balance: number | null
           created_at: string | null
           full_name: string | null
           id: string
-          investment_experience: string | null
-          investment_goals: string[] | null
           level: string | null
           matric_number: string | null
-          monthly_income_range: string | null
           phone_number: string | null
-          risk_tolerance: string | null
           role: Database["public"]["Enums"]["user_role"]
-          total_invested: number | null
-          total_withdrawn: number | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
-          account_balance?: number | null
           created_at?: string | null
           full_name?: string | null
           id?: string
-          investment_experience?: string | null
-          investment_goals?: string[] | null
           level?: string | null
           matric_number?: string | null
-          monthly_income_range?: string | null
           phone_number?: string | null
-          risk_tolerance?: string | null
           role?: Database["public"]["Enums"]["user_role"]
-          total_invested?: number | null
-          total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
-          account_balance?: number | null
           created_at?: string | null
           full_name?: string | null
           id?: string
-          investment_experience?: string | null
-          investment_goals?: string[] | null
           level?: string | null
           matric_number?: string | null
-          monthly_income_range?: string | null
           phone_number?: string | null
-          risk_tolerance?: string | null
           role?: Database["public"]["Enums"]["user_role"]
-          total_invested?: number | null
-          total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
         }
@@ -275,7 +181,7 @@ export type Database = {
           id: string
           level: string
           matric_number: string
-          pin_hash: string | null
+          pin: string | null
           profile_id: string
           total_gp: number | null
           updated_at: string | null
@@ -288,7 +194,7 @@ export type Database = {
           id?: string
           level: string
           matric_number: string
-          pin_hash?: string | null
+          pin?: string | null
           profile_id: string
           total_gp?: number | null
           updated_at?: string | null
@@ -301,7 +207,7 @@ export type Database = {
           id?: string
           level?: string
           matric_number?: string
-          pin_hash?: string | null
+          pin?: string | null
           profile_id?: string
           total_gp?: number | null
           updated_at?: string | null
@@ -316,119 +222,6 @@ export type Database = {
           },
         ]
       }
-      threads: {
-        Row: {
-          created_at: string | null
-          created_by: string
-          id: number
-          title: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          created_by: string
-          id?: never
-          title?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string
-          id?: never
-          title?: string | null
-        }
-        Relationships: []
-      }
-      transactions: {
-        Row: {
-          amount: number
-          created_at: string
-          description: string | null
-          id: string
-          investment_id: string | null
-          metadata: Json | null
-          reference_id: string | null
-          status: string
-          type: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          created_at?: string
-          description?: string | null
-          id?: string
-          investment_id?: string | null
-          metadata?: Json | null
-          reference_id?: string | null
-          status?: string
-          type: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          description?: string | null
-          id?: string
-          investment_id?: string | null
-          metadata?: Json | null
-          reference_id?: string | null
-          status?: string
-          type?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_investment_id_fkey"
-            columns: ["investment_id"]
-            isOneToOne: false
-            referencedRelation: "user_investments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_investments: {
-        Row: {
-          amount: number
-          created_at: string
-          end_date: string
-          id: string
-          last_profit_calculation: string | null
-          plan_id: string
-          start_date: string
-          status: string
-          total_profit: number | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          created_at?: string
-          end_date: string
-          id?: string
-          last_profit_calculation?: string | null
-          plan_id: string
-          start_date?: string
-          status?: string
-          total_profit?: number | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          end_date?: string
-          id?: string
-          last_profit_calculation?: string | null
-          plan_id?: string
-          start_date?: string
-          status?: string
-          total_profit?: number | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
@@ -442,7 +235,7 @@ export type Database = {
           p_phone_number?: string
           p_pin?: string
         }
-        Returns: Json
+        Returns: string
       }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }
@@ -453,34 +246,6 @@ export type Database = {
           student_id: string
           user_id: string
         }[]
-      }
-      calculate_investment_profit: {
-        Args: { investment_id: string }
-        Returns: number
-      }
-      check_user_role: {
-        Args: { required_role: string }
-        Returns: boolean
-      }
-      create_admin_user: {
-        Args: { p_email: string; p_full_name: string; p_password: string }
-        Returns: Json
-      }
-      generate_secure_pin: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      hash_pin: {
-        Args: { pin_text: string }
-        Returns: string
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
       }
       log_user_activity: {
         Args: {

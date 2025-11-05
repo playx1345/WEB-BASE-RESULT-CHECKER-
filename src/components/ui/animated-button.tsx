@@ -30,19 +30,18 @@ export function AnimatedButton({
   };
 
   const variantClasses = {
-    default: 'bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 hover:shadow-lg',
-    gradient: 'bg-gradient-to-r from-primary via-accent to-secondary text-white hover:from-primary/95 hover:via-accent/95 hover:to-secondary/95 shadow-lg hover:shadow-xl bg-[length:200%_200%] hover:bg-[position:100%_100%] transition-all duration-500',
-    glass: 'bg-white/10 backdrop-blur-lg border border-white/20 text-foreground hover:bg-white/20 hover:border-white/30 transition-all duration-300',
-    glow: 'bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 animate-pulse-glow'
+    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    gradient: 'bg-gradient-to-r from-primary to-accent text-white hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl',
+    glass: 'bg-white/10 backdrop-blur-lg border border-white/20 text-foreground hover:bg-white/20',
+    glow: 'bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30'
   };
 
   const animationClasses = cn(
-    'transition-all duration-500 ease-out',
-    'hover:scale-105 hover:-translate-y-2',
+    'transition-all duration-300 ease-out',
+    'hover:scale-105 hover:-translate-y-1',
     'active:scale-95 active:translate-y-0',
     'transform-gpu',
-    'hover:shadow-2xl',
-    pulse && 'animate-pulse-glow'
+    pulse && 'animate-pulse'
   );
 
   return (
@@ -56,13 +55,8 @@ export function AnimatedButton({
       )}
       {...props}
     >
-      {/* Enhanced Shimmer effect */}
-      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1200 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-      
-      {/* Ripple effect on click */}
-      <div className="absolute inset-0 rounded-md overflow-hidden">
-        <div className="absolute inset-0 bg-white/20 scale-0 rounded-full group-active:scale-100 transition-transform duration-300 origin-center"></div>
-      </div>
+      {/* Shimmer effect */}
+      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       
       <div className="relative flex items-center gap-2 z-10">
         {icon && (
