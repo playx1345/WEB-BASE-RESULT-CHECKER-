@@ -11,6 +11,15 @@ interface SMSRequest {
   targetLevel: string;
 }
 
+interface StudentProfile {
+  phone_number: string;
+  full_name: string;
+}
+
+interface StudentWithProfile {
+  profiles: StudentProfile;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {

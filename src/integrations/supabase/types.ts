@@ -115,33 +115,6 @@ export type Database = {
         }
         Relationships: []
       }
-      courses: {
-        Row: {
-          course_code: string
-          course_title: string
-          credit_unit: number
-          id: number
-          level: string | null
-          semester: string | null
-        }
-        Insert: {
-          course_code: string
-          course_title: string
-          credit_unit: number
-          id?: number
-          level?: string | null
-          semester?: string | null
-        }
-        Update: {
-          course_code?: string
-          course_title?: string
-          credit_unit?: number
-          id?: number
-          level?: string | null
-          semester?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string | null
@@ -233,14 +206,12 @@ export type Database = {
           carryovers: number | null
           cgp: number | null
           created_at: string | null
-          email: string
           fee_status: string | null
-          full_name: string | null
           id: string
           level: string
           matric_number: string
           pin_hash: string
-          profile_id: string | null
+          profile_id: string
           total_gp: number | null
           updated_at: string | null
         }
@@ -248,14 +219,12 @@ export type Database = {
           carryovers?: number | null
           cgp?: number | null
           created_at?: string | null
-          email: string
           fee_status?: string | null
-          full_name?: string | null
           id?: string
           level: string
           matric_number: string
           pin_hash: string
-          profile_id?: string | null
+          profile_id: string
           total_gp?: number | null
           updated_at?: string | null
         }
@@ -263,14 +232,12 @@ export type Database = {
           carryovers?: number | null
           cgp?: number | null
           created_at?: string | null
-          email?: string
           fee_status?: string | null
-          full_name?: string | null
           id?: string
           level?: string
           matric_number?: string
           pin_hash?: string
-          profile_id?: string | null
+          profile_id?: string
           total_gp?: number | null
           updated_at?: string | null
         }
@@ -315,14 +282,10 @@ export type Database = {
           p_full_name: string
           p_level: string
           p_matric_number: string
-          p_phone_number?: string
-          p_pin?: string
+          p_phone_number: string
+          p_pin: string
         }
-        Returns: Json
-      }
-      admin_reset_student_pin: {
-        Args: { new_pin: string; student_id: string }
-        Returns: boolean
+        Returns: string
       }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }

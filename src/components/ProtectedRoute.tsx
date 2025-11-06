@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { useProfile } from '@/hooks/useProfile';
 import { School } from 'lucide-react';
 
 interface ProtectedRouteProps {
@@ -11,8 +11,8 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
   const navigate = useNavigate();
-  const [roleChecking, setRoleChecking] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
@@ -21,38 +21,20 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
       return;
     }
 
-    if (user && requiredRole) {
-      checkUserRole();
-    } else if (user) {
-      setRoleChecking(false);
-      setHasAccess(true);
-    }
-  }, [user, loading, navigate, requiredRole]);
-
-  const checkUserRole = async () => {
-    if (!user) return;
-    
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (profile?.role === requiredRole) {
-        setHasAccess(true);
+    if (!profileLoading && user) {
+      if (requiredRole) {
+        if (profile?.role === requiredRole) {
+          setHasAccess(true);
+        } else {
+          navigate('/');
+        }
       } else {
-        navigate('/');
+        setHasAccess(true);
       }
-    } catch (error) {
-      console.error('Error checking user role:', error);
-      navigate('/');
-    } finally {
-      setRoleChecking(false);
     }
-  };
+  }, [user, loading, profileLoading, profile, navigate, requiredRole]);
 
-  if (loading || roleChecking) {
+  if (loading || profileLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
         <div className="text-center">

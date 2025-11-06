@@ -11,7 +11,7 @@ interface Activity {
   description: string;
   timestamp: Date;
   status?: 'completed' | 'pending' | 'warning';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean>;
 }
 
 interface ActivityTimelineProps {

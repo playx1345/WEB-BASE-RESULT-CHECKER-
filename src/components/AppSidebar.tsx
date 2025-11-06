@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, FileText, Bell, User, LogOut, GraduationCap } from 'lucide-react';
+import { Home, FileText, Bell, User, LogOut, GraduationCap, Download, MessageSquare, BookX } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import {
   Sidebar,
@@ -19,7 +19,10 @@ import {
 const menuItems = [
   { title: 'Dashboard', icon: Home, id: 'dashboard' },
   { title: 'Results', icon: FileText, id: 'results' },
-  { title: 'Announcements', icon: Bell, id: 'announcements' },
+  { title: 'Carryover Courses', icon: BookX, id: 'carryovers' },
+  { title: 'Announcements', icon: MessageSquare, id: 'announcements' },
+  { title: 'Notifications', icon: Bell, id: 'notifications' },
+  { title: 'Documents', icon: Download, id: 'documents' },
   { title: 'Profile', icon: User, id: 'profile' },
 ];
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,9 +8,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Search, Upload, FileText, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
+import { Plus, Search, Upload, Download, FileSpreadsheet, AlertCircle, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { AdminResultsUploadDialog } from '../AdminResultsUploadDialog';
+import { AdminBulkResultsPreviewDialog } from './AdminBulkResultsPreviewDialog';
 
 interface Result {
   id: string;
@@ -30,6 +32,19 @@ interface Result {
   };
 }
 
+interface CsvRowData {
+  matric_number: string;
+  course_code: string;
+  course_title: string;
+  credit_units: string;
+  grade: string;
+  point: string;
+  grade_points: string;
+  session: string;
+  semester: string;
+  level: string;
+}
+
 export function AdminResultsView() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,13 +54,12 @@ export function AdminResultsView() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [parsedCsvData, setParsedCsvData] = useState<CsvRowData[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchResults();
-  }, []);
-
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('results')
@@ -69,7 +83,11 @@ export function AdminResultsView() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchResults();
+  }, [fetchResults]);
 
   const filteredResults = results.filter(result => {
     const matchesSearch = 
@@ -126,22 +144,49 @@ export function AdminResultsView() {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+    if (!file) return;
+
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a CSV file.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setUploadFile(file);
+    
+    try {
+      // Immediately parse and show preview
+      const csvText = await file.text();
+      const parsed = parseCsvData(csvText);
+      
+      if (parsed.length === 0) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload a CSV file.",
+          title: "No data found",
+          description: "The CSV file contains no valid data rows.",
           variant: "destructive"
         });
         return;
       }
-      setUploadFile(file);
+
+      setParsedCsvData(parsed);
+      setIsBulkUploadOpen(false);
+      setShowPreview(true);
+    } catch (error) {
+      console.error('Error parsing CSV:', error);
+      toast({
+        title: "Parse error",
+        description: "Failed to parse CSV file. Please check the format.",
+        variant: "destructive"
+      });
     }
   };
 
-  const parseCsvData = (csvText: string): any[] => {
+  const parseCsvData = (csvText: string): CsvRowData[] => {
     const lines = csvText.split('\n').filter(line => line.trim());
     const headers = lines[0].split(',').map(h => h.trim());
     
@@ -153,15 +198,15 @@ export function AdminResultsView() {
     
     return dataLines.map(line => {
       const values = line.split(',').map(v => v.trim());
-      const row: any = {};
+      const row: Partial<CsvRowData> = {};
       headers.forEach((header, index) => {
-        row[header.toLowerCase().replace(/\s+/g, '_')] = values[index] || '';
+        row[header.toLowerCase().replace(/\s+/g, '_') as keyof CsvRowData] = values[index] || '';
       });
-      return row;
+      return row as CsvRowData;
     });
   };
 
-  const validateRowData = (row: any, rowIndex: number): string[] => {
+  const validateRowData = (row: CsvRowData, rowIndex: number): string[] => {
     const errors: string[] = [];
     
     if (!row.matric_number) errors.push(`Row ${rowIndex + 2}: Matric Number is required`);
@@ -383,7 +428,7 @@ export function AdminResultsView() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button>
+          <Button onClick={() => setUploadDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Result
           </Button>
@@ -499,6 +544,29 @@ export function AdminResultsView() {
           )}
         </CardContent>
       </Card>
+
+      <AdminResultsUploadDialog
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        onResultUploaded={fetchResults}
+      />
+
+      <AdminBulkResultsPreviewDialog
+        open={showPreview}
+        onOpenChange={(open) => {
+          setShowPreview(open);
+          if (!open) {
+            setUploadFile(null);
+            setParsedCsvData([]);
+          }
+        }}
+        csvData={parsedCsvData}
+        onUploadComplete={() => {
+          fetchResults();
+          setUploadFile(null);
+          setParsedCsvData([]);
+        }}
+      />
     </div>
   );
 }
