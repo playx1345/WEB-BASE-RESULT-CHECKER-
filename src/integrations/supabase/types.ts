@@ -14,12 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      admins: {
+        Row: {
+          admin_level: string | null
+          created_at: string | null
+          department: string | null
+          id: string
+          permissions: Json | null
+          profile_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_level?: string | null
+          created_at?: string | null
+          department?: string | null
+          id?: string
+          permissions?: Json | null
+          profile_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_level?: string | null
+          created_at?: string | null
+          department?: string | null
+          id?: string
+          permissions?: Json | null
+          profile_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admins_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       announcements: {
         Row: {
           content: string
           created_at: string | null
           created_by: string
           id: string
+          priority: string | null
           target_level: string | null
           title: string
           updated_at: string | null
@@ -29,6 +68,7 @@ export type Database = {
           created_at?: string | null
           created_by: string
           id?: string
+          priority?: string | null
           target_level?: string | null
           title: string
           updated_at?: string | null
@@ -38,6 +78,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string
           id?: string
+          priority?: string | null
           target_level?: string | null
           title?: string
           updated_at?: string | null
@@ -47,42 +88,57 @@ export type Database = {
       audit_logs: {
         Row: {
           action: string
-          created_at: string
+          created_at: string | null
           id: string
-          ip_address: string | null
           metadata: Json | null
-          new_values: Json | null
-          old_values: Json | null
           record_id: string | null
           table_name: string | null
-          user_agent: string | null
           user_id: string | null
         }
         Insert: {
           action: string
-          created_at?: string
+          created_at?: string | null
           id?: string
-          ip_address?: string | null
           metadata?: Json | null
-          new_values?: Json | null
-          old_values?: Json | null
           record_id?: string | null
           table_name?: string | null
-          user_agent?: string | null
           user_id?: string | null
         }
         Update: {
           action?: string
-          created_at?: string
+          created_at?: string | null
           id?: string
-          ip_address?: string | null
           metadata?: Json | null
-          new_values?: Json | null
-          old_values?: Json | null
           record_id?: string | null
           table_name?: string | null
-          user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          course_code: string
+          course_title: string
+          credit_unit: number
+          id: number
+          level: string | null
+          semester: string | null
+        }
+        Insert: {
+          course_code: string
+          course_title: string
+          credit_unit: number
+          id?: number
+          level?: string | null
+          semester?: string | null
+        }
+        Update: {
+          course_code?: string
+          course_title?: string
+          credit_unit?: number
+          id?: number
+          level?: string | null
+          semester?: string | null
         }
         Relationships: []
       }
@@ -94,7 +150,6 @@ export type Database = {
           level: string | null
           matric_number: string | null
           phone_number: string | null
-          role: Database["public"]["Enums"]["user_role"]
           updated_at: string | null
           user_id: string
         }
@@ -105,7 +160,6 @@ export type Database = {
           level?: string | null
           matric_number?: string | null
           phone_number?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           user_id: string
         }
@@ -116,7 +170,6 @@ export type Database = {
           level?: string | null
           matric_number?: string | null
           phone_number?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           user_id?: string
         }
@@ -135,6 +188,7 @@ export type Database = {
           semester: string
           session: string
           student_id: string
+          updated_at: string | null
         }
         Insert: {
           course_code: string
@@ -148,6 +202,7 @@ export type Database = {
           semester: string
           session: string
           student_id: string
+          updated_at?: string | null
         }
         Update: {
           course_code?: string
@@ -161,6 +216,7 @@ export type Database = {
           semester?: string
           session?: string
           student_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -177,12 +233,14 @@ export type Database = {
           carryovers: number | null
           cgp: number | null
           created_at: string | null
+          email: string
           fee_status: string | null
+          full_name: string | null
           id: string
           level: string
           matric_number: string
-          pin: string | null
-          profile_id: string
+          pin_hash: string
+          profile_id: string | null
           total_gp: number | null
           updated_at: string | null
         }
@@ -190,12 +248,14 @@ export type Database = {
           carryovers?: number | null
           cgp?: number | null
           created_at?: string | null
+          email: string
           fee_status?: string | null
+          full_name?: string | null
           id?: string
           level: string
           matric_number: string
-          pin?: string | null
-          profile_id: string
+          pin_hash: string
+          profile_id?: string | null
           total_gp?: number | null
           updated_at?: string | null
         }
@@ -203,12 +263,14 @@ export type Database = {
           carryovers?: number | null
           cgp?: number | null
           created_at?: string | null
+          email?: string
           fee_status?: string | null
+          full_name?: string | null
           id?: string
           level?: string
           matric_number?: string
-          pin?: string | null
-          profile_id?: string
+          pin_hash?: string
+          profile_id?: string | null
           total_gp?: number | null
           updated_at?: string | null
         }
@@ -216,11 +278,32 @@ export type Database = {
           {
             foreignKeyName: "students_profile_id_fkey"
             columns: ["profile_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -235,18 +318,51 @@ export type Database = {
           p_phone_number?: string
           p_pin?: string
         }
-        Returns: string
+        Returns: Json
+      }
+      admin_reset_student_pin: {
+        Args: { new_pin: string; student_id: string }
+        Returns: boolean
       }
       authenticate_student: {
         Args: { p_matric_number: string; p_pin: string }
+        Returns: boolean
+      }
+      calculate_investment_profit: {
+        Args: { investment_id: string }
+        Returns: number
+      }
+      check_user_role: { Args: { required_role: string }; Returns: boolean }
+      create_admin_user: {
+        Args: { p_email: string; p_full_name: string; p_password: string }
+        Returns: Json
+      }
+      generate_secure_pin: { Args: never; Returns: string }
+      get_current_user_role: { Args: never; Returns: string }
+      get_student_safe_data: {
+        Args: { p_user_id: string }
         Returns: {
-          full_name: string
+          carryovers: number
+          cgp: number
+          created_at: string
+          fee_status: string
+          id: string
           level: string
+          matric_number: string
           profile_id: string
-          student_id: string
-          user_id: string
+          total_gp: number
+          updated_at: string
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      hash_pin: { Args: { pin_text: string }; Returns: string }
+      is_admin: { Args: never; Returns: boolean }
       log_user_activity: {
         Args: {
           p_action: string
@@ -256,9 +372,13 @@ export type Database = {
         }
         Returns: string
       }
+      verify_student_login: {
+        Args: { matric: string; pin: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      user_role: "student" | "admin"
+      user_role: "user" | "admin" | "student" | "teacher" | "parent"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -386,7 +506,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["student", "admin"],
+      user_role: ["user", "admin", "student", "teacher", "parent"],
     },
   },
 } as const
