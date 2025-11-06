@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent' | null;
+  role: 'student' | 'admin' | 'teacher' | 'parent';
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -21,58 +21,44 @@ export const useProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      console.log('[useProfile] Fetching profile for user:', user?.id || 'no user');
-      
       if (!user) {
-        console.log('[useProfile] No user found, clearing profile');
         setProfile(null);
         setLoading(false);
         return;
       }
 
+      // Handle demo admin user
+      if (user.id === '00000000-0000-0000-0000-000000000001') {
+        setProfile({
+          id: '00000000-0000-0000-0000-000000000001',
+          user_id: '00000000-0000-0000-0000-000000000001',
+          role: 'admin',
+          full_name: 'System Administrator',
+          matric_number: null,
+          phone_number: null,
+          level: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Fetch profile data
-        const { data: profileData, error: profileError } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (profileError) {
-          console.error('[useProfile] Error fetching profile:', profileError);
+        if (error) {
+          console.error('Error fetching profile:', error);
           setProfile(null);
-          setLoading(false);
-          return;
+        } else {
+          setProfile(data);
         }
-
-        if (!profileData) {
-          console.log('[useProfile] No profile data found for user:', user.id);
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
-
-        console.log('[useProfile] Profile data fetched successfully:', {
-          userId: user.id,
-          fullName: profileData.full_name,
-          matricNumber: profileData.matric_number
-        });
-
-        // Fetch role from user_roles table using RPC function
-        const { data: roleData } = await supabase.rpc('get_current_user_role');
-        
-        console.log('[useProfile] Role fetched:', roleData);
-
-        // Combine profile and role data
-        const newProfile = {
-          ...profileData,
-          role: (roleData as 'student' | 'admin' | 'teacher' | 'parent') || null
-        };
-        
-        console.log('[useProfile] Setting profile with role:', newProfile.role);
-        setProfile(newProfile);
       } catch (error) {
-        console.error('[useProfile] Error:', error);
+        console.error('Error:', error);
         setProfile(null);
       } finally {
         setLoading(false);

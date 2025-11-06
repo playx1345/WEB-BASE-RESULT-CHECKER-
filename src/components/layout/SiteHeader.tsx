@@ -1,15 +1,40 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { MoreVertical, User, Shield, GraduationCap, LogOut, BookOpen, Users, Mail, Newspaper } from 'lucide-react';
+import { MoreVertical, User, Shield, GraduationCap, LogOut } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/hooks/useAuth';
-import { useProfile } from '@/hooks/useProfile';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
 
 export function SiteHeader() {
   const { user, signOut } = useAuth();
-  const { profile } = useProfile();
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserRole();
+    } else {
+      setUserRole(null);
+    }
+  }, [user]);
+
+  const fetchUserRole = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+      
+      setUserRole(profile?.role || null);
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -17,8 +42,8 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 header-bright-bg relative">
-      <div className="absolute inset-0 bg-background/20 backdrop-blur-sm"></div>
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 bg-cover bg-center bg-no-repeat relative" style={{backgroundImage: `url('/src/assets/university-header-bg.jpg')`}}>
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm"></div>
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5 relative z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
@@ -69,37 +94,6 @@ export function SiteHeader() {
                 {!user ? (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/about" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
-                        <BookOpen className="h-4 w-4" />
-                        <span>About</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/programs" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
-                        <GraduationCap className="h-4 w-4" />
-                        <span>Programs</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/faculty" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
-                        <Users className="h-4 w-4" />
-                        <span>Faculty</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/news" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
-                        <Newspaper className="h-4 w-4" />
-                        <span>News</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/contact" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
-                        <Mail className="h-4 w-4" />
-                        <span>Contact</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
                       <Link to="/auth?role=student" className="w-full flex items-center space-x-2 hover:bg-primary/10 transition-colors">
                         <GraduationCap className="h-4 w-4" />
                         <span>Student Login</span>
@@ -114,7 +108,7 @@ export function SiteHeader() {
                   </>
                 ) : (
                   <>
-                    {profile?.role === 'admin' && (
+                    {userRole === 'admin' && (
                       <>
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="w-full flex items-center space-x-2 text-primary hover:bg-primary/10 transition-colors">
