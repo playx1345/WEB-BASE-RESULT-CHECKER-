@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent';
+  role: 'student' | 'admin' | 'teacher' | 'parent' | null;
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -21,44 +21,40 @@ export const useProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) {
+      console.log('[useProfile] Fetching profile for user:', user?.id || 'no user');
+      
+      if         console.log('[useProfile] No user found, clearing profile');
+=======
+        console.log('[useProfile] No user found');
         setProfile(null);
         setLoading(false);
         return;
       }
 
-      // Handle demo admin user
-      if (user.id === '00000000-0000-0000-0000-000000000001') {
-        setProfile({
-          id: '00000000-0000-0000-0000-000000000001',
-          user_id: '00000000-0000-0000-0000-000000000001',
-          role: 'admin',
-          full_name: 'System Administrator',
-          matric_number: null,
-          phone_number: null,
-          level: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
-        setLoading(false);
-        return;
-      }
+      console.log('[useProfile] Fetching profile for user:', user.id);
 
       try {
-        const { data, error } = await supabase
+        // Fetch profile data
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (error) {
-          console.error('Error fetching profile:', error);
+        if (profileError) {
+          console.error('[useProfile] Error fetching profile:', profileError);
           setProfile(null);
-        } else {
-          setProfile(data);
+          setLoading(false);
+          return;
         }
-      } catch (error) {
-        console.error('Error:', error);
+
+        if (!profileData) {
+
+          setProfile(null);
+          setLoading(false);
+          return;
+        }
+        
         setProfile(null);
       } finally {
         setLoading(false);

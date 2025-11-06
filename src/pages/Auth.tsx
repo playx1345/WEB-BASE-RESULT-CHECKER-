@@ -10,12 +10,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Eye, EyeOff, User, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ForgotPasswordDialog } from '@/components/auth/ForgotPasswordDialog';
 
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('student');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   
   // Form data for different login types
   const [adminForm, setAdminForm] = useState({
@@ -45,28 +47,87 @@ export default function Auth() {
     }
   }, [searchParams]);
 
+  const validateAdminForm = () => {
+    const errors: {[key: string]: string} = {};
+    
+    if (!adminForm.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminForm.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!adminForm.password) {
+      errors.password = 'Password is required';
+    } else if (adminForm.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validateStudentForm = () => {
+    const errors: {[key: string]: string} = {};
+    
+    if (!studentForm.matricNumber.trim()) {
+      errors.matricNumber = 'Matric number is required';
+    } else if (!/^PSP\/SICT\/CSC\/ND\/\d{2}\/\d{3}$/.test(studentForm.matricNumber)) {
+      errors.matricNumber = 'Invalid format. Use: PSP/SICT/CSC/ND/24/001';
+    }
+    
+    if (!studentForm.pin) {
+      errors.pin = 'PIN is required';
+    } else if (studentForm.pin.length !== 6) {
+      errors.pin = 'PIN must be 6 digits';
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (form: 'admin' | 'student', field: string, value: string) => {
+    if (form === 'admin') {
+      setAdminForm(prev => ({ ...prev, [field]: value }));
+    } else {
+      setStudentForm(prev => ({ ...prev, [field]: value }));
+    }
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminForm.email || !adminForm.password) {
-      setError('Please fill in all fields');
+    
+    if (!validateAdminForm()) {
+      setError('Please fix the validation errors');
       return;
     }
 
     setLoading(true);
     setError('');
+    setFieldErrors({});
 
     try {
-      const { error } = await signIn(adminForm.email, adminForm.password, false);
+      const { error } = await signIn(adminForm.email.trim(), adminForm.password, false);
       
       if (error) {
-        setError(error.message || 'Login failed');
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please check your email and click the confirmation link before signing in.');
+        } else {
+          setError(error.message || 'Login failed');
+        }
         toast.error('Login failed: ' + (error.message || 'Unknown error'));
       } else {
         toast.success('Successfully logged in!');
         navigate('/');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError('An unexpected error occurred. Please try again.');
       toast.error('An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -75,31 +136,34 @@ export default function Auth() {
 
   const handleStudentLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!studentForm.matricNumber || !studentForm.pin) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (studentForm.pin.length !== 6) {
-      setError('PIN must be 6 digits');
+    
+    if (!validateStudentForm()) {
+      setError('Please fix the validation errors');
       return;
     }
 
     setLoading(true);
     setError('');
+    setFieldErrors({});
 
     try {
-      const { error } = await signIn(studentForm.matricNumber, studentForm.pin, true);
+      const { error } = await signIn(studentForm.matricNumber.trim(), studentForm.pin, true);
       
       if (error) {
-        setError(error.message || 'Invalid matric number or PIN');
+        if (error.message.includes('Invalid matric number or PIN')) {
+          setError('Invalid matric number or PIN. Please check your credentials and try again.');
+        } else if (error.message.includes('Account not found')) {
+          setError('Student account not found. Please contact administration.');
+        } else {
+          setError(error.message || 'Login failed');
+        }
         toast.error('Login failed: ' + (error.message || 'Invalid matric number or PIN'));
       } else {
         toast.success('Successfully logged in!');
         navigate('/');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError('An unexpected error occurred. Please try again.');
       toast.error('An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -174,11 +238,14 @@ export default function Auth() {
                     <Input
                       id="matricNumber"
                       type="text"
-                      placeholder="Enter your matric number"
+                      placeholder="e.g., PSP/SICT/CSC/ND/24/001"
                       value={studentForm.matricNumber}
-                      onChange={(e) => setStudentForm(prev => ({ ...prev, matricNumber: e.target.value }))}
-                      className="w-full"
+                      onChange={(e) => handleInputChange('student', 'matricNumber', e.target.value.toUpperCase())}
+                      className={fieldErrors.matricNumber ? 'border-destructive' : 'w-full'}
                     />
+                    {fieldErrors.matricNumber && (
+                      <p className="text-sm text-destructive">{fieldErrors.matricNumber}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -189,8 +256,8 @@ export default function Auth() {
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your 6-digit PIN"
                         value={studentForm.pin}
-                        onChange={(e) => setStudentForm(prev => ({ ...prev, pin: e.target.value.replace(/\D/g, '').slice(0, 6) }))}
-                        className="w-full pr-10"
+                        onChange={(e) => handleInputChange('student', 'pin', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        className={fieldErrors.pin ? 'border-destructive pr-10' : 'w-full pr-10'}
                         maxLength={6}
                       />
                       <Button
@@ -207,6 +274,9 @@ export default function Auth() {
                         )}
                       </Button>
                     </div>
+                    {fieldErrors.pin && (
+                      <p className="text-sm text-destructive">{fieldErrors.pin}</p>
+                    )}
                   </div>
 
                   <Button 
@@ -229,9 +299,12 @@ export default function Auth() {
                       type="email"
                       placeholder="Enter your admin email"
                       value={adminForm.email}
-                      onChange={(e) => setAdminForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full"
+                      onChange={(e) => handleInputChange('admin', 'email', e.target.value)}
+                      className={fieldErrors.email ? 'border-destructive' : 'w-full'}
                     />
+                    {fieldErrors.email && (
+                      <p className="text-sm text-destructive">{fieldErrors.email}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -242,8 +315,8 @@ export default function Auth() {
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
                         value={adminForm.password}
-                        onChange={(e) => setAdminForm(prev => ({ ...prev, password: e.target.value }))}
-                        className="w-full pr-10"
+                        onChange={(e) => handleInputChange('admin', 'password', e.target.value)}
+                        className={fieldErrors.password ? 'border-destructive pr-10' : 'w-full pr-10'}
                       />
                       <Button
                         type="button"
@@ -259,6 +332,9 @@ export default function Auth() {
                         )}
                       </Button>
                     </div>
+                    {fieldErrors.password && (
+                      <p className="text-sm text-destructive">{fieldErrors.password}</p>
+                    )}
                   </div>
 
                   <Button 
@@ -268,6 +344,14 @@ export default function Auth() {
                   >
                     {loading ? 'Signing in...' : 'Sign In as Admin'}
                   </Button>
+
+                  <div className="text-center">
+                    <ForgotPasswordDialog>
+                      <Button variant="link" className="text-sm text-muted-foreground hover:text-primary">
+                        Forgot your password?
+                      </Button>
+                    </ForgotPasswordDialog>
+                  </div>
                 </form>
               </TabsContent>
             </Tabs>

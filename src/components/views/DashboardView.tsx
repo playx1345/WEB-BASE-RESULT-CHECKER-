@@ -19,6 +19,10 @@ interface StudentData {
   carryovers: number;
 }
 
+interface CarryoverCount {
+  count: number;
+}
+
 interface Profile {
   full_name: string;
   level: string;
@@ -29,6 +33,7 @@ export function DashboardView() {
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [carryoverCount, setCarryoverCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +59,17 @@ export function DashboardView() {
 
           if (studentDataResult) {
             setStudentData(studentDataResult);
+            
+            // Fetch carryover count (F grades)
+            const { count } = await supabase
+              .from('results')
+              .select('*', { count: 'exact', head: true })
+              .eq('student_id', studentDataResult.id)
+              .eq('grade', 'F');
+            
+            if (count !== null) {
+              setCarryoverCount(count);
+            }
           }
         }
       } catch (error) {
@@ -98,7 +114,7 @@ export function DashboardView() {
       </div>
 
       {/* Quick Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Current Level</CardTitle>
@@ -145,10 +161,12 @@ export function DashboardView() {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {studentData?.carryovers || 0}
+            <div className={`text-2xl font-bold ${carryoverCount > 0 ? 'text-destructive' : 'text-green-600'}`}>
+              {carryoverCount}
             </div>
-            <p className="text-xs text-muted-foreground">Outstanding Courses</p>
+            <p className="text-xs text-muted-foreground">
+              {carryoverCount > 0 ? 'Outstanding Courses' : 'No Carryovers'}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -193,13 +211,13 @@ export function DashboardView() {
 
       {/* Activity and Summary */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Activity Timeline - Takes 2 columns */}
-        <div className="lg:col-span-2">
+        {/* Activity Timeline - Takes 2 columns on large screens, full width on smaller */}
+        <div className="lg:col-span-2 order-2 lg:order-1">
           <ActivityTimeline />
         </div>
 
-        {/* Quick Summary - Takes 1 column */}
-        <div className="space-y-6">
+        {/* Quick Summary - Takes 1 column on large screens, full width on smaller */}
+        <div className="space-y-6 order-1 lg:order-2">
           <Card className="hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
