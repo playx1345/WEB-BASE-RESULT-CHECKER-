@@ -115,6 +115,87 @@ export function PerformanceCharts({
         </Card>
       </div>
 
+      {/* Charts Row */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* CGPA Trend Chart */}
+        <Card className="hover:shadow-lg transition-shadow duration-300">
+          <CardHeader>
+            <CardTitle>CGPA Trend</CardTitle>
+            <CardDescription>
+              Your academic performance over time
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={defaultCgpaData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="semester" />
+                <YAxis domain={[0, 4]} />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="cgpa" 
+                  stroke="#3B82F6" 
+                  strokeWidth={3}
+                  dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="gpa" 
+                  stroke="#10B981" 
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={{ fill: '#10B981', strokeWidth: 2, r: 3 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Grade Distribution */}
+        <Card className="hover:shadow-lg transition-shadow duration-300">
+          <CardHeader>
+            <CardTitle>Grade Distribution</CardTitle>
+            <CardDescription>
+              Breakdown of your grades this semester
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={defaultGradeDistribution}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ grade, count }) => `${grade}: ${count}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="count"
+                >
+                  {defaultGradeDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {defaultGradeDistribution.map((item, index) => (
+                <Badge 
+                  key={index} 
+                  variant="outline" 
+                  className="text-xs"
+                  style={{ borderColor: item.color, color: item.color }}
+                >
+                  {item.grade}: {item.count}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Subject Performance Chart */}
       <Card className="hover:shadow-lg transition-shadow duration-300">

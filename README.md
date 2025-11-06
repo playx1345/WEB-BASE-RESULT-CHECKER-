@@ -1,391 +1,164 @@
-# Computer Science Department Portal
+# Welcome to your Lovable project
 
-## Overview
-A comprehensive full-stack web application for the Computer Science Department at Plateau State Polytechnic Barkin Ladi. Built with React, TypeScript, and Supabase, this platform provides secure authentication, student result management, and administrative tools with a mobile-first responsive design.
+## Project info
 
-## Tech Stack
+**URL**: https://lovable.dev/projects/c322879f-df62-472c-8fd0-ae664960a6c2
 
-### Frontend
-- **React 18** - Modern UI library with hooks
-- **TypeScript** - Type-safe development
-- **Vite** - Fast build tool and dev server
-- **Tailwind CSS** - Utility-first styling with custom design tokens
-- **Shadcn/ui** - Accessible component library
-- **React Router** - Client-side routing
-- **TanStack Query** - Server state management
+## How can I edit this code?
 
-### Backend
-- **Supabase** - PostgreSQL database, authentication, and serverless functions
-- **Row-Level Security (RLS)** - Database-level access control
-- **Edge Functions** - Serverless API endpoints
+There are several ways of editing your application.
 
-## Project Structure
+**Use Lovable**
 
-```
-├── src/
-│   ├── components/          # React components
-│   │   ├── admin/          # Admin dashboard components
-│   │   ├── auth/           # Authentication components
-│   │   ├── layout/         # Layout components (header, footer)
-│   │   ├── ui/             # Reusable UI components (shadcn)
-│   │   └── views/          # Page view components
-│   ├── hooks/              # Custom React hooks
-│   │   ├── useAuth.tsx     # Authentication state management
-│   │   └── useProfile.tsx  # User profile data
-│   ├── lib/                # Utility libraries
-│   │   ├── security.ts     # Security utilities
-│   │   └── utils.ts        # Helper functions
-│   ├── pages/              # Route pages
-│   │   ├── Index.tsx       # Landing page
-│   │   ├── Auth.tsx        # Login/signup page
-│   │   └── static/         # Static pages (about, faculty, etc.)
-│   ├── data/               # Static data files
-│   └── integrations/       # API integrations
-│       └── supabase/       # Supabase client & types
-├── supabase/
-│   ├── functions/          # Edge functions
-│   ├── migrations/         # Database migrations
-│   └── config.toml         # Supabase configuration
-└── scripts/                # Utility scripts
-    ├── create-admin.js     # Admin account creation
-    └── create-demo-students.js
+Simply visit the [Lovable Project](https://lovable.dev/projects/c322879f-df62-472c-8fd0-ae664960a6c2) and start prompting.
 
+Changes made via Lovable will be committed automatically to this repo.
+
+**Use your preferred IDE**
+
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+
+Follow these steps:
+
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
+
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
+
+# Step 3: Install the necessary dependencies.
+npm i
+
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
 ```
 
-## Database Schema
+**Edit a file directly in GitHub**
 
-### Core Tables
-- **profiles** - User profile information
-- **user_roles** - Role-based access control (admin, student, teacher, parent)
-- **students** - Student-specific data (matric number, PIN, GPA, fee status)
-- **results** - Student academic results
-- **announcements** - Department announcements
-- **admins** - Admin-specific data
-- **audit_logs** - System activity logging
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-### Security Features
-- Row-Level Security (RLS) on all tables
-- Secure PIN hashing with bcrypt
-- Role-based access policies
-- Audit logging for admin actions
+**Use GitHub Codespaces**
 
-## Setup Instructions
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-### Prerequisites
-- Node.js 18+ and npm/bun
-- Supabase account (for database)
+## What technologies are used for this project?
 
-### Installation
+This project is built with:
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd cs-department-portal
-   ```
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Admin User Management
 
-3. **Set up environment variables**
-   - Copy `.env.example` to `.env`
-   - Add your Supabase credentials:
-     ```
-     SUPABASE_URL=your_project_url
-     SUPABASE_ANON_KEY=your_anon_key
-     ```
+### Creating an Admin User
 
-4. **Run database migrations**
-   - Migrations are in `supabase/migrations/`
-   - Apply via Supabase dashboard or CLI
-
-5. **Create admin account**
-   ```bash
-   cd scripts
-   npm install
-   node create-admin.js
-   ```
-   Follow prompts to create your first admin user
-
-6. **Start development server**
-   ```bash
-   npm run dev
-   ```
-   App will be available at `http://localhost:8080`
-
-### Creating Demo Students
-```bash
-cd scripts
-node create-demo-students.js
-```
-This creates sample student accounts for testing
-
-## Key Features
-
-### 🎯 Core Functionality
-- **User-friendly interface** for students and admins
-- **Secure login system** with enhanced validation
-- **Comprehensive department information**
-- **Dynamic content loading** using modern JavaScript
-
-### 📱 Mobile-First Design
-- **Responsive design** optimized for all device sizes
-- **Mobile navigation** with hamburger menu and smooth animations
-- **Touch-friendly interfaces** with proper touch target sizes (44px+)
-- **Mobile sidebar toggles** for admin and student portals
-- **Optimized typography** with readable font sizes on mobile
-
-### 🛡️ Enhanced Security & Validation
-- **Real-time form validation** with immediate feedback
-- **Enhanced password requirements** for admin accounts
-- **Input sanitization** and proper error handling
-- **Session management** with timeout protection
-
-### 🔔 User Experience Enhancements
-- **Toast notification system** with mobile-optimized positioning
-- **Loading states** and progress indicators
-- **Smooth animations** and transitions
-- **Accessibility features** with proper ARIA labels and keyboard navigation
-
-### 📊 Dashboard Features
-- **Student Portal**: Results viewing, GPA tracking, announcements, profile management
-- **Admin Portal**: Student management, result uploads, analytics, system administration
-- **Mobile-responsive tables** with horizontal scrolling
-- **Interactive charts** and statistics
-
-## Demo Credentials
-
-### Admin Access
-- **Email**: admin@plateau.edu.ng
-- **Password**: Admin123456
-
-### Demo Student (after creating with script)
-See `RUN_DEMO_STUDENTS.md` for instructions on creating demo student accounts.
-
-## Authentication System
-
-### Admin Login
-- Email/password authentication via Supabase Auth
-- Role-based access control with user_roles table
-- Secure password requirements enforced
-
-### Student Login
-- Matric number + PIN authentication
-- PIN stored as bcrypt hash in database
-- Fee status validation (must have "paid" status to view results)
-
-## Key Features
-
-### 🎯 Core Functionality
-- **Supabase Authentication** - Secure user management
-- **Role-Based Access Control** - Admin, Student, Teacher, Parent roles
-- **Student Result Management** - Upload, view, and manage academic results
-- **GPA Calculation** - Automatic CGPA and semester GPA computation
-- **Announcements System** - Target announcements by level or all students
-- **Audit Logging** - Track all administrative actions
-
-### 📱 Mobile-First Responsive Design
-- **Responsive layouts** - Optimized for mobile, tablet, and desktop
-- **Mobile navigation** - Collapsible sidebar and hamburger menu
-- **Touch-friendly UI** - Proper touch target sizing
-- **Adaptive tables** - Horizontal scroll on mobile devices
-
-### 🛡️ Security Features
-- **Row-Level Security (RLS)** - Database-level access control
-- **Secure PIN hashing** - bcrypt with salt for student PINs
-- **Role verification** - Server-side role checks via security definer functions
-- **Input validation** - Client and server-side validation
-- **Audit trails** - Comprehensive activity logging
-
-### 📊 Admin Dashboard
-- **Student Management** - Create, update, view student records
-- **Bulk Operations** - Upload multiple students via CSV
-- **Result Upload** - Individual and bulk result entry
-- **Analytics** - Student performance statistics
-- **Announcements** - Create and manage department notices
-- **Audit Logs** - View system activity history
-
-### 🎓 Student Portal
-- **Results Viewing** - Semester and cumulative results (requires paid fee status)
-- **GPA Tracking** - Current semester and cumulative GPA
-- **Announcements** - View department and level-specific notices
-- **Profile Management** - View and update personal information
-
-## Technical Architecture
-
-### Frontend Stack
-- **React 18** with TypeScript for type safety
-- **Vite** for fast development and optimized builds
-- **Tailwind CSS** with semantic design tokens
-- **Shadcn/ui** for accessible, customizable components
-- **TanStack Query** for efficient data fetching and caching
-- **React Hook Form** + Zod for form validation
-
-### Backend Stack
-- **Supabase PostgreSQL** - Production-ready database
-- **Supabase Auth** - User authentication and session management
-- **Supabase Edge Functions** - Serverless API endpoints (e.g., SMS notifications)
-- **Row-Level Security** - Declarative access control policies
-- **Database Functions** - Stored procedures for complex operations
-
-### Security Architecture
-```sql
--- Role-based access example
-user_roles table → has_role() function → RLS policies
-
--- Data access flow
-User request → Supabase Auth → RLS evaluation → Data response
-```
-
-## API Documentation
-
-### Key Database Functions
-
-#### `admin_create_student()`
-Creates a new student account with profile, auth user, and student record.
-```sql
-SELECT admin_create_student(
-  'John Doe',           -- full_name
-  'ND/CS/2024/001',    -- matric_number
-  'ND1',               -- level
-  '08012345678',       -- phone_number
-  '123456'             -- pin (or null for auto-generated)
-);
-```
-
-#### `authenticate_student()`
-Verifies student matric number and PIN for login.
-
-#### `get_current_user_role()`
-Returns the current authenticated user's role.
-
-## Deployment
-
-### Via Lovable Platform
-1. Click **Publish** in the Lovable editor
-2. Your app is deployed to `<project-name>.lovable.app`
-3. Configure custom domain in Project Settings (requires paid plan)
-
-### Self-Hosted Deployment
+This project includes a script to programmatically create admin users with full system privileges. This is useful for initial setup or creating additional administrators.
 
 #### Prerequisites
-- Node.js 18+
-- Supabase project
 
-#### Build for Production
+1. **Get your Supabase Service Role Key:**
+   - Go to your Supabase project dashboard
+   - Navigate to Settings > API
+   - Copy the `service_role` key (not the `anon` key)
+   - This key has admin privileges - keep it secure!
+
+2. **Configure Environment Variables:**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env and add your service role key
+   SUPABASE_SERVICE_ROLE_KEY="your_actual_service_role_key_here"
+   ```
+
+#### Usage Options
+
+**Option 1: Command Line Arguments**
 ```bash
-npm run build
-```
-Outputs to `dist/` directory
+# Using npm script
+npm run create-admin -- --email admin@college.edu --password MySecurePass123
 
-#### Deploy to Vercel/Netlify
-1. Connect your GitHub repository
-2. Set build command: `npm run build`
-3. Set output directory: `dist`
-4. Add environment variables (Supabase URL and keys)
-
-#### Environment Variables Required
-```
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
+# Or directly with node
+node scripts/create-admin.js --email admin@college.edu --password MySecurePass123
 ```
 
-#### Deploy with Docker
-1. Build the Docker image:
-   ```bash
-   docker build -t cs-portal:latest .
-   ```
+**Option 2: Environment Variables**
+```bash
+# Set environment variables and run
+ADMIN_EMAIL="admin@college.edu" ADMIN_PASSWORD="MySecurePass123" npm run create-admin
+```
 
-2. Run the container:
-   ```bash
-   docker run -p 8080:8080 \
-     -e VITE_SUPABASE_URL=your_url \
-     -e VITE_SUPABASE_PUBLISHABLE_KEY=your_key \
-     cs-portal:latest
-   ```
+**Option 3: Add to .env file**
+```bash
+# Add these to your .env file (temporarily)
+ADMIN_EMAIL="admin@college.edu"
+ADMIN_PASSWORD="MySecurePass123"
 
-3. Or use docker-compose (copy `docker-compose.example.yml` first):
-   ```bash
-   cp docker-compose.example.yml docker-compose.yml
-   # Edit docker-compose.yml with your environment variables
-   docker-compose up -d
-   ```
+# Then run the script
+npm run create-admin
 
-For comprehensive deployment instructions, database migrations, and production best practices, see **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)**.
+# Remember to remove the credentials from .env after creation
+```
 
+#### Security Features
 
-## Development Guidelines
+- **Email validation**: Ensures proper email format
+- **Password strength**: Requires 8+ characters with letters and numbers
+- **Duplicate prevention**: Checks for existing users before creation
+- **Auto-confirmation**: Admin users are automatically email-verified
+- **Secure metadata**: Sets admin role in user metadata for proper profile creation
 
-### Code Style
-- TypeScript strict mode enabled
-- ESLint + Prettier for code formatting
-- Semantic commit messages
-- Component-based architecture
+#### What the Script Does
 
-### Best Practices
-- Use semantic design tokens (no hardcoded colors)
-- Implement proper error boundaries
-- Add loading states for async operations
-- Follow mobile-first responsive design
-- Write accessible HTML with ARIA labels
+1. Validates input parameters and environment variables
+2. Connects to Supabase using the service role key
+3. Checks if a user with the email already exists
+4. Creates the user with admin role metadata
+5. Verifies the admin profile was created correctly
+6. Provides detailed feedback on success/failure
 
-### Testing
-- Manual testing across devices
-- Console error monitoring
-- Network request inspection
-- RLS policy verification
+#### Troubleshooting
 
-## Troubleshooting
+**Error: "SUPABASE_SERVICE_ROLE_KEY environment variable is required"**
+- Make sure you've added the service role key to your `.env` file
+- Ensure the key is correct and has the proper format
 
-### Common Issues
+**Error: "A user with email X already exists"**
+- The email is already registered in your system
+- Use a different email address for the new admin
 
-**Students can't see results**
-- Check fee_status is set to "paid" in students table
-- Verify RLS policies on results table
-- Confirm student is logged in with correct credentials
+**Error: "Password must be at least 8 characters and contain both letters and numbers"**
+- Use a stronger password that meets the requirements
+- Example: `AdminPass123` or `SecureAdmin2024`
 
-**Admin can't create students**
-- Verify user has "admin" role in user_roles table
-- Check audit_logs for error details
-- Ensure pgcrypto extension is enabled
+#### After Admin Creation
 
-**Authentication errors**
-- Check Supabase URL Configuration in dashboard
-- Verify Site URL and Redirect URLs are set correctly
-- Ensure email confirmation is disabled (for testing)
+Once created, the admin user can:
+- Log in through the standard authentication flow at `/auth`
+- Access all admin features in the system
+- Manage students, view all profiles, and create announcements
+- The admin role is automatically recognized by the system's Row Level Security policies
 
-For detailed troubleshooting, see [Supabase Documentation](https://supabase.com/docs).
+## How can I deploy this project?
 
-## Additional Documentation
+Simply open [Lovable](https://lovable.dev/projects/c322879f-df62-472c-8fd0-ae664960a6c2) and click on Share -> Publish.
 
-- **[Quick Reference Guide](QUICK_REFERENCE.md)** - Common deployment commands and troubleshooting
-- **[Admin Setup Guide](create-admin-account.md)** - Creating first admin account
-- **[Demo Students Guide](RUN_DEMO_STUDENTS.md)** - Creating test student accounts
-- **[Migration & Deployment Guide](MIGRATION_DEPLOYMENT.md)** - Production deployment and database migration checklist
-- **[Copilot Instructions](.github/copilot-instructions.md)** - Development standards
+## Can I connect a custom domain to my Lovable project?
 
-## Contributing
+Yes, you can!
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Follow the coding standards in `.github/copilot-instructions.md`
-4. Test thoroughly on multiple devices
-5. Commit changes (`git commit -m 'Add amazing feature'`)
-6. Push to branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-## License
-
-This project is licensed under the MIT License - see LICENSE file for details.
-
-## Support
-
-For issues and questions:
-- Check existing issues on GitHub
-- Review Supabase documentation
-- Contact department IT support
-
----
-
-Built with ❤️ for Plateau State Polytechnic Barkin Ladi Computer Science Department
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
