@@ -4,6 +4,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { School } from 'lucide-react';
 
+// Demo admin user ID used for local development/testing
+const DEMO_ADMIN_USER_ID = '00000000-0000-0000-0000-000000000001';
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: 'student' | 'admin' | 'teacher' | 'parent';
@@ -19,7 +22,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     if (!user) return;
     
     // Handle demo admin user
-    if (user.id === '00000000-0000-0000-0000-000000000001') {
+    if (user.id === DEMO_ADMIN_USER_ID) {
       if (requiredRole === 'admin') {
         setHasAccess(true);
       } else {

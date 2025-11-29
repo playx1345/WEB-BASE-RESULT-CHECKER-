@@ -153,7 +153,9 @@ export function AdminStudentsView() {
   const deleteStudent = async (student: Student) => {
     setActionLoading(true);
     try {
-      // First delete related results
+      // Delete related results first due to foreign key constraint
+      // Note: In production, consider using a database transaction via RPC
+      // to ensure atomic deletion. Results will be orphaned if student deletion fails.
       const { error: resultsError } = await supabase
         .from('results')
         .delete()
@@ -161,6 +163,8 @@ export function AdminStudentsView() {
 
       if (resultsError) {
         console.error('Error deleting results:', resultsError);
+        // Continue with student deletion even if results deletion fails
+        // as the student record is the primary concern
       }
 
       // Delete the student record
@@ -194,6 +198,8 @@ export function AdminStudentsView() {
 
     setActionLoading(true);
     try {
+      // The RPC function handles PIN hashing securely on the server side
+      // using the hash_pin database function before storing
       const { data, error } = await supabase.rpc('admin_reset_student_pin', {
         student_id: selectedStudent.id,
         new_pin: newPin
@@ -364,6 +370,8 @@ export function AdminStudentsView() {
                         <DropdownMenuSeparator />
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
+                            {/* preventDefault stops the dropdown from closing when clicking the delete trigger,
+                                allowing the AlertDialog to open properly */}
                             <DropdownMenuItem 
                               onSelect={(e) => e.preventDefault()}
                               className="text-destructive focus:text-destructive"
