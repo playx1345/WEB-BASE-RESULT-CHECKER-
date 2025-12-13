@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { School } from 'lucide-react';
+
+// Demo admin user ID used for local development/testing
+const DEMO_ADMIN_USER_ID = '00000000-0000-0000-0000-000000000001';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -14,6 +17,80 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const navigate = useNavigate();
   const [roleChecking, setRoleChecking] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
+
+  const checkUserRole = useCallback(async () => {
+    if (!user) return;
+    
+    // Handle demo admin user
+    if (user.id === DEMO_ADMIN_USER_ID) {
+      if (requiredRole === 'admin') {
+        setHasAccess(true);
+      } else {
+        navigate('/');
+      }
+      setRoleChecking(false);
+      return;
+    }
+    
+    // Check role from user metadata first
+    const userRole = user.user_metadata?.role;
+    if (userRole && userRole === requiredRole) {
+      setHasAccess(true);
+      setRoleChecking(false);
+      return;
+    }
+    
+    try {
+      // Check profile role from database
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+      
+      // Get role from profile - check if it's stored in user_roles table or profile
+      let profileRole = null;
+      
+      // Try user_roles table first
+      const { data: userRoleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+        
+      if (userRoleData?.role) {
+        profileRole = userRoleData.role;
+      }
+      
+      if (profileRole === requiredRole) {
+        setHasAccess(true);
+      } else if (profile) {
+        // For students, check if there's a student record
+        if (requiredRole === 'student') {
+          const { data: studentData } = await supabase
+            .from('students')
+            .select('id')
+            .eq('profile_id', profile.id)
+            .single();
+            
+          if (studentData) {
+            setHasAccess(true);
+          } else {
+            navigate('/');
+          }
+        } else {
+          navigate('/');
+        }
+      } else {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error checking user role:', error);
+      navigate('/');
+    } finally {
+      setRoleChecking(false);
+    }
+  }, [user, requiredRole, navigate]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -27,30 +104,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
       setRoleChecking(false);
       setHasAccess(true);
     }
-  }, [user, loading, navigate, requiredRole]);
-
-  const checkUserRole = async () => {
-    if (!user) return;
-    
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (profile?.role === requiredRole) {
-        setHasAccess(true);
-      } else {
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Error checking user role:', error);
-      navigate('/');
-    } finally {
-      setRoleChecking(false);
-    }
-  };
+  }, [user, loading, navigate, requiredRole, checkUserRole]);
 
   if (loading || roleChecking) {
     return (
