@@ -8,6 +8,7 @@ import { AdminAnalyticsView } from './views/AdminAnalyticsView';
 import { AdminAuditLogsView } from './views/AdminAuditLogsView';
 import { useActivityLogger } from '@/lib/auditLogger';
 import { useEffect } from 'react';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export function AdminDashboard() {
   const [activeView, setActiveView] = useState('dashboard');
@@ -38,11 +39,13 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen w-full">
-      <AdminSidebar activeView={activeView} onViewChange={setActiveView} />
-      <main className="flex-1 bg-background">
-        {renderView()}
-      </main>
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen w-full">
+        <AdminSidebar activeView={activeView} onViewChange={setActiveView} />
+        <main className="flex-1 bg-background">
+          {renderView()}
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }
