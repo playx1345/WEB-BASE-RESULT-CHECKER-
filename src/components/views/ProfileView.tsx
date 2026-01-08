@@ -13,17 +13,17 @@ import { User, Mail, Phone, IdCard, GraduationCap } from 'lucide-react';
 interface Profile {
   id: string;
   user_id: string;
-  full_name: string;
-  role: string;
-  matric_number: string;
-  phone_number: string;
-  level: string;
+  full_name: string | null;
+  matric_number: string | null;
+  phone_number: string | null;
+  level: string | null;
 }
 
 export function ProfileView() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [formData, setFormData] = useState({
@@ -38,7 +38,7 @@ export function ProfileView() {
       try {
         const { data } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, user_id, full_name, matric_number, phone_number, level')
           .eq('user_id', user.id)
           .single();
 
@@ -49,6 +49,15 @@ export function ProfileView() {
             phone_number: data.phone_number || '',
           });
         }
+
+        // Fetch role from user_roles table
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+        
+        setUserRole(roleData?.role || null);
       } catch (error) {
         console.error('Error fetching profile:', error);
       } finally {
@@ -203,7 +212,7 @@ export function ProfileView() {
               <User className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">Role</p>
-                <Badge variant="secondary">{profile?.role?.toUpperCase()}</Badge>
+                <Badge variant="secondary">{userRole?.toUpperCase() || 'N/A'}</Badge>
               </div>
             </div>
 

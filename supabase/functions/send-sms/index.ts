@@ -89,7 +89,7 @@ serve(async (req) => {
 
     // Send SMS to each student
     for (const student of students) {
-      const phoneNumber = student.profiles?.phone_number;
+      const phoneNumber = (student.profiles as { phone_number: string; full_name: string }[] | null)?.[0]?.phone_number;
       
       if (!phoneNumber) continue;
 

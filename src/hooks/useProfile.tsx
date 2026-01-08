@@ -5,7 +5,6 @@ import { useAuth } from './useAuth';
 interface Profile {
   id: string;
   user_id: string;
-  role: 'student' | 'admin' | 'teacher' | 'parent';
   full_name: string | null;
   matric_number: string | null;
   phone_number: string | null;
@@ -14,8 +13,11 @@ interface Profile {
   updated_at: string;
 }
 
+type UserRole = 'student' | 'admin' | 'teacher' | 'parent';
+
 export const useProfile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
@@ -23,31 +25,16 @@ export const useProfile = () => {
     const fetchProfile = async () => {
       if (!user) {
         setProfile(null);
-        setLoading(false);
-        return;
-      }
-
-      // Handle demo admin user
-      if (user.id === '00000000-0000-0000-0000-000000000001') {
-        setProfile({
-          id: '00000000-0000-0000-0000-000000000001',
-          user_id: '00000000-0000-0000-0000-000000000001',
-          role: 'admin',
-          full_name: 'System Administrator',
-          matric_number: null,
-          phone_number: null,
-          level: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
+        setRole(null);
         setLoading(false);
         return;
       }
 
       try {
+        // Fetch profile
         const { data, error } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, user_id, full_name, matric_number, phone_number, level, created_at, updated_at')
           .eq('user_id', user.id)
           .single();
 
@@ -57,9 +44,19 @@ export const useProfile = () => {
         } else {
           setProfile(data);
         }
+
+        // Fetch role from user_roles table
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+        
+        setRole(roleData?.role as UserRole || null);
       } catch (error) {
         console.error('Error:', error);
         setProfile(null);
+        setRole(null);
       } finally {
         setLoading(false);
       }
@@ -68,5 +65,13 @@ export const useProfile = () => {
     fetchProfile();
   }, [user]);
 
-  return { profile, loading, isAdmin: profile?.role === 'admin', isTeacher: profile?.role === 'teacher', isStudent: profile?.role === 'student', isParent: profile?.role === 'parent' };
+  return { 
+    profile, 
+    loading, 
+    role,
+    isAdmin: role === 'admin', 
+    isTeacher: role === 'teacher', 
+    isStudent: role === 'student', 
+    isParent: role === 'parent' 
+  };
 };
