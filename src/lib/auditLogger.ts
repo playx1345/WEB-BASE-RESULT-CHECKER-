@@ -16,10 +16,6 @@ export interface AuditLogEntry {
   action: string;
   table_name: string | null;
   record_id: string | null;
-  old_values: Json | null;
-  new_values: Json | null;
-  ip_address: string | null;
-  user_agent: string | null;
   metadata: Json | null;
   created_at: string;
 }
@@ -90,10 +86,7 @@ export async function fetchAuditLogs(options: {
 
     let query = supabase
       .from('audit_logs')
-      .select(`
-        *,
-        profiles!audit_logs_user_id_fkey(full_name, matric_number)
-      `)
+      .select('id, user_id, action, table_name, record_id, metadata, created_at')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
