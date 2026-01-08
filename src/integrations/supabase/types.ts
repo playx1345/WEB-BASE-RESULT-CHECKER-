@@ -14,6 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          target_level: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          target_level?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          target_level?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          record_id: string | null
+          table_name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          course_code: string
+          course_title: string
+          created_at: string | null
+          credit_unit: number
+          id: string
+          level: string
+          semester: string
+          updated_at: string | null
+        }
+        Insert: {
+          course_code: string
+          course_title: string
+          created_at?: string | null
+          credit_unit: number
+          id?: string
+          level: string
+          semester: string
+          updated_at?: string | null
+        }
+        Update: {
+          course_code?: string
+          course_title?: string
+          created_at?: string | null
+          credit_unit?: number
+          id?: string
+          level?: string
+          semester?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       investment_plans: {
         Row: {
           created_at: string | null
@@ -60,6 +153,8 @@ export type Database = {
           created_at: string | null
           full_name: string | null
           id: string
+          level: string | null
+          matric_number: string | null
           phone_number: string | null
           updated_at: string | null
           user_id: string
@@ -70,6 +165,8 @@ export type Database = {
           created_at?: string | null
           full_name?: string | null
           id?: string
+          level?: string | null
+          matric_number?: string | null
           phone_number?: string | null
           updated_at?: string | null
           user_id: string
@@ -80,11 +177,122 @@ export type Database = {
           created_at?: string | null
           full_name?: string | null
           id?: string
+          level?: string | null
+          matric_number?: string | null
           phone_number?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      results: {
+        Row: {
+          course_code: string
+          course_title: string
+          created_at: string | null
+          credit_unit: number
+          grade: string
+          id: string
+          level: string
+          point: number
+          semester: string
+          session: string
+          student_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          course_code: string
+          course_title: string
+          created_at?: string | null
+          credit_unit: number
+          grade: string
+          id?: string
+          level: string
+          point: number
+          semester: string
+          session: string
+          student_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          course_code?: string
+          course_title?: string
+          created_at?: string | null
+          credit_unit?: number
+          grade?: string
+          id?: string
+          level?: string
+          point?: number
+          semester?: string
+          session?: string
+          student_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          carryovers: number | null
+          cgp: number | null
+          created_at: string | null
+          email: string | null
+          fee_status: string | null
+          full_name: string | null
+          id: string
+          level: string
+          matric_number: string
+          pin_hash: string | null
+          profile_id: string | null
+          total_gp: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          carryovers?: number | null
+          cgp?: number | null
+          created_at?: string | null
+          email?: string | null
+          fee_status?: string | null
+          full_name?: string | null
+          id?: string
+          level: string
+          matric_number: string
+          pin_hash?: string | null
+          profile_id?: string | null
+          total_gp?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          carryovers?: number | null
+          cgp?: number | null
+          created_at?: string | null
+          email?: string | null
+          fee_status?: string | null
+          full_name?: string | null
+          id?: string
+          level?: string
+          matric_number?: string
+          pin_hash?: string | null
+          profile_id?: string | null
+          total_gp?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {

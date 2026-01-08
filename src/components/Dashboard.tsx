@@ -10,7 +10,7 @@ import { useProfile } from '@/hooks/useProfile';
 
 export function Dashboard() {
   const [activeView, setActiveView] = useState('dashboard');
-  const { profile, loading } = useProfile();
+  const { profile, loading, isAdmin, isTeacher } = useProfile();
 
   if (loading) {
     return (
@@ -24,11 +24,11 @@ export function Dashboard() {
   }
 
   // Show appropriate dashboard based on user role
-  if (profile?.role === 'admin') {
+  if (isAdmin) {
     return <AdminDashboard />;
   }
 
-  if (profile?.role === 'teacher') {
+  if (isTeacher) {
     return <TeacherDashboard />;
   }
 
