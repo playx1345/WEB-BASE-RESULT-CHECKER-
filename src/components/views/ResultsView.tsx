@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, FileText, Search, Download, Filter } from 'lucide-react';
+import { AlertTriangle, FileText, Search, Download, Printer } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useActivityLogger } from '@/lib/auditLogger';
+import { generateResultsPDF } from '@/lib/generateResultsPDF';
 
 interface Result {
   id: string;
@@ -29,6 +30,7 @@ export function ResultsView() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [feeStatus, setFeeStatus] = useState<string>('');
+  const [studentInfo, setStudentInfo] = useState<{ fullName: string; matricNumber: string; level: string } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sessionFilter, setSessionFilter] = useState('all');
   const [semesterFilter, setSemesterFilter] = useState('all');
@@ -57,12 +59,17 @@ export function ResultsView() {
         if (profileData) {
           const { data: studentData } = await supabase
             .from('students')
-            .select('fee_status')
+            .select('fee_status, matric_number, level, full_name')
             .eq('profile_id', profileData.id)
             .single();
 
           if (studentData) {
             setFeeStatus(studentData.fee_status);
+            setStudentInfo({
+              fullName: studentData.full_name || 'Student',
+              matricNumber: studentData.matric_number,
+              level: studentData.level
+            });
 
             if (studentData.fee_status === 'paid') {
               // Fetch results only if fees are paid
@@ -186,6 +193,29 @@ export function ResultsView() {
     return acc;
   }, {} as Record<string, Result[]>);
 
+  // Calculate overall CGPA
+  const calculateCGPA = () => {
+    if (results.length === 0) return 0;
+    const totalCredits = results.reduce((sum, r) => sum + r.credit_unit, 0);
+    const totalGradePoints = results.reduce((sum, r) => sum + (r.point * r.credit_unit), 0);
+    return totalCredits > 0 ? totalGradePoints / totalCredits : 0;
+  };
+
+  const handleDownloadPDF = () => {
+    if (!studentInfo) return;
+    
+    generateResultsPDF(
+      results,
+      {
+        fullName: studentInfo.fullName,
+        matricNumber: studentInfo.matricNumber,
+        level: studentInfo.level,
+        department: 'Computer Science'
+      },
+      calculateCGPA()
+    );
+  };
+
   const exportResults = () => {
     const csv = [
       ['Session', 'Semester', 'Course Code', 'Course Title', 'Credit Units', 'Grade', 'Grade Points'],
@@ -251,6 +281,11 @@ export function ResultsView() {
             <SelectItem value="second">Second Semester</SelectItem>
           </SelectContent>
         </Select>
+
+        <Button onClick={handleDownloadPDF} variant="default" className="whitespace-nowrap">
+          <Printer className="h-4 w-4 mr-2" />
+          Download PDF
+        </Button>
 
         <Button onClick={exportResults} variant="outline" className="whitespace-nowrap">
           <Download className="h-4 w-4 mr-2" />
