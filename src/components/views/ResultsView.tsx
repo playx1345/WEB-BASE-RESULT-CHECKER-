@@ -139,16 +139,30 @@ export function ResultsView() {
         </div>
 
         <Card className="border-destructive/50 bg-destructive/5">
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="h-5 w-5" />
-              Access Restricted
+              <AlertTriangle className="h-6 w-6" />
+              Payment Required
             </CardTitle>
-            <CardDescription>
-              Your results are currently unavailable due to unpaid fees. 
-              Please complete your fee payment to access your academic records.
-            </CardDescription>
           </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-foreground">
+              Your academic results are currently restricted due to outstanding fee payment.
+            </p>
+            <div className="bg-background/80 rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2">To view your results:</h4>
+              <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                <li>Visit the Bursary Department to complete your fee payment</li>
+                <li>Obtain your payment receipt</li>
+                <li>Submit the receipt to the Student Affairs Office for verification</li>
+                <li>Your results will be accessible within 24-48 hours after verification</li>
+              </ol>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              If you have already paid and are still seeing this message, please contact the ICT Department 
+              with your payment receipt for assistance.
+            </p>
+          </CardContent>
         </Card>
       </div>
     );
