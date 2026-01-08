@@ -14,272 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
-      admins: {
+      investment_plans: {
         Row: {
-          admin_level: string | null
           created_at: string | null
-          department: string | null
+          daily_roi_rate: number
+          description: string | null
+          duration_days: number
           id: string
-          permissions: Json | null
-          profile_id: string
+          is_active: boolean | null
+          max_amount: number
+          min_amount: number
+          name: string
           updated_at: string | null
         }
         Insert: {
-          admin_level?: string | null
           created_at?: string | null
-          department?: string | null
+          daily_roi_rate: number
+          description?: string | null
+          duration_days: number
           id?: string
-          permissions?: Json | null
-          profile_id: string
+          is_active?: boolean | null
+          max_amount: number
+          min_amount: number
+          name: string
           updated_at?: string | null
         }
         Update: {
-          admin_level?: string | null
           created_at?: string | null
-          department?: string | null
+          daily_roi_rate?: number
+          description?: string | null
+          duration_days?: number
           id?: string
-          permissions?: Json | null
-          profile_id?: string
+          is_active?: boolean | null
+          max_amount?: number
+          min_amount?: number
+          name?: string
           updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "admins_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      announcements: {
-        Row: {
-          content: string
-          created_at: string | null
-          created_by: string
-          id: string
-          priority: string | null
-          target_level: string | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          created_by: string
-          id?: string
-          priority?: string | null
-          target_level?: string | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          created_by?: string
-          id?: string
-          priority?: string | null
-          target_level?: string | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      audit_logs: {
-        Row: {
-          action: string
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          record_id: string | null
-          table_name: string | null
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          record_id?: string | null
-          table_name?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          record_id?: string | null
-          table_name?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      courses: {
-        Row: {
-          course_code: string
-          course_title: string
-          credit_unit: number
-          id: number
-          level: string | null
-          semester: string | null
-        }
-        Insert: {
-          course_code: string
-          course_title: string
-          credit_unit: number
-          id?: number
-          level?: string | null
-          semester?: string | null
-        }
-        Update: {
-          course_code?: string
-          course_title?: string
-          credit_unit?: number
-          id?: number
-          level?: string | null
-          semester?: string | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          bio: string | null
           created_at: string | null
           full_name: string | null
           id: string
-          level: string | null
-          matric_number: string | null
           phone_number: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
-          level?: string | null
-          matric_number?: string | null
           phone_number?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
-          level?: string | null
-          matric_number?: string | null
           phone_number?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
       }
-      results: {
+      transactions: {
         Row: {
-          course_code: string
-          course_title: string
+          amount: number
           created_at: string | null
-          credit_unit: number
-          grade: string
+          description: string | null
           id: string
-          level: string
-          point: number
-          semester: string
-          session: string
-          student_id: string
+          investment_id: string | null
+          status: string | null
+          type: string
           updated_at: string | null
+          user_id: string
         }
         Insert: {
-          course_code: string
-          course_title: string
+          amount: number
           created_at?: string | null
-          credit_unit: number
-          grade: string
+          description?: string | null
           id?: string
-          level: string
-          point: number
-          semester: string
-          session: string
-          student_id: string
+          investment_id?: string | null
+          status?: string | null
+          type: string
           updated_at?: string | null
+          user_id: string
         }
         Update: {
-          course_code?: string
-          course_title?: string
+          amount?: number
           created_at?: string | null
-          credit_unit?: number
-          grade?: string
+          description?: string | null
           id?: string
-          level?: string
-          point?: number
-          semester?: string
-          session?: string
-          student_id?: string
+          investment_id?: string | null
+          status?: string | null
+          type?: string
           updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "results_student_id_fkey"
-            columns: ["student_id"]
+            foreignKeyName: "transactions_investment_id_fkey"
+            columns: ["investment_id"]
             isOneToOne: false
-            referencedRelation: "students"
+            referencedRelation: "user_investments"
             referencedColumns: ["id"]
           },
         ]
       }
-      students: {
+      user_investments: {
         Row: {
-          carryovers: number | null
-          cgp: number | null
+          actual_profit: number | null
+          amount: number
           created_at: string | null
-          email: string
-          fee_status: string | null
-          full_name: string | null
+          duration_days: number
+          end_date: string | null
+          expected_profit: number | null
           id: string
-          level: string
-          matric_number: string
-          pin_hash: string
-          profile_id: string | null
-          total_gp: number | null
+          plan_id: string
+          start_date: string | null
+          status: string | null
           updated_at: string | null
+          user_id: string
         }
         Insert: {
-          carryovers?: number | null
-          cgp?: number | null
+          actual_profit?: number | null
+          amount: number
           created_at?: string | null
-          email: string
-          fee_status?: string | null
-          full_name?: string | null
+          duration_days: number
+          end_date?: string | null
+          expected_profit?: number | null
           id?: string
-          level: string
-          matric_number: string
-          pin_hash: string
-          profile_id?: string | null
-          total_gp?: number | null
+          plan_id: string
+          start_date?: string | null
+          status?: string | null
           updated_at?: string | null
+          user_id: string
         }
         Update: {
-          carryovers?: number | null
-          cgp?: number | null
+          actual_profit?: number | null
+          amount?: number
           created_at?: string | null
-          email?: string
-          fee_status?: string | null
-          full_name?: string | null
+          duration_days?: number
+          end_date?: string | null
+          expected_profit?: number | null
           id?: string
-          level?: string
-          matric_number?: string
-          pin_hash?: string
-          profile_id?: string | null
-          total_gp?: number | null
+          plan_id?: string
+          start_date?: string | null
+          status?: string | null
           updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "students_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
+            foreignKeyName: "user_investments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "investment_plans"
             referencedColumns: ["id"]
           },
         ]
