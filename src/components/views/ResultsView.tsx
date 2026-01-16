@@ -59,7 +59,7 @@ export function ResultsView() {
         if (profileData) {
           const { data: studentData } = await supabase
             .from('students')
-            .select('fee_status, matric_number, level, full_name')
+            .select('id, fee_status, matric_number, level, full_name')
             .eq('profile_id', profileData.id)
             .single();
 
@@ -72,10 +72,11 @@ export function ResultsView() {
             });
 
             if (studentData.fee_status === 'paid') {
-              // Fetch results only if fees are paid
+              // Fetch results only for this specific student
               const { data: resultsData } = await supabase
                 .from('results')
                 .select('*')
+                .eq('student_id', studentData.id)
                 .order('session', { ascending: false })
                 .order('semester', { ascending: false });
 
