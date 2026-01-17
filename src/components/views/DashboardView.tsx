@@ -24,11 +24,41 @@ interface Profile {
   level: string;
 }
 
+interface Result {
+  session: string;
+  semester: string;
+  credit_unit: number;
+  point: number;
+  grade: string;
+  course_title: string;
+}
+
+interface CGPADataPoint {
+  semester: string;
+  cgpa: number;
+  gpa: number;
+}
+
+interface GradeDistribution {
+  grade: string;
+  count: number;
+  color: string;
+}
+
+interface SubjectPerformance {
+  subject: string;
+  score: number;
+  grade: string;
+}
+
 export function DashboardView() {
   const { user } = useAuth();
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [cgpaData, setCgpaData] = useState<CGPADataPoint[]>([]);
+  const [gradeDistribution, setGradeDistribution] = useState<GradeDistribution[]>([]);
+  const [subjectPerformance, setSubjectPerformance] = useState<SubjectPerformance[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +84,96 @@ export function DashboardView() {
 
           if (studentDataResult) {
             setStudentData(studentDataResult);
+
+            // Fetch results for CGPA trend calculation
+            const { data: resultsData } = await supabase
+              .from('results')
+              .select('session, semester, credit_unit, point, grade, course_title')
+              .eq('student_id', studentDataResult.id)
+              .order('session', { ascending: true })
+              .order('semester', { ascending: true });
+
+            if (resultsData && resultsData.length > 0) {
+              // Calculate CGPA trend data
+              const semesterGroups = resultsData.reduce((acc, result) => {
+                const key = `${result.session} ${result.semester}`;
+                if (!acc[key]) {
+                  acc[key] = { results: [], session: result.session, semester: result.semester };
+                }
+                acc[key].results.push(result);
+                return acc;
+              }, {} as Record<string, { results: Result[], session: string, semester: string }>);
+
+              // Sort semesters chronologically
+              const sortedSemesters = Object.entries(semesterGroups).sort((a, b) => {
+                const [sessionA, semesterA] = [a[1].session, a[1].semester];
+                const [sessionB, semesterB] = [b[1].session, b[1].semester];
+                if (sessionA !== sessionB) return sessionA.localeCompare(sessionB);
+                return semesterA === 'First' ? -1 : 1;
+              });
+
+              // Calculate GPA for each semester and running CGPA
+              let cumulativeCredits = 0;
+              let cumulativeGradePoints = 0;
+              const cgpaTrendData: CGPADataPoint[] = [];
+
+              sortedSemesters.forEach(([key, { results }]) => {
+                const semesterCredits = results.reduce((sum, r) => sum + r.credit_unit, 0);
+                const semesterGradePoints = results.reduce((sum, r) => sum + (r.point * r.credit_unit), 0);
+                const gpa = semesterCredits > 0 ? semesterGradePoints / semesterCredits : 0;
+
+                cumulativeCredits += semesterCredits;
+                cumulativeGradePoints += semesterGradePoints;
+                const cgpa = cumulativeCredits > 0 ? cumulativeGradePoints / cumulativeCredits : 0;
+
+                cgpaTrendData.push({
+                  semester: key,
+                  gpa: parseFloat(gpa.toFixed(2)),
+                  cgpa: parseFloat(cgpa.toFixed(2))
+                });
+              });
+
+              setCgpaData(cgpaTrendData);
+
+              // Calculate grade distribution
+              const gradeCount = resultsData.reduce((acc, r) => {
+                acc[r.grade] = (acc[r.grade] || 0) + 1;
+                return acc;
+              }, {} as Record<string, number>);
+
+              const gradeColors: Record<string, string> = {
+                'A': '#10B981',
+                'B': '#3B82F6',
+                'C': '#F59E0B',
+                'D': '#EF4444',
+                'E': '#8B5CF6',
+                'F': '#6B7280'
+              };
+
+              const gradeDistData: GradeDistribution[] = Object.entries(gradeCount)
+                .map(([grade, count]) => ({
+                  grade,
+                  count,
+                  color: gradeColors[grade] || '#6B7280'
+                }))
+                .sort((a, b) => a.grade.localeCompare(b.grade));
+
+              setGradeDistribution(gradeDistData);
+
+              // Get subject performance from most recent semester
+              const lastSemester = sortedSemesters[sortedSemesters.length - 1];
+              if (lastSemester) {
+                const gradeToScore: Record<string, number> = {
+                  'A': 90, 'B': 75, 'C': 60, 'D': 50, 'E': 45, 'F': 30
+                };
+                const subjectPerfData: SubjectPerformance[] = lastSemester[1].results.map(r => ({
+                  subject: r.course_title,
+                  score: gradeToScore[r.grade] || 50,
+                  grade: r.grade
+                }));
+                setSubjectPerformance(subjectPerfData);
+              }
+            }
           }
         }
       } catch (error) {
@@ -188,7 +308,11 @@ export function DashboardView() {
             Visual analysis of your academic progress and achievements
           </p>
         </div>
-        <PerformanceCharts />
+        <PerformanceCharts 
+          cgpaData={cgpaData}
+          gradeDistribution={gradeDistribution}
+          subjectPerformance={subjectPerformance}
+        />
       </div>
 
       {/* Activity and Summary */}
