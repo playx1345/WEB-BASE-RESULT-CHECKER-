@@ -2,3 +2,6 @@ project_id = "juftwuinlhjfmyphfyxt"
 
 [functions.send-sms]
 verify_jwt = false
+
+[functions.reset-pin]
+verify_jwt = false

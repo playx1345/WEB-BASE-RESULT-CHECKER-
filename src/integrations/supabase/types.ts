@@ -146,6 +146,41 @@ export type Database = {
         }
         Relationships: []
       }
+      pin_reset_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          student_id: string
+          token: string
+          used: boolean
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          student_id: string
+          token: string
+          used?: boolean
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          student_id?: string
+          token?: string
+          used?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pin_reset_tokens_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -444,6 +479,11 @@ export type Database = {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: Json
       }
+      create_pin_reset_token: {
+        Args: { p_matric_number: string }
+        Returns: Json
+      }
+      generate_reset_code: { Args: never; Returns: string }
       generate_secure_pin: { Args: never; Returns: string }
       get_current_user_role: { Args: never; Returns: string }
       get_student_safe_data: {
@@ -478,6 +518,10 @@ export type Database = {
           p_table_name?: string
         }
         Returns: string
+      }
+      verify_and_reset_pin: {
+        Args: { p_matric_number: string; p_new_pin: string; p_token: string }
+        Returns: Json
       }
       verify_student_login: {
         Args: { matric: string; pin: string }
