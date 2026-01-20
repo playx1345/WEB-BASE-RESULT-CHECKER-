@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AdminSetupInstructions } from '@/components/AdminSetupInstructions';
+import { ForgotPinDialog } from '@/components/ForgotPinDialog';
 import { 
   ChevronRight, 
   Users, 
@@ -21,7 +22,8 @@ import {
   Clock,
   Zap,
   Eye,
-  EyeOff
+  EyeOff,
+  HelpCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -29,6 +31,7 @@ import { toast } from '@/hooks/use-toast';
 
 const LandingPage = () => {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
+  const [showForgotPin, setShowForgotPin] = useState(false);
   const [matricNumber, setMatricNumber] = useState('');
   const [pin, setPin] = useState('');
   const [showPin, setShowPin] = useState(false);
@@ -233,9 +236,17 @@ const LandingPage = () => {
                     </Button>
                   </form>
                   
-                  <div className="mt-6 pt-4 border-t border-border">
+                  <div className="mt-6 pt-4 border-t border-border space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPin(true)}
+                      className="w-full text-sm text-primary hover:underline flex items-center justify-center gap-1"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5" />
+                      Forgot PIN?
+                    </button>
                     <p className="text-xs text-center text-muted-foreground">
-                      Having trouble? Contact ICT Department for support
+                      Need help? Contact ICT Department for support
                     </p>
                   </div>
                 </CardContent>
@@ -395,6 +406,9 @@ const LandingPage = () => {
       </section>
 
       <SiteFooter />
+
+      {/* Forgot PIN Dialog */}
+      <ForgotPinDialog open={showForgotPin} onOpenChange={setShowForgotPin} />
     </div>
   );
 };
