@@ -133,11 +133,10 @@ export function AdminCreateStudentDialog({
                 <SelectValue placeholder="Select level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="100">100 Level</SelectItem>
-                <SelectItem value="200">200 Level</SelectItem>
-                <SelectItem value="300">300 Level</SelectItem>
-                <SelectItem value="400">400 Level</SelectItem>
-                <SelectItem value="500">500 Level</SelectItem>
+                <SelectItem value="ND1">ND1</SelectItem>
+                <SelectItem value="ND2">ND2</SelectItem>
+                <SelectItem value="HND1">HND1</SelectItem>
+                <SelectItem value="HND2">HND2</SelectItem>
               </SelectContent>
             </Select>
           </div>
